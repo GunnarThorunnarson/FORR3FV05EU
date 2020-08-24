@@ -8,7 +8,7 @@ https://birkirarndal.github.io/Logo/
 
 ### Ingvar - tákn í pyramid
 
-https://github.com/Douchebag/samsett/
+https://douchebag.github.io/samsett/
 
 ### Lárus - Kaffi
 
