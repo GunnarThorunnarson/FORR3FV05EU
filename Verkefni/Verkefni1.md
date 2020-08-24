@@ -12,7 +12,7 @@ Notaðu logo sem þú bjóst til sem fyrirmynd að nýju logo en bættu núna vi
 
 Dæmi um SVG logo með kvikun:
 * [Nemendalausnir Haust 2019](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/Synidaemi/Verkefni1Haust2019.md)
-* [CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
+* [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
 ### Námsmat og skil.
 Skrifaðu athugsemdir í kóðann þinn á íslensku. Gefið er fullt fyrir vel útfærðan og vandaðan lið, hálft ef hann er ábótavant. 
