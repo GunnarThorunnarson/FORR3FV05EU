@@ -15,4 +15,5 @@ Dæmi um SVG logo með kvikun:
 * [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
 ### Námsmat og skil.
-Skrifaðu athugsemdir í kóðann þinn á íslensku. Gefið er fullt fyrir vel útfærðan og vandaðan lið, hálft ef hann er ábótavant. 
+Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
+Skrifaðu athugsemdir í kóðann þinn á íslensku. 
