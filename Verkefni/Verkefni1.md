@@ -12,7 +12,7 @@ Búðu til SVG logo sem þú býrð til frá grunni e. inline með kóða í rit
 Notaðu logo sem þú bjóst til sem fyrirmynd að nýju logo en bættu núna við kvikun (e. animation). Logo verður að breytast á einhvern hátt t.d. lögun eða hreyfing (e. transition og e. transform) við atburð (t.d. við snertingu/mús eða tíma). 
 Notaðu CSS (transitions, transforms, animation) til að ná þessu fram. 
 
-Dæmi um SVG logo með kvikun (CSS/JS) [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
+Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
 ### Námsmat og skil.
 Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
