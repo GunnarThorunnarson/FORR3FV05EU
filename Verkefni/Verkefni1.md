@@ -6,7 +6,7 @@
 ### 1.1 SVG (10%) 
 Búðu til SVG logo sem þú býrð til frá grunni e. inline með kóða í ritli. Logo þarf að innihalda m.a. samsetningu af SVG teikningum og e. Bezier curve notkun. [Dæmi um tvö SVG logo - tré og tækniskólinn](https://kodun.is/) <br>
 
-**Ath**. Fyrir þá sem vilja þá er í boði að nota teikniforrit (t.d. Inkscaoe) til að teikna path og curves. Muna þá að nota tól til að hreinsa (fækka punktum og auka kóða) teikningu og færa yfir í kóðaritil.
+**Ath**. Fyrir þá sem vilja þá er í boði að nota teikniforrit (t.d. Inkscaoe) til að teikna path og curves. Muna þá að nota tól til að hreinsa (fækka punktum og óþarfa kóða) teikningu og færa yfir í kóðaritil.
 
 ### 1.2 Kvikun (10%) 
 Notaðu logo sem þú bjóst til sem fyrirmynd að nýju logo en bættu núna við kvikun (e. animation). Logo verður að breytast á einhvern hátt t.d. lögun eða hreyfing (e. transition og e. transform) við atburð (t.d. við snertingu/mús eða tíma). 
