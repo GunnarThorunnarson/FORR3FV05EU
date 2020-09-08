@@ -16,7 +16,7 @@ Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pe
 
 ### Námsmat og skil.
 * Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
-* CSS í <style> á að vera innan af <SVG> 
+* CSS í `<style>` á að vera innan af `<SVG>` 
 * Vistaðu svo skránna með .svg endingu 
 * Skilaðu á Innu vefslóð á repository (t.d. fyrir áfangann) sem inniheldur SVG skrá.
  
