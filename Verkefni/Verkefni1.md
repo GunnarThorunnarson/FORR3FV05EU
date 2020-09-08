@@ -16,4 +16,5 @@ Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pe
 
 ### Námsmat og skil.
 Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
+
  
