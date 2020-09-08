@@ -15,6 +15,23 @@ Notaðu CSS (transitions, transforms, animation) til að ná þessu fram.
 Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
 ### Námsmat og skil.
-Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
+* Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
+* CSS í <style> á að vera innan af <SVG> 
+* Vistaðu svo skránna með .svg endingu 
+* Skilaðu á Innu vefslóð á repository (t.d. fyrir áfangann) sem inniheldur SVG skrá.
+ 
+ Dæmi: 
+ ```
+ <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    circle {
+      fill: gold;
+      stroke: maroon;
+      stroke-width: 2px;
+    }
+  </style>
+  <circle cx="5" cy="5" r="4" />
+</svg>
+ ```
 
  
