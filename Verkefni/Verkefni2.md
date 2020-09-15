@@ -26,7 +26,7 @@ Tími: 3 vikur
     15.	FPS - afhverju er það mismunandi eftir t.d. bíómyndi og tölvuleikir
     16.	Refresh rate t.d. 60 Hertz
     
-1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL(OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders, framebuffer.
+1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL (OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders.
 
 ### 2.2. Three.js project (væntanlegt) (17%)
 
