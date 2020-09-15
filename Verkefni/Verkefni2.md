@@ -1,6 +1,8 @@
-## Verkefni 2 (20%)
+### Verkefni 2 (20%)
+
 Einstaklingsverkefni
 Tími: 3 vikur
+
 ---
 
 #### 2.1 
