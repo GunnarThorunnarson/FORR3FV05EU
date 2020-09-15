@@ -5,8 +5,7 @@ Tími: 3 vikur
 
 ---
 
-#### 2.1 
-
+#### 2.1 (tímaverkefni)
 1. Kynntu þér rasterization
 1. Kynntu þér ray tracing
 1. Lærðu eftirfarandi hugtök:
