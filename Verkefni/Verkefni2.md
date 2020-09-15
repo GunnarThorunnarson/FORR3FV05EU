@@ -1,4 +1,4 @@
-### Verkefni 2 (20%)
+### Verkefni 2 - (20%) _drög_
 
 Einstaklingsverkefni
 Tími: 3 vikur
