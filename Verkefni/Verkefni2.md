@@ -5,10 +5,10 @@ Tími: 3 vikur
 
 ---
 
-#### 2.1 (tímaverkefni)
-1. Kynntu þér rasterization
-1. Kynntu þér ray tracing
-1. Lærðu eftirfarandi hugtök:
+#### 2.1 (3%)
+1. Útskýrðu stuttlega rasterization og ray tracing
+1. Útskýrðu eftirfarandi hugtök:
+
     1.	WebGL
     2.	GPU
     3.	rasterizing
@@ -25,11 +25,9 @@ Tími: 3 vikur
     14.	Shaders
     15.	FPS - afhverju er það mismunandi eftir t.d. bíómyndi og tölvuleikir
     16.	Refresh rate t.d. 60 Hertz
-    17.	CPU cycles
     
-1. Kynntu þér rendering pipeline í WebGL útfrá JavaScript, GLSL(OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders, framebuffer.
-1. Afhverju eru 3D objectar búnir til útfrá samsettum þríhyrningum í rasterization í 3D grafík?
+1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL(OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders, framebuffer.
 
-### 2.2. Three.js project (væntanlegt)
+### 2.2. Three.js project (væntanlegt) (17%)
 
 ---
