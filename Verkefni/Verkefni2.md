@@ -5,7 +5,7 @@ Tími: 3 vikur
 
 ---
 
-#### 2.1 (5%)
+#### 2.1 Grunnatriðin í 3D tölvugrafík (4%)
 1. Útskýrðu stuttlega rasterization og ray tracing
 1. Útskýrðu eftirfarandi hugtök:
 
@@ -28,6 +28,6 @@ Tími: 3 vikur
     
 1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL (OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders.
 
-### 2.2. Three.js project (væntanlegt) (15%)
+### 2.2. Three.js project (væntanlegt) (16%)
 
 ---
