@@ -28,6 +28,6 @@ Tími: 3 vikur
     
 1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL (OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders.
 
-### 2.2. Three.js project (væntanlegt) (18%)
+#### 2.2. Three.js project (væntanlegt) (18%)
 
 ---
