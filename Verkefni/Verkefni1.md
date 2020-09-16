@@ -9,7 +9,7 @@ Búðu til SVG logo sem þú býrð til frá grunni e. inline með kóða í rit
 **Ath**. Fyrir þá sem vilja þá er í boði að nota teikniforrit (t.d. Inkscaoe) til að teikna path og curves. Muna þá að nota tól til að hreinsa teikningu (fækka punktum og óþarfa kóða) og færa yfir í kóðaritil.
 
 ### 1.2 Kvikun (10%) 
-Bættu kvikun (e. animation) við logo. Logo verður að breytast á einhvern hátt t.d. lögun eða hreyfing (e. transition og e. transform) við atburð (t.d. við snertingu/mús eða tíma). Notaðu CSS (transitions, transforms, animation) til að ná þessu fram. 
+Bættu við kvikun. Logo verður að breytast á einhvern hátt t.d. útlit, lögun eða hreyfing (e. transition og e. transform) við atburð (t.d. við snertingu/mús eða tíma). Notaðu CSS (transitions, transforms, animation) til að ná þessu fram. 
 
 Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
