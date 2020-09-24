@@ -14,6 +14,8 @@ Bættu við kvikun. Logo verður að breytast á einhvern hátt t.d. útlit, lö
 Dæmi um SVG logo með kvikun [SVG Logo á CodePen](https://codepen.io/search/pens?q=svg+logo&page=1&order=popularity&depth=everything&cursor=ZD0xJm89MCZwPTI=)
 
 ### Námsmat og skil.
+Einkunn er byggð á notkun SVG og kvikun sem og vinnuframlagi (m.t.t. vægis verkefnis og tíma).
+
 * Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
 * CSS í `<style>` á að vera innan um `<SVG>` 
 * Vistaðu svo skránna með .svg endingu 
