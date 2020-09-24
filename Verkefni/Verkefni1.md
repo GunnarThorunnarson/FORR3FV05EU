@@ -4,7 +4,7 @@
 * Viðfangsefni: SVG, kvikun og 2D viðmótsforritun.
 
 ### 1.1 SVG (10%) 
-Búðu til SVG logo sem þú býrð til frá grunni e. inline með kóða í ritli. Logo þarf að innihalda m.a. samsetningu af SVG teikningum og e. Bezier curve notkun. [Dæmi um tvö SVG logo - tré og tækniskólinn](https://kodun.is/) <br>
+Búðu til SVG logo sem þú býrð til frá grunni e. inline með kóða í ritli. Logo þarf að innihalda m.a. samsetningu af SVG teikningum og e. Bezier curve notkun (`path`). [Dæmi um tvö SVG logo - tré og tækniskólinn](https://kodun.is/) <br>
 
 **Ath**. Fyrir þá sem vilja þá er í boði að nota teikniforrit (t.d. Inkscaoe) til að teikna path og curves. Muna þá að nota tól til að hreinsa teikningu (fækka punktum og óþarfa kóða) og færa yfir í kóðaritil.
 
