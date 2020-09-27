@@ -6,8 +6,8 @@ Tími: 3 vikur
 ---
 
 #### 2.1 Grunnatriðin í 3D tölvugrafík (2%)
-1. Útskýrðu stuttlega rasterization og ray tracing
-1. Útskýrðu eftirfarandi hugtök:
+1. (0.5%) Útskýrðu stuttlega rasterization og ray tracing
+1. (1%) Útskýrðu eftirfarandi hugtök:
 
     1.	WebGL
     1.	GPU
@@ -25,7 +25,7 @@ Tími: 3 vikur
     1.	FPS - afhverju er það mismunandi eftir t.d. bíómyndi og tölvuleikir
     1.	Refresh rate t.d. 60 Hertz
     
-1. Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL (OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders.
+1. (0.5%) Útskýrðu rendering pipeline í WebGL útfrá JavaScript, GLSL (OpenGL Shading Language), buffer, triangle, rasterizer, fragment shaders.
 
 #### 2.2. Three.js project (væntanlegt) (18%)
 
