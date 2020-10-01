@@ -55,6 +55,6 @@ Tími: 3 vikur
 ### Námsmat og skil
 Gefið er fullt fyrir rétt og fullnægjandi útfærslu á lið, hálft fyrir lið sem er ábótavant.<br>
 
-Skila þarf á Innu vefslóð á Github repository sem inniheldur:
+Skila þarf á Innu vefslóð á sér Github repository sem inniheldur:
 1. svör og kóðalausn.
-1. Vefsíðu [Github page](https://pages.github.com/) sem hýsir og keyrir 3D three.js hlut (V2.2).
+1. Vefsíðu [Github page (docs)](https://pages.github.com/) sem hýsir og keyrir 3D three.js hlut (V2.2).
