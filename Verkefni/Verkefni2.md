@@ -47,6 +47,7 @@ Tími: 3 vikur
 
 **Athugið:**<br>
 - Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og animation. <br>
+- Þetta á að vera 100% ykkar sköpun, ekki tutorial með breytingum.
 - Kóði á að vera vel skipulagður með íslenskum athugasemdum. 
 - Það er í boði að nota JS safn með Three.JS fyrir animation vinnslu t.d Anime.JS eða [GreenSock](https://greensock.com/). Sjá [tutorial](https://www.youtube.com/watch?v=6oFvqLfRnsU)
 
