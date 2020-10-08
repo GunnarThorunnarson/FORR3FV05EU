@@ -2,7 +2,7 @@
 
 Einstaklingsverkefni 
 
-Í þessu verkefni ætlum við að vinna með viðbættan veruleika (AR). 
+Í þessu verkefni ætlum við að vinna með viðbættan veruleika (AR). <br>
 Notaðu AR.js safnið til að geta skoðað 3D hlutinn sem þú bjóst til í Verkefni 2 í vafra í símanum þínum.
 
 ### Námsmat og skil
