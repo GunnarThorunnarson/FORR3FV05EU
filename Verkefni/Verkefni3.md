@@ -1,6 +1,6 @@
 ### Verkefni 3 (5%)
 
-- Einstaklingsverkefni 
+Einstaklingsverkefni 
 
 Í þessu verkefni ætlum við að vinna með viðbættan veruleika (AR). 
 Notaðu AR.js safnið til að geta skoðað 3D hlutinn sem þú bjóst til í Verkefni 2 í vafra í símanum þínum.
