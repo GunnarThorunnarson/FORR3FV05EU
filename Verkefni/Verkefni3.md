@@ -2,7 +2,7 @@
 Einstaklingsverkefni <br>
 Tími: 1 vika
 
----
+#### Verkefnalýsing
 
 Í þessu verkefni ætlum við að vinna með viðbættan veruleika (AR). <br>
 Notaðu AR.js safnið til að geta skoðað 3D hluti (að eigin vali) í vafra í símanum þínum.
@@ -13,6 +13,6 @@ Sjá t.d. efirfarandi:
 - [Tips + tricks to spice up your AR.js projects](https://medium.com/@aschmelyun/tips-tricks-to-spice-up-your-ar-js-projects-fa89bc2ec296)
 
 
-### Námsmat og skil
+#### Námsmat og skil
 Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.
 Skilaðu á Innu vefslóð á [Github Pages](https://pages.github.com/) sem sýnir 3D hlut og notkun með AR.js með t.d. vafra í snjallsíma.
