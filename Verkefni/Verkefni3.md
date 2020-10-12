@@ -1,5 +1,6 @@
 ### Verkefni 3 (5%)
 Einstaklingsverkefni <br>
+Tími: 1 vika
 
 ---
 
@@ -11,7 +12,6 @@ Sjá t.d. efirfarandi:
 - [So you want to get started with AR.js](https://medium.com/@aschmelyun/so-you-want-to-get-started-with-ar-js-41dd4fba5f81)
 - [Tips + tricks to spice up your AR.js projects](https://medium.com/@aschmelyun/tips-tricks-to-spice-up-your-ar-js-projects-fa89bc2ec296)
 
----
 
 ### Námsmat og skil
 Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.
