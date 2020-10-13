@@ -15,4 +15,4 @@ Sjá t.d. efirfarandi:
 
 #### Námsmat og skil
 Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.
-Skilaðu á Innu vefslóð á [Github Pages](https://pages.github.com/) sem sýnir 3D hlut og notkun með AR.js með t.d. vafra í snjallsíma.
+Skilaðu á Innu vefslóð á [Github Pages](https://docs.github.com/en/free-pro-team@latest/github/working-with-github-pages/creating-a-github-pages-site) (notaðu docs möppu sem rót) sem sýnir 3D hlut og notkun með AR.js með t.d. vafra í snjallsíma.
