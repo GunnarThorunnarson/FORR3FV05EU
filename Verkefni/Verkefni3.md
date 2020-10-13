@@ -5,7 +5,7 @@ Tími: 1 vika
 #### Verkefnalýsing
 
 Í þessu verkefni ætlum við að vinna með viðbættan veruleika (AR). <br>
-Notaðu AR.js safnið til að geta skoðað 3D hluti (að eigin vali) í vafra í símanum þínum.
+Notaðu AR.js safnið til að geta skoðað 3D hlut í vafra í símanum þínum. Bættu við hlut að eigin vali (t.d. eigin sköpun).
 
 Sjá t.d. efirfarandi:
 - [Creating Web-Based Augmented Reality With Just 10 Lines of HTML Code (For Beginners — AR.js)](https://medium.com/@fauziali/creating-web-based-augmented-reality-with-just-10-lines-of-html-code-for-beginners-ar-js-d62ef596eab)
