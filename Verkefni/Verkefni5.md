@@ -1,7 +1,6 @@
 ## Verkefni 5 (35%)  
 
 * Einstaklingsverkefni
-* Viðfangsefni: Gagnvirkni (IX)
 
 ---
 ### Verkefnalýsing
