@@ -13,7 +13,7 @@ Notað er eftir þörfum; forritunarmál og söfn, tölvu- og tækjabúnaður, s
 ### Skýrsla
 GitHub geymsla (public) sem inniheldur skýrslu í readme.md:
 
-  1. Upplýsingar um höfund, áfanga, Tölvubraut og skóla.
+  1. Upplýsingar um höfund, áfanga og skóla.
   1. Verkefnalýsing.
   1. Myndir og myndbönd af verkferli, frumgerð og notkun þess.
   1. Greinagerð um tæknileg atriði er viðkemur frumgerð (hvað var gert og notað) ásamt
