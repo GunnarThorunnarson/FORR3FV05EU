@@ -25,12 +25,12 @@ GitHub geymsla (public) sem inniheldur skýrslu í readme.md:
 ---
 
 ### Námsmat og skil
-Í verkefninu er metið vinnuframlag og eftirfarandi*
+Í verkefninu er metið vinnuframlag og eftirfarandi:*
 
-1. Inntak: Notendavirkni, skynjarar og virkni.(10%)
-1. Úttak: Viðmót og virkni. (10%)
-1. Gagnavinnsla og forritun. (10%)
-1. Útfærsla, hönnun, samsettning frumgerðar og skýrsla.(5%)
+1. Inntak, skynjarar og stýringar. (10%)
+1. Viðmót. (12%)
+1. Notendavirkni. (8%)
+1. Gagnavinnsla. (5%)
 
 Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. 
 
