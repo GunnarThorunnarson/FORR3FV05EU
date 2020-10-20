@@ -20,7 +20,7 @@ GitHub geymsla (public) sem inniheldur skýrslu í readme.md:
   heimildum. 
   1. Útkoman. Hvernig til tókst, hver væru næstu skref ef haldið væri áfram þróun frumgerðar.
   1. Slóð á GitHub sem hýsir allt innihald.
-  1. GithubPage sem hýsir verkefnið (ef það á við).
+  1. Vefsíða (GithubPages) sem hýsir verkefnið (ef það á við).
 
 ---
 
