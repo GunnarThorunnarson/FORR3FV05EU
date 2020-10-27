@@ -29,7 +29,7 @@ Einkunnarskali; 10, 7.5, 5, 2.5, 0 fyrir hvern lið. <br>
 Skila þarf á Innu vefslóð á sér Github repository sem inniheldur:
 
 1. lýsing og myndband af virkni og notkun.
-1. Hýsing á GithubPages (ef það á við).
+1. Hýsing á GithubPages.
 1. kóði og gögn.
 
 
