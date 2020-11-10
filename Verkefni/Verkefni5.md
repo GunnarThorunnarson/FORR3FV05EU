@@ -1,4 +1,4 @@
-## Verkefni 5 (35%)  
+## Verkefni 5 (35%)  _drög_
 
 * Einstaklingsverkefni
 
