@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.0.1/lib/anime.min.js"></script>
+    <title>Document</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+section {
+    height: 100vh;
+    background: rgb(199,199,199);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+    </style>
+</head>
+<body>
+    <div class="words" contenteditable>
+    </div>
+    <section>
+        <svg id="darkMode" width="151" height="140" viewBox="0 0 151 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="smile" d="M151 70C151 108.66 117.197 140 75.5 140C33.8025 140 0 108.66 0 70C0 31.3401 33.8025 0 75.5 0C117.197 0 151 31.3401 151 70Z" fill="#FFFF00"/>
+        </svg>
+    </section>
+
+
+<script>
+
+// broskall
+const firstPath = "M151 70C151 108.66 117.197 140 75.5 140C33.8025 140 0 108.66 0 70C0 31.3401 33.8025 0 75.5 0C117.197 0 151 31.3401 151 70Z";
+// smiley
+const secoundPath = "M68.5 63.5C68.5 98.5701 106.332 127 68.5 127C30.6685 127 0 98.5701 0 63.5C0 28.4299 30.6685 0 68.5 0C106.332 0 68.5 28.4299 68.5 63.5Z";
+
+document.body.addEventListener('click', e => {
+ 
+        const timeline = anime.timeline({
+            duration : 750,
+            easing : "easeOutExpo"
+        });
+        timeline.add({
+            targets : ".smile",
+            d : [
+                {value: secoundPath}
+            ]
+        });
+});
+
+</script>
+</body>
+</html>
+
