@@ -1,0 +1,1 @@
+### Myndir, myndbönd, grafík.
