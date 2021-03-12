@@ -8,7 +8,7 @@
 
 ### Verkefnalýsing
 
-Búðu til SVG logo með notkun Inkscape og kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
+Búðu til SVG logo með notkun Inkscape og kóðaritli saman. 
 
 1. Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna útlínur (Bezier curve)  (4%)
 2. Notaðu [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í kóðaritil (2%)
