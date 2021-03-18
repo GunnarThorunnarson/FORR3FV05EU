@@ -6,7 +6,7 @@
 
 ### Verkefnalýsing
 
-Notaðu SVG logo sem þú gerðir í Verkefni 1 (eða búðu til nýtt) og bættu við kvikun með CSS. Kvikun á sér stað við mouse-hover atburð. 
+Notaðu SVG logo sem þú gerðir í Verkefni 1 (eða búðu til nýtt) og bættu við kvikun með CSS. Kvikun á sér stað við mouse-hover atburð og þarf að vara í amk. 500ms. 
 
 1. Notaðu [transitions](https://material.io/design/iconography/animated-icons.html#transitions) til að gera mjúka breytingu á milli [state](https://material.io/design/interaction/states.html#usage). (2%)
 1. Notaðu transforms (rotate, scale, skew, translate) til að breyta frá einni stöðu í aðra stöðu. sjá t.d. [shape and motion](https://material.io/design/shape/shape-motion.html#morphing-shape) (2%)
