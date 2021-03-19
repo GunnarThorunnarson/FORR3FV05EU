@@ -8,7 +8,7 @@
 H2021
 2 x teikningar 
 icon með notkunþ path. Fara í stroke og þá jafnvel line drawing í path.
-nota mask, clippath
+nota mask, clippath sjá Tristan V21
 betur í viewBox
 miðja logo sjá grein um að skala SCG
 (Fara smávegis í SMIL)
