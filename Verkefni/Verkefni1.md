@@ -10,7 +10,8 @@ H2021
 icon með notkunþ path. Fara í stroke og þá jafnvel line drawing í path.
 nota mask.
 betur í viewBox
-(Fara smávegis í SMIL, t.d. click)
+miðja logo sjá grein um að skala SCG
+(Fara smávegis í SMIL)
 
 -->
 
