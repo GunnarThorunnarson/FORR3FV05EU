@@ -14,6 +14,9 @@ Notaðu SVG logo sem þú gerðir í Verkefni 1 (eða búðu til nýtt) og bætt
 1. Sequencing, tengdu og notaðu amk. 3 animation (samsett animation). (5%)
 1. Búðu til [Line drawing animation](https://css-tricks.com/svg-line-animation-works/) með stroke fyrir path (3%)
 
+<!--
+1. Morphing animation með (modeling og animation) path og clip-path  (3%)
+-->
 
 ---
 
