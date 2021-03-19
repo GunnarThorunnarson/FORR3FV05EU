@@ -4,6 +4,16 @@
 * Vægi: 14% af heildareinkunn
 * Einstaklingsverkefni
 
+<!--
+H2021
+2 x teikningar 
+icon með notkunþ path. Fara í stroke og þá jafnvel line drawing í path.
+nota mask.
+betur í viewBox
+(Fara smávegis í SMIL, t.d. click)
+
+-->
+
 ---
 
 ### Verkefnalýsing
