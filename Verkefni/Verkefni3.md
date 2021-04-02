@@ -7,7 +7,7 @@
 ### 3D hlutur með Three.js
 
 1. (1%) Kóði og skrár eru með Modular skipulagi og uppsetningu.
-1. (1%) Gerðu viðeigandi stillingar fyrir vafra þannig að hann sé sveigjanlegur (responsive) og í réttum hlutföllum.
+1. (1%) Gerðu viðeigandi stillingar fyrir vafra þannig að hann sé sveigjanlegur (responsive), í réttum hlutföllum og meðhöndlar aliasing.
 1. (2%) Búðu til senu, stilltu myndavél og sjónarhorn.
 1. (6%) Búðu til samsettan hlut (Group) úr mismunandi grunnformum (built-in geometric) að eigin vali (lágmark 5)
 1. (2%) Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu einnig TextureLoader (material.map). 
