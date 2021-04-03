@@ -21,8 +21,7 @@
 **Sýnidæmi;** [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL)
 <br>
 
-**Athugið:**<br>
-- Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og kvikun. 
+**Ath:** Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og kvikun. 
 
 <!--
 - Það er í boði að nota JavaScript safn með Three.JS fyrir animation vinnslu.
