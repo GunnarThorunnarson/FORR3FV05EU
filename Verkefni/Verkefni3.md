@@ -14,7 +14,7 @@
 1. (2%) Bættu við ljósi í senuna; DirectionalLight, AmbientLight, HemisphereLight.
 1. (2%) bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) sem passar við 3D hlutinn þinn.
 1. (3%) Camera Control. Notaðu Orbit control til að geta skoðað 3Dhlut í 3D umhverfi með mús.
-1. (3%) Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock` til að samræma hraða milli tækja).
+1. (3%) Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`).
 1. (4%) Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Ljós og skuggar eiga að færast eðlilega og jafnvel myndavél (zoom in/out). Kvikun þarf að vera samsett (keyframes). (Þetta á að vera flóknari og annars konar virkni en í lið 9.)
 
 
