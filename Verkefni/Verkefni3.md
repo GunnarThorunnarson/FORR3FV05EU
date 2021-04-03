@@ -23,7 +23,10 @@
 
 **Athugið:**<br>
 - Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og kvikun. 
+
+<!--
 - Það er í boði að nota JavaScript safn með Three.JS fyrir animation vinnslu.
+-->
 
 ---
 
