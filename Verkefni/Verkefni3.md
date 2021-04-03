@@ -10,7 +10,7 @@
 1. (1%) Gerðu viðeigandi stillingar fyrir vafra þannig að hann sé sveigjanlegur (responsive), í réttum hlutföllum og meðhöndlar aliasing.
 1. (2%) Búðu til senu, stilltu myndavél og sjónarhorn.
 1. (6%) Búðu til samsettan hlut (Group) úr mismunandi grunnformum (built-in geometric) að eigin vali (lágmark 5)
-1. (2%) Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu einnig TextureLoader (material.map). 
+1. (2%) Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. 
 1. (2%) Bættu við ljósi í senuna; DirectionalLight, AmbientLight, HemisphereLight.
 1. (2%) bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) sem passar við 3D hlutinn þinn.
 1. (3%) Camera Control. Notaðu Orbit control til að geta skoðað 3Dhlut í 3D umhverfi með mús.
