@@ -11,7 +11,7 @@
 1. (2%) Búðu til senu, stilltu myndavél og sjónarhorn.
 1. (6%) Búðu til samsettan hlut (Group) úr mismunandi grunnformum (built-in geometric) að eigin vali (lágmark 5)
 1. (2%) Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. 
-1. (2%) Bættu við ljósi í senuna; DirectionalLight, AmbientLight, HemisphereLight.
+1. (2%) Bættu við ljósi í senuna; DirectionalLight og Ambient Lighting.
 1. (2%) bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) sem passar við 3D hlutinn þinn.
 1. (3%) Camera Control. Notaðu Orbit control og valdar stillingar til að geta skoðað 3Dhlut í 3D umhverfi með mús.
 1. (3%) Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`).
