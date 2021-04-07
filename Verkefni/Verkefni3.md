@@ -5,7 +5,7 @@
 ---
 
 ### Verkefnalýsing
-Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan kvikan 3D hlut, sjá sýnidæmi; [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL)
+Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan kvikan 3D hlut, sýnidæmi; [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL)
 <br>
 
 #### Verkþættir:
