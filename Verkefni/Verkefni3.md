@@ -4,8 +4,11 @@
 
 ---
 
-### 3D hlutur með Three.js
+### Verkefnalýsing
+Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan kvikan 3D hlut, sjá sýnidæmi; [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL)
+<br>
 
+#### Verkþættir:
 1. (1%) Kóði og skrár eru með Modular skipulagi og uppsetningu.
 1. (1%) Gerðu viðeigandi stillingar fyrir vafra þannig að hann sé sveigjanlegur (responsive), í réttum hlutföllum og meðhöndlar aliasing.
 1. (2%) Búðu til senu, stilltu myndavél og sjónarhorn.
@@ -18,14 +21,7 @@
 1. (4%) Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes ). (Þetta á að vera flóknari og annars konar virkni en í lið 9.)
 
 
-**Sýnidæmi;** [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL)
-<br>
-
 **Ath:** Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og kvikun. 
-
-<!--
-- Það er í boði að nota JavaScript safn með Three.JS fyrir animation vinnslu.
--->
 
 ---
 
