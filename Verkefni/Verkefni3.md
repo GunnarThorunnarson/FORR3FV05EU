@@ -28,6 +28,5 @@ Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan kvikan 3D hlu
 ### Námsmat og skil
 - Gefið er fullt fyrir rétt og fullnægjandi útfærslu á lið, hálft fyrir lið sem er ábótavant.
 - Kóði á að vera vel skipulagður með íslenskum athugasemdum.
-<!--
 - Skila þarf á Innu vefslóð á Github repository sem inniheldur kóðaskrár. 
--->
+
