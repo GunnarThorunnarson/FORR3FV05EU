@@ -15,10 +15,10 @@ Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan kvikan 3D hlu
 1. (6%) Búðu til samsettan hlut (Group) úr mismunandi grunnformum (built-in geometric) að eigin vali (lágmark 5)
 1. (2%) Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. 
 1. (2%) Bættu við ljósi í senuna; Directional Lighting og Ambient Lighting.
-1. (2%) bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) sem passar við 3D hlutinn þinn.
 1. (3%) Camera Control. Notaðu Orbit control og valdar stillingar til að geta skoðað 3Dhlut í 3D umhverfi með mús.
 1. (3%) Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`). Ljós og skuggar eiga að færast eðlilega og jafnvel myndavél (zoom in/out).
-1. (4%) Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes ). (Þetta á að vera flóknari og annars konar virkni en í lið 9.)
+1. (4%) Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes ). 
+1. **Valkvæmt** (2%) bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) sem passar við 3D hlutinn þinn.
 
 
 **Ath:** Nemendur mega ekki hafa sama eða sambærilegan 3D hlut og kvikun. 
