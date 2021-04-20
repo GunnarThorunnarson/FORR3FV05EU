@@ -19,4 +19,4 @@ Fygldu eftirfarandi [WebXR tutorial](https://developers.google.com/ar/develop/we
 
 #### Námsmat og skil
 Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.
-Skilaðu á Innu vefslóð á [Github Pages](https://docs.github.com/en/free-pro-team@latest/github/working-with-github-pages/creating-a-github-pages-site) (notaðu docs möppu sem rót) sem sýnir 3D hlut og notkun þess með vafra í snjallsíma.
+Skilaðu á Innu vefslóð á [Github Pages](https://docs.github.com/en/free-pro-team@latest/github/working-with-github-pages/creating-a-github-pages-site) (notaðu docs möppu sem rót) sem sýnir 3D hlut (link á raw skrá) og notkun þess með vafra í snjallsíma.
