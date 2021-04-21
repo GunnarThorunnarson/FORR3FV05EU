@@ -17,4 +17,4 @@ Með vafra í símanum þínum á að vera hægt að staðsetja og skoða 3D hlu
 
 #### Námsmat og skil
 Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.<br>
-Skilaðu á Innu vefslóð á Github með vefrót (notaðu docs möppu sem rót) sem hýsir og sýnir 3D hlut (link á raw skrá) og notkun þess með vafra í snjallsíma.
+Skilaðu á Innu vefslóð á Github með vefrót (notaðu docs möppu sem rót) sem hýsir og sýnir 3D hlut og notkun þess með vafra í snjallsíma.
