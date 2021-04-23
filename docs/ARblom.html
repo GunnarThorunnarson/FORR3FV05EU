@@ -61,12 +61,6 @@ const viewerSpace = await session.requestReferenceSpace('viewer');
 const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
 
 const loader = new THREE.GLTFLoader();
-let reticle;
-loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/reticle/reticle.gltf", function(gltf) {
-  reticle = gltf.scene;
-  reticle.visible = false;
-  scene.add(reticle);
-})
 
 let flower;
 loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/sunflower/sunflower.gltf", function(gltf) {
