@@ -18,13 +18,13 @@ window.addEventListener('deviceorientation', event => {
     event.alpha     // rotation along the z axis
     event.beta      // rotation along the x axis
     event.gamma     // rotation along the y axis
-    message += "alpha: " + event.alpha + "beta: " + event.beta + "gamma: " + event.gamma + "<br>";
+    message += "alpha: " + event.alpha + " beta: " + event.beta + " gamma: " + event.gamma + "<br>";
 }, true);
 
 window.addEventListener('devicemotion', event => {
     event.accelerationIncludingGravity.x
     event.accelerationIncludingGravity.y
-    message += "x: " +  event.accelerationIncludingGravity.x + event.accelerationIncludingGravity.y + "<br>";
+    message += "x: " +  event.accelerationIncludingGravity.x + "y: " +  event.accelerationIncludingGravity.y + " <br>";
     // document.body.innerHTML = message;
 }, true);
 
