@@ -12,8 +12,6 @@ let message = "";
 
 window.addEventListener('devicemotion', event => {
     message += event.acceleration.x + ' m/s2' + "<br>";
-    document.body.innerHTML = message;
-
 }, true);
 
 window.addEventListener('deviceorientation', event => {
@@ -21,20 +19,15 @@ window.addEventListener('deviceorientation', event => {
     event.beta      // rotation along the x axis
     event.gamma     // rotation along the y axis
     message += "alpha: " + event.alpha + "beta: " + event.beta + "gamma: " + event.gamma + "<br>";
-    document.body.innerHTML = message;
-
 }, true);
 
 window.addEventListener('devicemotion', event => {
     event.accelerationIncludingGravity.x
     event.accelerationIncludingGravity.y
     message += "x: " +  event.accelerationIncludingGravity.x + event.accelerationIncludingGravity.y + "<br>";
-    document.body.innerHTML = message;
-
+    // document.body.innerHTML = message;
 }, true);
 
+setInterval(function () { document.body.innerHTML = message; }, 2000);
 
 </script>
-  
-</body>
-</html>
