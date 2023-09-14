@@ -7,18 +7,21 @@
 </head>
 <body>
 <script>
+let message;
+    
 window.addEventListener('devicemotion', event => {
-    document.body.innerText = event.acceleration.x + ' m/s2' + "<br>";
+    message = event.acceleration.x + ' m/s2' + "<br>";
+    document.body.innerHTML = message;
 });
 
 window.addEventListener('deviceorientation', event => {
     event.alpha     // rotation along the z axis
     event.beta      // rotation along the x axis
     event.gamma     // rotation along the y axis
-    document.body.appendChild("alpha: " + event.apha + "beta: " + event.beta + "gamma: " + event.gamma)
+    message += "alpha: " + event.apha + "beta: " + event.beta + "gamma: " + event.gamma;
+    document.body.innerHTML = message;
 }, true);
 
 </script>
-  
 </body>
 </html>
