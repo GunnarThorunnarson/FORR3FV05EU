@@ -11,23 +11,24 @@
 let message = "";
 
 window.addEventListener('devicemotion', event => {
-    message1 = event.acceleration.x + ' m/s2' + "<br>";
+    message = event.acceleration.x + ' m/s2' + "<br>";
+    // document.body.innerHTML = message; 
 }, true);
 
 window.addEventListener('deviceorientation', event => {
     event.alpha     // rotation along the z axis
     event.beta      // rotation along the x axis
     event.gamma     // rotation along the y axis
-    message2 = "alpha: " + event.alpha + "beta: " + event.beta + "gamma: " + event.gamma + "<br>";
+    message = "alpha: " + event.alpha + "beta: " + event.beta + "gamma: " + event.gamma + "<br>";
+    //document.body.innerHTML = message; 
 }, true);
 
 window.addEventListener('devicemotion', event => {
     event.accelerationIncludingGravity.x
     event.accelerationIncludingGravity.y
-    message3 = "x: " +  event.accelerationIncludingGravity.x + event.accelerationIncludingGravity.y + "<br>";
-    // document.body.innerHTML = message;
+    message = "x: " +  event.accelerationIncludingGravity.x + event.accelerationIncludingGravity.y + "<br>";
+    document.body.innerHTML = message; 
 }, true);
 
-document.body.innerHTML = message1 + message2 + message3; 
 
 </script>
