@@ -6,12 +6,19 @@
     <title>Document</title>
 </head>
 <body>
-    <script>
-        window.addEventListener('devicemotion', event => {
-        document.body.innerText = event.acceleration.x + ' m/s2';
-      });
-    
-    </script>
+<script>
+window.addEventListener('devicemotion', event => {
+    document.body.innerText = event.acceleration.x + ' m/s2' + "<br>";
+});
+
+window.addEventListener('deviceorientation', event => {
+    event.alpha     // rotation along the z axis
+    event.beta      // rotation along the x axis
+    event.gamma     // rotation along the y axis
+    document.body.appendChild("alpha: " + event.apha + "beta: " + event.beta + "gamma: " + event.gamma)
+}, true);
+
+</script>
   
 </body>
 </html>
