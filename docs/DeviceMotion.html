@@ -26,7 +26,7 @@ window.addEventListener('deviceorientation', event => {
 window.addEventListener('devicemotion', event => {
     event.accelerationIncludingGravity.x
     event.accelerationIncludingGravity.y
-    message = "x: " +  event.accelerationIncludingGravity.x + event.accelerationIncludingGravity.y + "<br>";
+    message = "x: " +  event.accelerationIncludingGravity.x + "<br> y: " + event.accelerationIncludingGravity.y + "<br>";
     document.body.innerHTML = message; 
 }, true);
 
