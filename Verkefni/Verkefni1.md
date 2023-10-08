@@ -1,8 +1,8 @@
-## Verkefni 1 – 2D tölvugrafík  
+## Verkefni 1 
 
-* Viðfangsefni: [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG)
-* Vægi: 10% af heildareinkunn
-* Einstaklingsverkefni
+- 2D tölvugrafík með [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG)
+- 10% af heildareinkunn
+- Einstaklingsverkefni
 
 ---
 
