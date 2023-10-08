@@ -25,7 +25,7 @@ Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan 3D hlut (þí
 ---
 
 ### Námsmat og skil
-- Gefið er fullt fyrir rétt og fullnægjandi útfærslu á lið, hálft fyrir lið sem er ábótavant.
+- Gefið er fullt fyrir rétt og fullnægjandi útfærslu á lið, ekkert fyrir lið sem er ábótavant.
 - Kóði á að vera vel skipulagður með íslenskum athugasemdum.
 - Skila þarf á Innu vefslóð á Github repository sem inniheldur kóðaskrár. 
 - Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D hlut (link á raw skrá).
