@@ -21,9 +21,7 @@ SVG Logo þarf að innihalda eftirfarandi:
 - [ ] Stilltu af svæðið `viewBox viewport`
 - [ ] Valkvæmt; _gradients, pattern, clipping and masking, embedding raster images, filter effects_ 
 
-Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna útlínur (Bezier curve).  <br>
-Notaðu [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í kóðaritil. <br>
-Káraðu SVG logo með kóða í kóðaritli, notaðu _Inline SVG_. 
+Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna útlínur (Bezier curve). Notaðu því næst [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í kóðaritil. Káraðu svo SVG logo með kóða í kóðaritli, notaðu _Inline SVG_. 
 
 ---
 
