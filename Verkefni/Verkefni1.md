@@ -1,6 +1,6 @@
 ## Verkefni 1 
 
-- 2D tölvugrafík með [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG) og kvikun
+- 2D tölvugrafík, [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG) og [kvikun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Kvikun)
 - 10% af heildareinkunn
 - Einstaklingsverkefni
 
