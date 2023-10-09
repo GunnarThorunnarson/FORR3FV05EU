@@ -17,8 +17,8 @@ Búðu til með Three.js senu sem inniheldur gagnvirkan, samsettan 3D hlut (þí
 1. [ ] Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. 
 1. [ ] Bættu við ljósi í senuna; Directional Lighting og Ambient Lighting.
 1. [ ] Camera Control. Notaðu Orbit control og valdar stillingar til að geta skoðað 3D hlut í 3D umhverfi með mús.
-1. [ ] **Valkvæmt** Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`). Ljós og skuggar eiga að færast eðlilega og jafnvel myndavél (zoom in/out).
-1. [ ] **Valkvæmt** Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes ).
+1. [ ] **Bónus (má sleppa)** Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`). Ljós og skuggar eiga að færast eðlilega og jafnvel myndavél (zoom in/out).
+1. [ ] **Bónus (má sleppa)** Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes).
 
 **Ath:** Nemendur mega ekki hafa sama eða sambærilegan 3D hlut. 
 
