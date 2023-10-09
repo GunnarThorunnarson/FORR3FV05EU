@@ -1,6 +1,6 @@
 ## Verkefni 1 
 
-- 2D tölvugrafík með [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG)
+- 2D tölvugrafík með [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG) og kvikun
 - 10% af heildareinkunn
 - Einstaklingsverkefni
 
@@ -8,6 +8,7 @@
 
 ### Verkefnalýsing
 
+#### 1. SVG
 Búðu til SVG logo með notkun Inkscape og kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
 
 SVG Logo þarf að innihalda eftirfarandi:
@@ -22,6 +23,14 @@ SVG Logo þarf að innihalda eftirfarandi:
 - [ ] Valkvæmt; _gradients, pattern, clipping and masking, embedding raster images, filter effects_ 
 
 Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna útlínur (Bezier curve). Notaðu því næst [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í kóðaritil. Káraðu svo SVG logo með kóða í kóðaritli, notaðu _Inline SVG_. 
+
+#### 2. bættu við kvikun með CSS 
+
+1. Notaðu [transitions](https://material.io/design/iconography/animated-icons.html#transitions) til að gera mjúka breytingu á milli [state](https://material.io/design/interaction/states.html#usage).
+1. Notaðu transforms (rotate, scale, skew, translate) til að breyta frá einni stöðu í aðra stöðu. sjá t.d. [shape and motion](https://material.io/design/shape/shape-motion.html#morphing-shape)
+1. Notaðu animation. Skoðaðu [Understanding motion](https://material.io/design/motion/understanding-motion.html#principles) og [CSS Animation for Beginners](https://thoughtbot.com/blog/css-animation-for-beginners)
+1. **Valkvæmt** Sequencing, tengdu 3 animation saman (samsett animation).
+1. **Valkvæmt** Búðu til [Line drawing animation](https://css-tricks.com/svg-line-animation-works/) með stroke fyrir path.
 
 ---
 
