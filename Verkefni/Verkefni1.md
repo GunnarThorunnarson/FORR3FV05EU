@@ -26,11 +26,11 @@ Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05
 
 #### 2. bættu við kvikun með CSS 
 
-1. Notaðu [transitions](https://material.io/design/iconography/animated-icons.html#transitions) til að gera mjúka breytingu á milli [state](https://material.io/design/interaction/states.html#usage).
-1. Notaðu transforms (rotate, scale, skew, translate) til að breyta frá einni stöðu í aðra stöðu. sjá t.d. [shape and motion](https://material.io/design/shape/shape-motion.html#morphing-shape)
-1. Notaðu animation. Skoðaðu [Understanding motion](https://material.io/design/motion/understanding-motion.html#principles) og [CSS Animation for Beginners](https://thoughtbot.com/blog/css-animation-for-beginners)
-1. **Valkvæmt** Sequencing, tengdu 3 animation saman (samsett animation).
-1. **Valkvæmt** Búðu til [Line drawing animation](https://css-tricks.com/svg-line-animation-works/) með stroke fyrir path.
+- [ ] Notaðu [transitions](https://material.io/design/iconography/animated-icons.html#transitions) til að gera mjúka breytingu á milli [state](https://material.io/design/interaction/states.html#usage).
+- [ ] Notaðu transforms (rotate, scale, skew, translate) til að breyta frá einni stöðu í aðra stöðu. sjá t.d. [shape and motion](https://material.io/design/shape/shape-motion.html#morphing-shape)
+- [ ] Notaðu animation. Skoðaðu [Understanding motion](https://material.io/design/motion/understanding-motion.html#principles) og [CSS Animation for Beginners](https://thoughtbot.com/blog/css-animation-for-beginners)
+- [ ] **Valkvæmt** Sequencing, tengdu 3 animation saman (samsett animation).
+- [ ] **Valkvæmt** Búðu til [Line drawing animation](https://css-tricks.com/svg-line-animation-works/) með stroke fyrir path.
 
 ---
 
