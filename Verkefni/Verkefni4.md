@@ -9,10 +9,10 @@
 ### Verkefnalýsing
 Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
 
-- [ ] 2D kort (terrain, hybrid, satellite).
+- [ ] 2D kort (terrain, hybrid, satellite), [map tiles](https://carto.com/blog/map-tiles-guide).
 - [ ] Layers (SVG línur).
 - [ ] Kvikun.
-- [ ] Gögn; [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON), [map tiles](https://carto.com/blog/map-tiles-guide).
+- [ ] Gögn; [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON),.
 - [ ] Hægt er að skoða kort með zoom og pan með fingrum (multitouch).
 - [ ] Hægt er að smella á reiti (markers) á korti til að fá nánari upplýsingar (t.d. popup).
 - [ ] **Bónus** Notandi getur valið um mismunandi leiðir.
