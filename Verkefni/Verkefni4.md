@@ -7,7 +7,7 @@
 
 
 ### Verkefnalýsing
-Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta á korti til að fá nánari upplýsingar eða velja um leið. Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
+Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
 
 - [ ] 2D kort (terrain, hybrid, satellite).
 - [ ] Layers (SVG línur).
