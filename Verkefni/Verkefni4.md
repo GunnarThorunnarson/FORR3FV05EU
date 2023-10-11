@@ -21,7 +21,9 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 #### Bjargir:
 - [Top 8 JavaScript Libraries for Creating Dynamic Maps](https://colorlib.com/wp/javascript-libraries-for-creating-dynamic-maps/)
 - [Leaflet](https://leafletjs.com/)
-- [MapBox GL JS](https://www.mapbox.com/mapbox-gljs) & [HOW TO CREATE A CUSTOM MAP](https://www.mapbox.com/blog/create-custom-map-steps)
+- [MapBox GL JS](https://www.mapbox.com/mapbox-gljs)
+- [HOW TO CREATE A CUSTOM MAP with MapBox](https://www.mapbox.com/blog/create-custom-map-steps)
+- [geojson.io](https://geojson.io/#map=2/0/20)
 
 ---
 
