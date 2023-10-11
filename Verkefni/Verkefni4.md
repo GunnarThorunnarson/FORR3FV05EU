@@ -26,7 +26,7 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 ---
 
 ### Námsmat og skil.
-Skilaðu á Innu lausn.
+Skilaðu á Innu lausn. <br>
 Einkunn: 
 - 4/4 lausn er vel útfærð.
 - 3/4 lausn er smávægilega ábótavant (eitthvað vantar, virkni ábótavant).
