@@ -7,13 +7,14 @@
 ---
 
 ### Verkefnalýsing
-Markmið verkefnis (frumgerð) er að smíða gagnvirkt notendaviðmót sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það hentar. Nota þarf gögn í einhverju formi (JSON). Notað er eftir þörfum; forritunarmál, söfn, tölvu- og tækjabúnaður, skynjarar og íhluti.
+Markmið verkefnis (frumgerð) er að smíða gagnvirkt notendaviðmót sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það hentar. Nota þarf gögn í einhverju formi. Notað er eftir þörfum; forritunarmál, söfn, tækjabúnað og skynjara. 
 
 Dæmi um verkefni:
-- Gagnvirkt mælaborð sem sýnir kvikuð rauntímagögn með [D3.js](https://d3js.org/) í 2D með touch notendavirkni.
+- 2D gagnvirkt mælaborð sem sýnir kvikuð rauntímagögn með touch notendavirkni ([d3.js](https://d3js.org/)).
 - 3D gagnvirk vöruvefsíða og [3D scanning](https://alicevision.org/#meshroom).
 - AR gagnvirkt viðmót með myndgreiningavefþjónustu.
-- [P5.js](https://p5js.org/libraries/) viðmót með [hand gesture](https://www.youtube.com/watch?v=BX8ibqq0MJU&ab_channel=KazukiUmeda) notandastýringu.
+- [P5.js](https://p5js.org/libraries/) með [hand gesture](https://www.youtube.com/watch?v=BX8ibqq0MJU&ab_channel=KazukiUmeda) notandastýringu.
+
 
 ---
 
