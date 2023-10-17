@@ -7,7 +7,7 @@
 ---
 
 ### Verkefnalýsing
-Markmið verkefnis (frumgerð) er að smíða gagnvirkt notendaviðmót sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það hentar. Nota þarf gögn í einhverju formi. Notað er eftir þörfum; forritunarmál, söfn, tækjabúnað og skynjara. 
+Markmið verkefnis (frumgerð) er að smíða gagnvirkt dýnamístk notendaviðmót sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það hentar. Nota þarf gögn í einhverju formi. Notað er eftir þörfum; forritunarmál, söfn, tækjabúnað og skynjara. 
 
 Dæmi um verkefni:
 - 2D gagnvirkt mælaborð sem sýnir kvikuð rauntímagögn með touch notendavirkni ([d3.js](https://d3js.org/)).
