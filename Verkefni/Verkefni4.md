@@ -15,7 +15,7 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 - [ ] Gögn t.d. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON).
 - [ ] Hægt er að skoða kort með zoom og pan með fingrum (multitouch).
 - [ ] Hægt er að smella á reiti (markers) á korti til að fá nánari upplýsingar (t.d. popup).
-- [ ] **Bónus** Notandi getur valið um mismunandi leiðir.
+- [ ] Notandi getur valið um mismunandi leiðir.
 
 
 #### Bjargir:
