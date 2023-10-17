@@ -9,7 +9,7 @@
 ### Verkefnalýsing
 
 #### 1. SVG (50%)
-Búðu til SVG logo fyrir [félag eða klúbbs innan Tækniskólans](https://tskoli.is/felagslif/skola-og-nemendafelog/) með notkun Inkscape og kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
+Búðu til SVG logo fyrir [félag eða klúbb innan Tækniskólans](https://tskoli.is/felagslif/skola-og-nemendafelog/) með notkun Inkscape og kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
 
 SVG Logo þarf að innihalda eftirfarandi:
 
