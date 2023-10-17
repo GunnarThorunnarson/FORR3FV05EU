@@ -51,7 +51,7 @@ Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05
 
 ### Námsmat og skil.
 Vistaðu skránna með .svg endingu og skilaðu á Innu. <br>
-Einkunn: 
+Einkunn fyrir hvorn lið: 
 - 4/4 lausn er vel útfærð.
 - 3/4 lausn er smávægilega ábótavant (eitthvað vantar, virkni ábótavant).
 - 2/4 lausn er ábótavant, helmingur er vel útfærður.
