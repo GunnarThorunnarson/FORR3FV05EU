@@ -7,15 +7,15 @@
 
 
 ### Verkefnalýsing
-Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
+Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð og valið ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
 
-- [ ] 2D kort (terrain, hybrid, satellite), [map tiles](https://carto.com/blog/map-tiles-guide).
+- [ ] 2D/3D kort (terrain, hybrid, satellite).
 - [ ] Layers (SVG línur).
 - [ ] Kvikun.
 - [ ] Gögn t.d. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON).
 - [ ] Hægt er að skoða kort með zoom og pan með fingrum (multitouch).
 - [ ] Hægt er að smella á reiti (markers) á korti til að fá nánari upplýsingar (t.d. popup).
-- [ ] Notandi getur valið um mismunandi leiðir.
+- [ ] Notandi getur valið um mismunandi leiðir að fara með gagnvirkum hætti.
 
 
 #### Bjargir:
@@ -24,6 +24,7 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 - [MapBox GL JS](https://www.mapbox.com/mapbox-gljs)
 - [HOW TO CREATE A CUSTOM MAP with MapBox](https://www.mapbox.com/blog/create-custom-map-steps)
 - [geojson.io](https://geojson.io/#map=2/0/20)
+- [Map Tiles: Everything You Need To Know](https://carto.com/blog/map-tiles-guide)
 
 ---
 
