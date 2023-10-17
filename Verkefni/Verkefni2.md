@@ -8,7 +8,6 @@
 ### Verkefnalýsing
 Búðu til með Three.js senu sem inniheldur samsettan 3D hlut (þín sköpun), sýnidæmi; [Kind](https://codepen.io/elliezen/pen/GWbBrx), [Kamelljón](https://codepen.io/elliezen/pen/evXgdE), [Fuglar](https://codepen.io/Yakudoo/pen/LVyJXw), [Ljón](https://codepen.io/Yakudoo/full/YXxmYR/), [Dreki](https://codepen.io/Yakudoo/pen/yNjRRL). Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D hlut (link á raw skrá).
 
-<br>
 
 #### Verkþættir:
 1. [ ] Kóði og skrár eru með Modular skipulagi og uppsetningu. (**10%**)
