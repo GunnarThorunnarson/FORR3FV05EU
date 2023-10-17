@@ -12,7 +12,7 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 - [ ] 2D/3D kort (terrain, hybrid, satellite).
 - [ ] Layers (SVG línur).
 - [ ] Kvikun.
-- [ ] Gögn t.d. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON).
+- [ ] Gögn t.d. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON), vector tiles.
 - [ ] Hægt er að skoða kort með zoom og pan með fingrum (multitouch).
 - [ ] Hægt er að smella á reiti (markers) á korti til að fá nánari upplýsingar (t.d. popup).
 - [ ] Notandi getur valið um mismunandi leiðir að fara með gagnvirkum hætti.
