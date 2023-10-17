@@ -33,9 +33,27 @@ Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05
 - [ ] Notaðu animation. Skoðaðu [Understanding motion](https://material.io/design/motion/understanding-motion.html#principles) og [CSS Animation for Beginners](https://thoughtbot.com/blog/css-animation-for-beginners)
 - [ ] Bónus (má sleppa): Sequencing, tengdu 2 animation saman (samsett animation).
 
+ CSS í `<style>` á að vera innan um `<SVG>`, dæmi: 
+ 
+ ```
+ <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    circle {
+      fill: gold;
+      stroke: maroon;
+      stroke-width: 2px;
+    }
+  </style>
+  <circle cx="5" cy="5" r="4" />
+</svg>
+ ```
 ---
 
 ### Námsmat og skil.
-* Einkunn er byggð á SVG aðgerðum, skilningi á SVG kóða og vinnuframlagi.
-* Gefið er fullt fyrir lið sem er fullnægjandi útfærður, hálft ef hann er ábótavant.
-* Vistaðu skránna með .svg endingu og skilaðu á Innu skránni.
+Vistaðu skránna með .svg endingu og skilaðu á Innu. <br>
+Einkunn: 
+- 4/4 lausn er vel útfærð.
+- 3/4 lausn er smávægilega ábótavant (eitthvað vantar, virkni ábótavant).
+- 2/4 lausn er ábótavant, helmingur er vel útfærður.
+- 1/4 lausn er stórlega ábótavant, tíma og kóðavinna lögð í lausn.
+- 0/4 lausn vantar eða óunnin.
