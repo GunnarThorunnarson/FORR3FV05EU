@@ -20,5 +20,5 @@
 
 
 #### Námsmat og skil
-Gefið er fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.<br>
+Gefið er fyrir hvern lið fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.<br>
 Skilaðu á Innu vefslóð á Github með vefrót (notaðu docs möppu sem rót) sem hýsir og sýnir 3D hlut og notkun þess með vafra í snjallsíma.
