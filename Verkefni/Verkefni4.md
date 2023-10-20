@@ -7,7 +7,7 @@
 
 
 ### Verkefnalýsing
-Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð og valið ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
+Búðu til dýnamískan og gagnvirkan kortaleiðarvísir (t.d. gönguleiðir að eldgosi) með SVG, kvikun og touch virkni fyrir snertiskjá. Notandi á að geta séð og valið ákveðna leið (SVG og kvikun) og geta notað fingur til að velja valda punkta (marker) á korti til að fá nánari upplýsingar (og velja um leið). Notandi á ennfremur að geta skoðað kortið að vild með zoom og pan. 
 
 - [ ] 2D/3D kort (terrain, hybrid, satellite).
 - [ ] Gögn t.d. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON), vector tiles.
@@ -15,7 +15,7 @@ Búðu til dýnamískan og gagnvirkan 2D/3D kortaleiðarvísir (t.d. gönguleið
 - [ ] Kvikun.
 - [ ] Hægt er að skoða kort með zoom og pan með fingrum (multitouch).
 - [ ] Hægt er að smella á reiti (markers) á korti til að fá nánari upplýsingar (t.d. popup).
-- [ ] Notandi getur valið um mismunandi leiðir að fara með gagnvirkum hætti.
+- [ ] Notandi getur valið um mismunandi leið að fara með gagnvirkum hætti.
 
 
 #### Bjargir:
