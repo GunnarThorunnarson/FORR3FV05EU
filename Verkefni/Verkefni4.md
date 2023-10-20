@@ -1,4 +1,4 @@
-## Verkefni 4 
+## Verkefni 4 _drög_
 - 35% af heildareinkunn  
 - Einstaklingsverkefni
 - Gagnvirk viðmótshönnun og notendaupplifun
