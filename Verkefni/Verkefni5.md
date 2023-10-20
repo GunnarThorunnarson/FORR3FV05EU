@@ -1,8 +1,8 @@
-## Verkefni 5 
+## Verkefni 5 _drög_
 
 - lokaverkefni.
 - 35% af heildareinkunn.
-- hópverkefni (2 saman).
+- einstaklingsverkefni / hópverkefni (2 saman).
 
 ---
 
