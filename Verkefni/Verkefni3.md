@@ -1,4 +1,4 @@
-## Verkefni 3 
+## Verkefni 3 _drög_
 
 - 10% af heildareinkunn
 - einstaklingsverkefni 
