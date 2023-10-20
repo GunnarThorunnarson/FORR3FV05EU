@@ -9,11 +9,11 @@
 ### Verkefnalýsing
 
 #### 1. SVG (50%)
-Búðu til SVG logo fyrir [félag eða klúbb innan Tækniskólans](https://tskoli.is/felagslif/skola-og-nemendafelog/) með notkun Inkscape og kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
+Búðu til SVG logo fyrir [félag eða klúbb innan Tækniskólans](https://tskoli.is/felagslif/skola-og-nemendafelog/) með notkun Inkscape (path) og VS Code kóðaritli saman. Sjá t.d. [Logo Design tutorial með Inkscape](https://inkscape.org/~logosbynick/%E2%98%85logo-design-tutorial).
 
 SVG Logo þarf að innihalda eftirfarandi:
 
-- [ ] Bezier curve `<path>` notkun.
+- [ ] Bezier curve `<path>` notkun með Inkscape.
 - [ ] Grunnform `<rect> <circle> <ellipse> <line> <polyline> <polygon> `
 - [ ] Logo er samsett af nokkrum SVG formum `<g> <defs>`
 - [ ] Fills and Stroke 
@@ -22,7 +22,8 @@ SVG Logo þarf að innihalda eftirfarandi:
 - [ ] Stilltu af svæðið `viewBox viewport`
 - [ ] Bónus (má sleppa); _gradients, pattern, clipping and masking, embedding raster images, filter effects_ 
 
-Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna útlínur (Bezier curve). Notaðu því næst [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í VSCode kóðaritil. Káraðu svo SVG logo með kóða í VSCode, notaðu _**Inline SVG**_. 
+Notaðu _Pen tool_ í [Inkscape](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Inkscape) til að teikna eingöngu útlínur (Bezier curve). <br>
+Notaðu því næst [tól](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG#t%C3%B3l-til-a%C3%B0-hreinsa-svg-teikningu) til að hreinsa SVG teikningu (fækka punktum og óþarfa kóða) sem þú gerðir með Inkscape og færðu yfir í VSCode kóðaritil. Káraðu svo SVG logo með kóða í VSCode, notaðu _**Inline SVG**_. 
 
 ---
 
