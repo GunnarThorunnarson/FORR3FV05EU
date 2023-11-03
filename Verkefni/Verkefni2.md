@@ -11,7 +11,7 @@ Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D h
 
 
 #### Verkþættir:
-1. [ ] Kóði og skrár eru með Modular skipulagi og uppsetningu. (**10%**)
+1. [ ] Kóði og skrár eru með skipulagi (td. Modular) og uppsetningu. (**10%**)
 1. [ ] Gerðu viðeigandi stillingar fyrir vafra þannig að hann sé sveigjanlegur (responsive), í réttum hlutföllum og meðhöndlar aliasing. (**10%**)
 1. [ ] Búðu til senu, stilltu myndavél og sjónarhorn. (**20%**)
 1. [ ] Búðu til samsettan hlut (Group) úr mismunandi grunnformum (built-in geometric) að eigin vali (lágmark 3) (**20%**)
