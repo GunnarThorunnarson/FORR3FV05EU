@@ -18,7 +18,7 @@ Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D h
 1. [ ] Material og Texture. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. (**10%**) 
 1. [ ] Bættu við ljósi í senuna; Directional Lighting og Ambient Lighting. (**10%**)
 1. [ ] Camera Control. Notaðu Orbit control og valdar stillingar til að geta skoðað 3D hlut í 3D umhverfi með mús. (**10%**)
-1. [ ] Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu `clock`). Ljós og skuggar eiga að færast eðlilega. (**10%**)
+1. [ ] Notaðu transformation (translate, rotate, scale) til að staðsetja 3D hlut. Láttu hann eða part af honum snúast, hreyfast eða skalast sjálfkrafa (notaðu td. `clock`). Ljós og skuggar eiga að færast eðlilega. (**10%**)
 <!--
 1. [ ] **Bónus (má sleppa)** Þegar smellt er á 3D hlut (eða skjá) með mús þá á hluturinn að breytast; lögun, útlit og hreyfing. Kvikun þarf að vera samsett (keyframes).
 -->
