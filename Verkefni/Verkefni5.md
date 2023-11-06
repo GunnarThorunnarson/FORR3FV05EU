@@ -7,7 +7,7 @@
 
 ### Verkefnalýsing
 
-Markmið verkefnis (frumgerð) er að smíða gagnvirkt og dýnamískt 2D/3D/XR notendaviðmót með inntaksstjórnun (t.d. touch, gesture) sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það á við. Nota þarf gögn í einhverju formi. Notað er eftir þörfum; söfn, tækjabúnað og íhluti. 
+Markmið verkefnis (frumgerð) er að smíða gagnvirkt og dýnamískt 2D/3D/XR notendaviðmót með inntaksstjórnun (t.d. touch, gesture) sem vinnur með notendaupplifun í því umhverfi og aðstæður sem það á við. Nota þarf gögn (t.d. JSON) í einhverju formi. Notað er eftir þörfum; söfn, tækjabúnað og íhluti. 
 
 Dæmi um verkefni:
 - 2D gagnvirkt mælaborð sem sýnir kvikuð rauntímagögn með touch notendavirkni (td. [d3.js](https://d3js.org/)).
