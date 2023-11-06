@@ -14,7 +14,7 @@
 - [ ] Það er hægt að sjá 3D hlut í bland við raunverulegt umhverfi með vafra (myndvél) í símanum sem er hýstur á Github. (**20%**)
 - [ ] Það er hægt að staðsetja 3D hlut á raunverulegan flöt (_anchors_) með takka frá notanda (_hit test_). (**20%**)
 - [ ] Bættu við [ljós og skugga](https://www.youtube.com/watch?v=3KAP13i-yOE&ab_channel=WebXRAcademy) á 3D hlut. (**20%**)
-- [ ] Notaðu QR label. (**20%**)
+- [ ] Notaðu QR label / AR marker / Hiro. (**20%**)
 
 
 
