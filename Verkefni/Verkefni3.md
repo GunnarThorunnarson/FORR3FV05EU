@@ -15,11 +15,6 @@
 - [ ] Það er hægt að staðsetja 3D hlut á raunverulegan flöt (_anchors_) með takka frá notanda (_hit test_). (**30%**)
 - [ ] Bættu við [skugga](https://medium.com/samsung-internet-dev/integrating-augmented-reality-objects-into-the-real-world-with-light-and-shadows-12123e7b1151) á 3D hlut eða [dýptarskynjun](https://developers.google.com/ar/develop/depth). (**20%**)
 
-> [WebXR tutorial](https://developers.google.com/ar/develop/webxr/hello-webxr) frá Google. 
-
-<!--
-- (https://www.youtube.com/watch?v=3KAP13i-yOE&ab_channel=WebXRAcademy)
--->
 
 #### Námsmat og skil
 Gefið er fyrir hvern lið fullt fyrir fullnægjandi útfærslu, hálft ef ábótavant.<br>
