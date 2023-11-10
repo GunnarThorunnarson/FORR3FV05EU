@@ -16,7 +16,7 @@
 - [ ] Tilraun: Lærðu um og bættu við [skugga](https://medium.com/samsung-internet-dev/integrating-augmented-reality-objects-into-the-real-world-with-light-and-shadows-12123e7b1151) á 3D hlut (eða [dýptarskynjun](https://developers.google.com/ar/develop/depth)). (**20%**)
 
 
-> Hýsing á Github
+> Hýsing á Github <br>
 Það þarf að breyta slóð á glb ef við viljum láta Github hýsa 3D verkefni. Nota þarf _raw_ slóðina á mynd og _master_ í staðinn fyrir _docs_: dæmi: https://raw.githubusercontent.com/GunnarThorunnarson/FORR3FV05EU/master/assets/models/Parrot.glb sjá nánar [hér](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/docs/src/World/components/birds/birds.js)
 
 #### Námsmat og skil
