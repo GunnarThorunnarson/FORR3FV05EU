@@ -1,8 +1,9 @@
 ## Verkefni 5
 
 - 35% af heildareinkunn.
-- einstaklingsverkefni eða tveir saman.
-
+- Einstaklingsverkefni eða tveir saman.
+- Áætlaður tími: 3 vikur
+  
 ---
 
 ### Verkefnalýsing
