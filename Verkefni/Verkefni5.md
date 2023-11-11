@@ -2,7 +2,6 @@
 
 - 35% af heildareinkunn.
 - Einstaklingsverkefni eða tveir saman.
-- Áætlaður tími: 3 vikur
   
 ---
 
