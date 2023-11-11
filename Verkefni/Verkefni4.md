@@ -3,7 +3,6 @@
 - 35% af heildareinkunn
 - Einstaklingsverkefni
 - [Gagnvirk viðmótshönnun og notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Vi%C3%B0m%C3%B3t)
-- Áætlaður tími: 2 vikur
   
 ---
 
