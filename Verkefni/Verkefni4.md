@@ -12,6 +12,7 @@ Búðu til [multi touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/
    - [ ] `pinch` fyrir zoom á 2D hlut.
    - [ ] `pan` (eða `swipe`) til að hreyfa til 2D hlut.  
    - [ ] `press` til að hefja kvikun á 2D hlut.
+
 Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/) og [Gestures](https://m2.material.io/design/interaction/gestures.html).
 
 ---
