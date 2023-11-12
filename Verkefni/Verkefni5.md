@@ -14,7 +14,7 @@ Dæmi um verkefni:
 - 2D gagnvirkt mælaborð sem sýnir kvikuð rauntímagögn með touch notendagagnvirkni (td. [d3.js](https://d3js.org/)).
 - 3D gagnvirk vöruvefsíða með takka eða touch stýringu þar sem vara er [3D skönnuð](https://alicevision.org/#meshroom).
 - AR gagnvirkt 2D viðmót með myndgreiningavefþjónustu og [hand gesture](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Vi%C3%B0m%C3%B3t#gestures) stýringu.
-- Gagnvirkur 2D/3D/AR kortaleiðarvísir (t.d. gönguleiðir að eldgosi eða um borg) með td. [MapBox GL JS](https://www.mapbox.com/mapbox-gljs eða [ARCore Geospatial API](https://www.youtube.com/watch?v=udoSz_UBUdc)) með touch virkni fyrir snjallsíma.
+- Gagnvirkur 2D/3D/AR kortaleiðarvísir (t.d. gönguleiðir að eldgosi eða um borg) með td. [MapBox GL JS](https://www.mapbox.com/mapbox-gljs) eða [ARCore Geospatial API](https://www.youtube.com/watch?v=udoSz_UBUdc)) með touch virkni fyrir snjallsíma.
   
 > Skoðaðu m.a. [P5.js söfn](https://p5js.org/libraries/) til að fá hugmynd.
 
