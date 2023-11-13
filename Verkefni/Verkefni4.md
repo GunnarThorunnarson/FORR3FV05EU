@@ -8,12 +8,10 @@
 ---
 
 ### 1. Touch og notendaupplifun (50%)
-Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Sýndu fram á touch virkni með:
+Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Hugaðu vel að notendaupplifun (UX) fyrir touch virkni sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/). Sýndu fram á touch virkni með:
   1. einni fingra hreyfingu td; `pan` eða `swipe` til að hreyfa 2D hlut.
   1. multi-touch (tveir fingur); t.d. `rotate` til að snúa eða `pinch` fyrir zoom.
      
-Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/).
-
 ---
 
 ### 2. Hand gesture (50%)
