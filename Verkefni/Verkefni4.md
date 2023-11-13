@@ -8,22 +8,19 @@
 ---
 
 ### 1. Touch og notendaupplifun (50%)
-Búðu til [multi touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu með eftirfarandi virkni til að stýra 2D viðmótshlut (SVG) á skjá:
-   - [ ] `rotate` til að snúa 2D hlut.
-   - [ ] `pinch` fyrir zoom á 2D hlut.
-   - [ ] `pan` (eða `swipe`) til að hreyfa til 2D hlut.  
-   - [ ] `press` til að hefja kvikun á 2D hlut.
-
+Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Sýndu fram á touch virkni með:
+  1. einni fingra hreyfingu td; `pan` eða `swipe` til að hreyfa 2D hlut.
+  1. multi-touch (tveir fingur); t.d. `rotate` til að snúa eða `pinch` fyrir zoom.
 Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/) og [Gestures](https://m2.material.io/design/interaction/gestures.html).
+
+> Skoðaðu einnig `press` og `tap` gesture.
 
 ---
 
 ### 2. Hand gesture (50%)
-1. Notaðu [hand gesture](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Hand-gesture) til að stýra (hand tracking) 3D hlut á skjá.
-   - [ ] `rotate` (x,y,z ás).
-   - [ ] `zoom`.
-   - [ ] hreyfa 3D hlut til.
-   - [ ] `pose` skipun um að hefja kvikun. 
+1. Notaðu [hand gesture](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Hand-gesture) til að stýra (hand tracking) 3D hlut á skjá með `pose` skipunum til að:
+   1. `rotate` (x,y,z ás) eða `zoom` inn og út.
+   1. hreyfa 3D hlut um planið.
 1. Stýrðu 3D hlut í AR.
    
 ---
