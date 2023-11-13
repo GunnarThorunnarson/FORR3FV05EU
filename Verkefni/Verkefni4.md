@@ -11,7 +11,7 @@
 Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Sýndu fram á touch virkni með:
   1. einni fingra hreyfingu td; `pan` eða `swipe` til að hreyfa 2D hlut.
   1. multi-touch (tveir fingur); t.d. `rotate` til að snúa eða `pinch` fyrir zoom.
-Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/) og [Gestures](https://m2.material.io/design/interaction/gestures.html).
+Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/).
 
 > Skoðaðu einnig `press` og `tap` gesture.
 
