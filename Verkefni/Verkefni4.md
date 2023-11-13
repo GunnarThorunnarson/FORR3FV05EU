@@ -8,7 +8,7 @@
 ---
 
 ### 1. Touch og notendaupplifun (50%)
-Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Hugaðu vel að notendaupplifun (UX) fyrir touch virkni sjá t.d. [Material Design; gestures](https://m2.material.io/design/interaction/gestures.html#types-of-gestures) og [Fitts law](https://lawsofux.com/fittss-law/). Sýndu fram á touch virkni með:
+Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch) notandastýringu til að stýra 2D viðmótshlut (SVG) á skjá. Hugaðu vel að notendaupplifun (UX) fyrir touch virkni sjá t.d. [typpe of gestures](https://m2.material.io/design/interaction/gestures.html#types-of-gestures) og [Fitts law](https://lawsofux.com/fittss-law/). Sýndu fram á touch virkni með:
   1. einni fingra hreyfingu td; `pan` eða `swipe` til að hreyfa 2D hlut.
   1. multi-touch (tveir fingur); t.d. `rotate` til að snúa eða `pinch` fyrir zoom.
      
