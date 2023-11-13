@@ -42,8 +42,9 @@ GitHub geymsla (public) sem inniheldur skýrslu í readme.md:
 ### Námsmat og skil
 Í verkefninu er metið vinnuframlag og eftirfarandi:
 
-1. [ ] Viðmót og kvikun. (60%)
-1. [ ] Notendavirkni og gagnavinnsla. (40%)
+1. [ ] Viðmót og kvikun. (40%)
+1. [ ] Viðmótsforritun og gagnavinnsla. (40)
+1. [ ] Notendavirkni (td. touch, gesture). (20%)
 
 Einkunn fyrir hvern lið: 
 - 4/4 lausn er vel útfærð.
