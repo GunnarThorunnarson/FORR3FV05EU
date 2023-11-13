@@ -14,8 +14,6 @@ Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch)
      
 Hugaðu vel að notendaupplifun (UX) fyrir touch virkni með viðmótshlut sjá t.d. [Fitts law](https://lawsofux.com/fittss-law/).
 
-> Skoðaðu einnig `press` og `tap` gesture.
-
 ---
 
 ### 2. Hand gesture (50%)
