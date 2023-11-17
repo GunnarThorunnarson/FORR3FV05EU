@@ -18,7 +18,7 @@ Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch)
 1. Notaðu [hand gesture](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Hand-gesture) til að stýra (hand tracking) 3D hlut á skjá með `pose` skipunum til að:
    1. `rotate` (x,y,z ás) eða `zoom` inn og út.
    1. hreyfa 3D hlut um planið.
-1. Stýrðu 3D hlut í AR.
+1. Stýrðu 3D hlut í AR (tilraun).
    
 ---
 
