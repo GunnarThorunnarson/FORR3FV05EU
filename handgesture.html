@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
+</head>
+<body>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+        // Create a cube for the main object
+        const cube = new THREE.Mesh(geometry, material);
+
+        // Create an outline for the cube
+        const outlineMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 5 });
+        const edges = new THREE.EdgesGeometry(geometry);
+        const outline = new THREE.LineSegments(edges, outlineMaterial);
+        cube.add(outline); // Attach the outline to the cube
+
+        // Add the cube to the scene
+        scene.add(cube);
+
+        const video = document.createElement('video');
+        video.width = 1920;
+        video.height = 1080;
+
+        // Add a text element for hand detection
+        const handText = document.createElement('div');
+        handText.style.position = 'absolute';
+        handText.style.top = '25px';
+        handText.style.left = '25px';
+        handText.style.color = 'orange';
+        handText.style.fontSize = '48px';
+        document.body.appendChild(handText);
+
+        // Create a plane for the camera live stream
+        const planeGeometry = new THREE.PlaneGeometry(5, 5);
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: new THREE.VideoTexture(video) });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.position.z = -5;
+        scene.add(plane);
+
+        document.body.appendChild(video);
+
+        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+            video.srcObject = stream;
+            video.play();
+            handpose.load().then(model => {
+                setInterval(() => {
+                    detectHands(video, model);
+                }, 100);
+            });
+        });
+
+        function detectHands(video, model) {
+            const canvas = new OffscreenCanvas(1920, 1080);
+            const context = canvas.getContext('2d');
+
+            context.drawImage(video, 0, 0, 1280, 720);
+            model.estimateHands(video).then(hands => {
+                if (hands.length > 0) {
+                    const hand = hands[0];
+                    const fingers = hand.landmarks;
+
+                    // Move the cube based on hand movement
+                    const rotateSpeed = 0.01;
+                    cube.rotation.x = (fingers[8][1] - fingers[0][1]) * rotateSpeed;
+                    cube.rotation.y = (fingers[8][0] - fingers[0][0]) * rotateSpeed;
+
+                    // Display hand detection text
+                    handText.textContent = 'Hand Detected!';
+                } else {
+                    // If no hand is detected, clear the text
+                    handText.textContent = '';
+                }
+            });
+        }
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
