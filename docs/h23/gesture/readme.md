@@ -2,7 +2,7 @@
 Hand gesture með 3D (og AR)
 
 - [Andrés]()
-- [Bjarni]
+- [Bjarni](https://bjarni123.github.io/Vidmotsforritun_verkefni4/)
 - [Björn]()
 - [Fannar]()
 - [Friðrik]()
