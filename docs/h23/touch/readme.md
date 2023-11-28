@@ -2,7 +2,7 @@
 
 - [Andrés]()
 - [Bjarni](https://bjarni123.github.io/Vidmotsforritun_verkefni4/fyrriPartur/)
-- [Björn]()
+- [Björn](https://bjornthor21.github.io/verk4-vidmot/touch.html)
 - [Fannar]()
 - [Friðrik]()
 - [Gísli]()
