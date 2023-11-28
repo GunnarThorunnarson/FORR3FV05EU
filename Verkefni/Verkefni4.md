@@ -23,7 +23,7 @@ Búðu til [touch](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch)
 ---
 
 ### Námsmat og skil
-Skilaðu skrám, vefslóð (hýsing) og myndbandi af virkni á Innu. <br>
+Skilaðu á Innu; möppu með skrám (ekki zip), myndbandi af virkni og vefslóð (hýsing) til að prófa virkni. <br>
 Einkunn fyrir hvern lið: 
 - 4/4 lausn er vel útfærð.
 - 3/4 lausn er smávægilega ábótavant (vantar smá upp á).
