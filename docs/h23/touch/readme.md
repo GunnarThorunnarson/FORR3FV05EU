@@ -1,7 +1,7 @@
 ## Verkefni 4 Haust 2023
 
 - [Andrés]()
-- [Bjarni]
+- [Bjarni](https://bjarni123.github.io/Vidmotsforritun_verkefni4/fyrriPartur/)
 - [Björn]()
 - [Fannar]()
 - [Friðrik]()
