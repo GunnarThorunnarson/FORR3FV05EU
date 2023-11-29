@@ -39,6 +39,8 @@ GitHub geymsla (public) sem inniheldur skýrslu í readme.md:
 ---
 
 ### Námsmat og skil
+Skilið á Innu; möppu með skrám (ekki zip), myndbandi af virkni og vefslóð (hýsing) til að prófa virkni ef það á við.
+
 Í verkefninu er metið vinnuframlag og eftirfarandi:
 
 1. [ ] Viðmót og kvikun. (40%)
@@ -51,5 +53,7 @@ Einkunn fyrir hvern lið:
 - 2/4 lausn er ábótavant, helmingur er vel útfærður.
 - 1/4 lausn er stórlega ábótavant, tíma og kóðavinna lögð í lausn.
 - 0/4 lausn vantar eða óunnin.
+
+Skil
 
 **Ath.** Vel gerð skýrsla er forsenda fyrir námsmati.
