@@ -1,7 +1,5 @@
 ### Verkefni 4 Haust 2023
 touch-  og hand gesture með 3D (og AR)
-- [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/
-- [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/
 
 ---
 
@@ -24,9 +22,22 @@ touch-  og hand gesture með 3D (og AR)
   - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/HandGestureCube/index.html)
   - [AR](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/AR/index.html)
 - Héðinn
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Hedinn/Lidur1.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Hedinn/Lidur2.html)
 - Kristófer
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part1-Kristófer/index.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)
 - Livinus
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Livinus/touch.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Livinus/handgest.html)
 - Tumi
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Tumi/part1/part1/main.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Tumi/part2/part2/main.html)
 - Valdas
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Valdas/1_verkefni_index.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Valdas/2_verkefni_index.html)
 - Valdimar
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Valdimar/index.html)
 - Þorgeir
+  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Þorgeir/index.html)
+  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Þorgeir/seinni/index.html)
