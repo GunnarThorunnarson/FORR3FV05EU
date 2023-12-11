@@ -1,0 +1,268 @@
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Verkefni 4 part 2 - Valdas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <style>
+    .container {
+        display: flex;
+        height: 100vh; /* Ensure the container fills the entire viewport height */
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .left_half {
+        flex: 1; /* Occupy half of the available space */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .right_half {
+        flex: 1; /* Occupy half of the available space */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    </style>
+</head>
+<body class="container">
+    <div class="left_half">
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <div style='position: relative;'>
+            <video id='webcam' autoplay></video>
+            <canvas id='output_canvas' width='480' height='360'
+                style='position: absolute; left: 0px; top: 0px;'></canvas>
+            <h1 id='gesture_output'>
+            <h2>X <span id='x_output'></span></h2>
+            <h2>Y <span id='y_output'></span></h2>
+            <ul>
+                <li>Open_Palm = rotate x</li>
+                <li>Thumb_Down = rotate y</li>
+                <li>Closed_Fist = rotate z</li>
+                <li>Victory = Zoom In</li>
+                <li>Pointing_Up = Zoom Out</li>
+            </ul>
+        </div>
+    </div>
+    <div class="right_half">
+        <canvas id="canvas" width="500" height="500"></canvas>
+    </div>
+    <script type='module'>
+        import { GestureRecognizer, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+        let gestureRecognizer;
+        let runningMode = 'IMAGE';
+        let enableWebcamButton;
+        let webcamRunning = false;
+        const videoWidth = '480px';
+        const videoHeight = '360px';
+
+        const createGestureRecognizer = async () => {
+            const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm');
+            gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
+                    delegate: 'GPU'
+                },
+                runningMode: runningMode
+            });
+        };
+        createGestureRecognizer();
+
+        const video = document.getElementById('webcam');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const gestureOutput = document.getElementById('gesture_output');
+        const xOutput = document.getElementById('x_output');
+        const yOutput = document.getElementById('y_output');
+
+        enableWebcamButton = document.getElementById('webcamButton');
+        enableWebcamButton.addEventListener('click', enableCam);
+
+        const clock = new THREE.Clock();
+        const hradi = 5;
+
+        function enableCam(event) {
+            if (!gestureRecognizer) {
+                alert('Please wait for gestureRecognizer to load');
+                return;
+            }
+            if (webcamRunning === true) {
+                webcamRunning = false;
+            }
+            else {
+                webcamRunning = true;
+            }
+            // getUsermedia parameters.
+            const constraints = {
+                video: true
+            };
+            // Activate the webcam stream.
+            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+                video.srcObject = stream;
+                video.addEventListener('loadeddata', predictWebcam);
+            });
+        }
+        let lastVideoTime = -1;
+        let results = undefined;
+        async function predictWebcam() {
+        const webcamElement = document.getElementById('webcam');
+        // Now let's start detecting the stream.
+        if (runningMode === 'IMAGE') {
+            runningMode = 'VIDEO';
+            await gestureRecognizer.setOptions({ runningMode: 'VIDEO' });
+        }
+
+        let nowInMs = Date.now();
+
+        if (video.currentTime !== lastVideoTime) {
+            lastVideoTime = video.currentTime;
+            results = gestureRecognizer.recognizeForVideo(video, nowInMs);
+        }
+
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        const drawingUtils = new DrawingUtils(canvasCtx);
+        canvasElement.style.height = videoHeight;
+        webcamElement.style.height = videoHeight;
+        canvasElement.style.width = videoWidth;
+        webcamElement.style.width = videoWidth;
+
+        if (results.landmarks) {
+            for (const landmarks of results.landmarks) {
+                drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
+                    color: '#00FF00',
+                    lineWidth: 5
+                });
+                drawingUtils.drawLandmarks(landmarks, {
+                    color: '#FF0000',
+                    lineWidth: 2
+                });
+            }
+        }
+
+        canvasCtx.restore();
+        if (results.gestures.length > 0) {
+            gestureOutput.style.display = 'block';
+            gestureOutput.style.width = videoWidth;
+            gestureOutput.innerText = results.gestures[0][0].categoryName;
+            
+            parseFloat(xOutput.innerText = results.landmarks[0][0].x.toFixed(2));
+            parseFloat(yOutput.innerText = results.landmarks[0][0].y.toFixed(2));
+            rectangle.position.x = -3.14 * xOutput.innerText;
+            rectangle.position.y = -3.14 * yOutput.innerText;
+
+            console.log(gestureOutput.innerText)
+        }
+        else {
+            gestureOutput.style.display = 'none';
+        }
+
+        if (webcamRunning === true) {
+            window.requestAnimationFrame(predictWebcam);
+        }
+        }
+
+        //------------------------------------------------------------------------------------------------------
+
+        function updateObjectPosition(gestureOutput) {
+        requestAnimationFrame(updateObjectPosition);
+        const delta = clock.getDelta();
+        // Get the 3D object element
+        const object = document.getElementById('3d-object');
+    
+        // Check if the hand gesture is a thumbs-up
+        if (gestureOutput.innerText === 'Open_Palm') {
+            // Move the object up along the y-axis
+            rectangle.rotation.x += hradi * delta;
+        }
+        if (gestureOutput.innerText === 'Thumb_Up') {
+            // Move the object up along the y-axis
+            rectangle.rotation.y += hradi * delta;
+        } 
+        if (gestureOutput.innerText === 'Closed_Fist') {
+            // Move the object up along the x-axis
+            rectangle.rotation.z += hradi * delta;
+        } 
+        if (gestureOutput.innerText === 'Pointing_Up') {
+            // Move the object up along the z-axis
+            if(rectangle.position.z !== -6) {
+                rectangle.position.z -= 0.5; // Adjust the value as needed
+            }
+        }
+        if (gestureOutput.innerText === 'Victory') {
+            // Move the object up along the z-axis
+            if(rectangle.position.z !== 6) {
+                rectangle.position.z += 0.5; // Adjust the value as needed
+            }
+        }
+        
+        renderer.render(scene, camera);
+        }
+
+        // Get the canvas element
+        const canvas = document.getElementById('canvas');
+
+        // Create a scene
+        const scene = new THREE.Scene();
+
+        // Create a camera
+        const camera = new THREE.PerspectiveCamera(70, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        camera.position.z = 10;
+        camera.position.y = -2;
+        camera.position.x = -2;
+
+        // Create a renderer
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias :true });
+
+        // Create a geometry for the rectangle
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+        // Create a material for the rectangle
+        const material = new THREE.MeshBasicMaterial({ color: 0xf0ff0f});
+
+        // Create a mesh using the geometry and material
+        const rectangle = new THREE.Mesh(geometry, material);
+
+        // Add the rectangle to the scene
+        scene.add(rectangle);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 1, 1);
+        directionalLight.intensity = 10;
+        scene.add(directionalLight);
+
+        const ambientLight = new THREE.AmbientLight(0x404040, 10); // Soft gray ambient light
+        scene.add(ambientLight);
+
+        // Get the div element that contains the Three.js canvas
+        const divContainer = document.querySelector('.right_half');
+
+        // Set the size of the renderer to match the div dimensions
+        const width = divContainer.clientWidth;
+        const height = divContainer.clientHeight;
+        renderer.setSize(width, height);
+
+        // Append the renderer.domElement (Three.js canvas) to the div
+        divContainer.appendChild(renderer.domElement);
+
+        // Adjust the camera aspect ratio when the window is resized
+        window.addEventListener('resize', () => {
+            const newWidth = divContainer.clientWidth;
+            const newHeight = divContainer.clientHeight;
+            renderer.setSize(newWidth, newHeight);
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        // Render the scene
+        function render() {
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+        updateObjectPosition(gestureOutput);
+        }
+        render();
+    </script>
+</body>
+</html>

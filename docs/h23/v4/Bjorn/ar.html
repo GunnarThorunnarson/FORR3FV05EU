@@ -1,0 +1,186 @@
+
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Mediapipe Hand Gesture Recognizer</title>
+</head>
+<script src="https://unpkg.com/three@0.126.0/build/three.js"></script>
+<body>
+    <div>
+      <button id='webcamButton'>ENABLE WEBCAM</button>
+      <div style='position: relative;'>
+          <video id='webcam' autoplay style='transform: scaleX(-1);'></video>
+          <canvas id='output_canvas' style='position: absolute; left: 0px; top: 0px; transform: scaleX(-1);'></canvas>
+          <h1 id='gesture_output'></h1>
+          <h2>X <span id='x_output'></span></h2>
+          <h2>Y <span id='y_output'></span></h2>
+      </div>
+  </div>
+
+    <script type='module'>
+        import { GestureRecognizer, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+        let gestureRecognizer;
+        let runningMode = 'IMAGE';
+        let enableWebcamButton;
+        let webcamRunning = false;
+        const videoWidth = window.screen.width;
+        const videoHeight = window.screen.height;
+
+        const createGestureRecognizer = async () => {
+         
+            const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm');
+            gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
+                    delegate: 'GPU'
+                },
+                runningMode: runningMode,
+            });
+        };
+        createGestureRecognizer();
+
+        const video = document.getElementById('webcam');
+        const canvasElement = document.getElementById('output_canvas');
+        const gestureOutput = document.getElementById('gesture_output');
+        const xOutput = document.getElementById('x_output');
+        const yOutput = document.getElementById('y_output');
+
+        enableWebcamButton = document.getElementById('webcamButton');
+        enableWebcamButton.addEventListener('touchstart', () => {
+          enableCam();
+          activateXR();
+        });
+
+        function enableCam(event) {
+          if (!gestureRecognizer) {
+              alert('Please wait for gestureRecognizer to load');
+              return;
+          }
+          if (webcamRunning === true) {
+              webcamRunning = false;
+              return;
+          }
+          webcamRunning = true;
+
+          const constraints = {
+              video: {
+                  facingMode: "user",
+              }
+          };
+
+          navigator.mediaDevices.getUserMedia(constraints)
+          .then(function (stream) {
+              video.srcObject = stream;
+              video.addEventListener('loadeddata', predictWebcam);
+          })
+          .catch(function (err) {
+              console.log("An error occurred: " + err);
+              alert("An error occurred: " + err);
+          });
+      }
+        let lastVideoTime = -1;
+        let results = undefined;
+
+        async function predictWebcam() {
+            const webcamElement = document.getElementById('webcam');
+            if (runningMode === 'IMAGE') {
+                runningMode = 'VIDEO';
+                await gestureRecognizer.setOptions({ runningMode: 'VIDEO' });
+            }
+
+            let nowInMs = Date.now();
+
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                results = gestureRecognizer.recognizeForVideo(video, nowInMs);
+            }
+
+            if (results.gestures.length > 0) {
+                gestureOutput.style.display = 'block';
+                gestureOutput.style.width = videoWidth;
+                gestureOutput.innerText = results.gestures[0][0].categoryName;
+                
+                parseFloat(xOutput.innerText = results.landmarks[0][0].x.toFixed(2));
+                parseFloat(yOutput.innerText = results.landmarks[0][0].y.toFixed(2));
+                console.log(gestureOutput.innerText)
+            }
+            else {
+                gestureOutput.style.display = 'none';
+            }
+
+            if (webcamRunning === true) {
+                window.requestAnimationFrame(predictWebcam);
+            }
+        }
+
+
+        async function activateXR() {
+          const canvas = canvasElement;
+          const gl = canvas.getContext("webgl", {xrCompatible: true});;
+
+          const scene = new THREE.Scene();
+
+          const materials = [
+            new THREE.MeshBasicMaterial({color: 0xff0000}),
+            new THREE.MeshBasicMaterial({color: 0x0000ff}),
+            new THREE.MeshBasicMaterial({color: 0x00ff00}),
+            new THREE.MeshBasicMaterial({color: 0xff00ff}),
+            new THREE.MeshBasicMaterial({color: 0x00ffff}),
+            new THREE.MeshBasicMaterial({color: 0xffff00})
+          ];
+
+          const cube = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2, 0.2, 0.2), materials);
+          cube.position.set(1, 1, 1);
+          scene.add(cube);
+
+          const renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            preserveDrawingBuffer: true,
+            canvas: canvas,
+            context: gl
+          });
+          renderer.autoClear = false;
+
+          const camera = new THREE.PerspectiveCamera();
+          camera.matrixAutoUpdate = false;
+
+          const session = await navigator.xr.requestSession("immersive-ar");
+          session.updateRenderState({
+            baseLayer: new XRWebGLLayer(session, gl)
+          });
+
+          const referenceSpace = await session.requestReferenceSpace('local');
+
+          const onXRFrame = (time, frame) => {
+            session.requestAnimationFrame(onXRFrame);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
+
+            const pose = frame.getViewerPose(referenceSpace);
+            if (pose) {
+              const view = pose.views[0];
+              const viewport = session.renderState.baseLayer.getViewport(view);
+              renderer.setSize(viewport.width, viewport.height);
+
+              camera.matrix.fromArray(view.transform.matrix);
+              camera.projectionMatrix.fromArray(view.projectionMatrix);
+              camera.updateMatrixWorld(true);
+
+
+            if(gestureOutput.innerText == "Victory"){
+              cube.rotation.x += 0.05;
+              cube.rotation.y += 0.05;
+            }
+            else if(gestureOutput.innerText == "Closed_Fist"){
+              cube.rotation.x -= 0.05;
+              cube.rotation.y -= 0.05;
+            }
+
+              renderer.render(scene, camera);
+            }
+          };
+
+          session.requestAnimationFrame(onXRFrame);
+        }
+    </script>
+</body>
+</html>

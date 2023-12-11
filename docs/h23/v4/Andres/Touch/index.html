@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #svg-container {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none; /* Disable browser's default touch actions */
+        }
+
+        #svg-item {
+            transform-origin: 50% 50%;
+            transition: transform 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="svg-container">
+        <svg id="svg-item" width="100" height="100">
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+            <!-- Face -->
+            <circle cx="50" cy="50" r="40" fill="yellow" />
+            
+            <!-- Eyes -->
+            <circle cx="35" cy="40" r="4" fill="black" />
+            <circle cx="65" cy="40" r="4" fill="black" />
+            
+            <!-- Mouth -->
+            <path d="M 30 60 Q 50 80 70 60" stroke="black" fill="transparent" stroke-width="3" />            
+        </svg>
+    </div>
+
+    <script>
+        let initialDistance = 0;
+        let initialAngle = 0;
+        let previousScale = 1;
+        let previousRotation = 0;
+
+        const svgContainer = document.getElementById('svg-container');
+        const svgItem = document.getElementById('svg-item');
+
+        svgContainer.addEventListener('touchstart', handleTouchStart);
+        svgContainer.addEventListener('touchmove', handleTouchMove);
+
+        function handleTouchStart(event) {
+            if (event.touches.length === 1) {
+                // Single finger, initiate panning/swiping
+                // Store initial touch position
+                const touch = event.touches[0];
+                initialX = touch.clientX;
+                initialY = touch.clientY;
+            } else if (event.touches.length === 2) {
+                // Two fingers, initiate zooming/rotating
+                // Store initial distance and angle between fingers
+                const touch1 = event.touches[0];
+                const touch2 = event.touches[1];
+
+                initialDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+                initialAngle = Math.atan2(touch2.clientY - touch1.clientY, touch2.clientX - touch1.clientX);
+                previousScale = 1;
+                previousRotation = 0;
+            }
+        }
+
+        function handleTouchMove(event) {
+            event.preventDefault(); // Prevent default touch actions like scrolling
+
+            if (event.touches.length === 1) {
+                // Single finger, panning/swiping
+                const touch = event.touches[0];
+                const deltaX = touch.clientX - initialX;
+                const deltaY = touch.clientY - initialY;
+
+                // Move the SVG item
+                svgItem.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            } else if (event.touches.length === 2) {
+                // Two fingers, zooming/rotating
+                const touch1 = event.touches[0];
+                const touch2 = event.touches[1];
+
+                const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+                const angle = Math.atan2(touch2.clientY - touch1.clientY, touch2.clientX - touch1.clientX);
+
+                // Zoom
+                const scale = distance / initialDistance;
+                const deltaScale = scale / previousScale;
+                svgItem.style.transform += `scale(${deltaScale})`;
+
+                // Rotate
+                const deltaRotation = angle - initialAngle - previousRotation;
+                svgItem.style.transform += `rotate(${deltaRotation}rad)`;
+
+                // Update previous values for the next move event
+                previousScale = scale;
+                previousRotation = deltaRotation;
+            }
+        }
+    </script>
+</body>
+</html>

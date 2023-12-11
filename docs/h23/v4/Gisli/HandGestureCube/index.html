@@ -1,0 +1,62 @@
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Verkefni 4</title>
+    <style>
+        h1 {
+            display: inline-block;
+        }
+
+        h2 {
+            display: inline-block;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .camera, .TheCube {
+            width: 50%;
+            border: 1pxsolid black;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <div class="container">
+            <div class="camera" style='position: relative;'>
+                <video id='webcam' autoplay></video>
+                <canvas id='output_canvas' width='480' height='360'
+                    style='position: absolute; left: 0px; top: 0px;'></canvas>
+                <h1 id='gesture_output'> </h1>
+                <h1 id='gesture_output_symbol'></h1>
+                <h2>X↔ :<span id='x_output'></span></h2>
+                <h2>Y↕ :<span id='y_output'></span></h2>
+                <h3>X : ↑👍 ↓👎
+                    Y : ←✋ →✊
+                    Z : ↶✌️ ↷🤟</h3>
+            </div>
+            <div class="TheCube"></div>
+        </div>
+    </div>
+    <!-- Hand gestures -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.126.0/build/three.module.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type='module' src="blascript.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+#log {
+    height: 200px;
+    width: 600px;
+    overflow: scroll;
+}
+body{
+    background-color: aliceblue;
+}

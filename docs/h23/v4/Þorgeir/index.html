@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Box with Multi-Touch</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #5E3D28;
+        }
+
+        #box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+        }
+    </style>
+</head>
+<body>
+
+<svg id="box" width="100" height="100">
+    <rect id="boxRect" width="100%" height="100%" fill="red" />
+</svg>
+
+<script>
+    // Get the SVG element and the rectangle inside it
+    var box = document.getElementById('box');
+    var boxRect = document.getElementById('boxRect');
+
+    // Variables to store initial touch positions and scaling/rotation values
+    var initialFingerDistance, initialRotation, initialScale;
+
+    // Variables to store ongoing changes in scaling/rotation
+    var currentScale = 1;
+    var currentRotation = 0;
+
+    // Flag to track if pinch gesture is active
+    var pinching = false;
+
+    // Variables to store the starting position of the touch
+    var startX, startY;
+
+    // Variables to store the current position of the box
+    var currentX = 0;
+    var currentY = 0;
+
+    // Add touchstart event listener
+    box.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 1) {
+            // If one finger is touching, initiate move gesture
+            startX = e.touches[0].clientX - currentX;
+            startY = e.touches[0].clientY - currentY;
+        } else if (e.touches.length === 2) {
+            // If two fingers are touching, initiate pinch gesture
+            initialFingerDistance = getDistance(e.touches[0], e.touches[1]);
+            initialRotation = getRotation(e.touches[0], e.touches[1]);
+            initialScale = currentScale;
+            pinching = true;
+        }
+    });
+
+    // Add touchmove event listener
+    box.addEventListener('touchmove', function (e) {
+        if (e.touches.length === 1) {
+            // If one finger is touching, move the box
+            currentX = e.touches[0].clientX - startX;
+            currentY = e.touches[0].clientY - startY;
+            box.style.transform = 'translate(' + currentX + 'px, ' + currentY + 'px) scale(' + currentScale + ') rotate(' + currentRotation + 'deg)';
+        } else if (pinching && e.touches.length === 2) {
+            // If two fingers are touching, handle pinch and rotate gestures
+            var currentFingerDistance = getDistance(e.touches[0], e.touches[1]);
+            var currentRotationValue = getRotation(e.touches[0], e.touches[1]);
+
+            // Calculate scaling factor and rotation change
+            var scaleChange = currentFingerDistance / initialFingerDistance;
+            var rotationChange = currentRotationValue - initialRotation;
+
+            // Apply scaling and rotation to the box
+            box.style.transform = 'translate(' + currentX + 'px, ' + currentY + 'px) scale(' + (initialScale * scaleChange) + ') rotate(' + (currentRotation + rotationChange) + 'deg)';
+        }
+    });
+
+    // Add touchend event listener
+    box.addEventListener('touchend', function (e) {
+        if (pinching && e.touches.length < 2) {
+            pinching = false;
+            // Store the current values for scaling and rotation
+            currentScale *= getDistance(e.touches[0], e.touches[1]) / initialFingerDistance;
+            currentRotation += getRotation(e.touches[0], e.touches[1]) - initialRotation;
+        }
+    });
+
+    // Function to calculate the distance between two touch points
+    function getDistance(point1, point2) {
+        var dx = point1.clientX - point2.clientX;
+        var dy = point1.clientY - point2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    // Function to calculate the rotation angle between two touch points
+    function getRotation(point1, point2) {
+        var dx = point1.clientX - point2.clientX;
+        var dy = point1.clientY - point2.clientY;
+        return Math.atan2(dy, dx) * (180 / Math.PI);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>When user swipes on screen, box moves/Þegar notandi strýkur á skjáinn færist kassi</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #svgElement {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none; /* Prevent default touch behaviors */ /* Koma í veg fyrir sjálfgefna snertihegðun */
+        }
+    </style>
+
+</head>
+<body>
+    <svg id="svgElement" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 800">
+        <rect id="myRect" x="0" y="0" width="250" height="250" fill="purple" />
+    </svg>
+    <script>
+        var svgElement = document.getElementById('svgElement');
+        var myRect = document.getElementById('myRect');
+        var touchStartAngle = 0;
+
+        function calculateAngle(touches) {
+            var x1 = touches[0].clientX;
+            var y1 = touches[0].clientY;
+            var x2 = touches[1].clientX;
+            var y2 = touches[1].clientY;
+            return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+        }
+
+        svgElement.addEventListener('touchstart', function (e) {
+            if (e.touches.length === 2) {
+                touchStartAngle = calculateAngle(e.touches);
+            }
+        });
+
+        svgElement.addEventListener('touchmove', function (e) {
+            if (e.touches.length === 2) {
+                e.preventDefault(); // Prevent default touch behavior // Komdu í veg fyrir sjálfgefna snertihegðun
+
+                var currentAngle = calculateAngle(e.touches);
+
+                // Reiknaðu snúningshorn
+                // Calculate rotation angle
+                var rotationAngle = currentAngle - touchStartAngle;
+
+                // Uppfærðu snúning kassans
+                // Update the rotation of the box
+                myRect.setAttribute('transform', 'rotate(' + rotationAngle + ' ' + (parseFloat(myRect.getAttribute('x')) + parseFloat(myRect.getAttribute('width')) / 2) + ' ' + (parseFloat(myRect.getAttribute('y')) + parseFloat(myRect.getAttribute('height')) / 2) + ')');
+            }
+        });
+
+        svgElement.addEventListener('touchend', function (e) {
+            if (e.touches.length < 2) {
+                touchStartAngle = 0;
+            }
+        });
+        
+        var startX = 0;
+        var startY = 0;
+
+        svgElement.addEventListener('touchstart', function (e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        svgElement.addEventListener('touchmove', function (e) {
+            e.preventDefault(); // Prevent default touch behavior (scrolling, zooming, etc.)// Komdu í veg fyrir sjálfgefna snertihegðun (skruning, aðdrátt o.s.frv.) 
+            var deltaX = e.touches[0].clientX - startX;
+            var deltaY = e.touches[0].clientY - startY;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            
+            // Uppfærðu staðsetningu kassans
+            // Update the position of the box
+            myRect.setAttribute('x', Math.max(0, parseFloat(myRect.getAttribute('x')) + deltaX));
+            myRect.setAttribute('y', Math.max(0, parseFloat(myRect.getAttribute('y')) + deltaY));
+        });
+    </script>
+</body>
+</html>

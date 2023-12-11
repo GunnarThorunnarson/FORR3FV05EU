@@ -1,0 +1,37 @@
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Skilaverkefni 4 Part2</title>
+    
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@v0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@v0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body style="display: flex;">
+    <div width: 50%;>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <div style='position: relative;'>
+            <video id='webcam' autoplay></video>
+            <canvas id='output_canvas' width='480' height='360'
+                style='position: absolute; left: 0px; top: 0px;'></canvas>
+        </div>
+        <p class='iconcon'>V: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
+        <p class="iconcon">H: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
+
+    </div>
+    <div id="scene-container">
+    </div>
+
+    <script type="module" src="./main.js"></script>
+   
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Square</title>
+    
+    <style>
+        #canvas {
+            background-color: black;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <svg width="100%" height="100%" id="canvas" xmlns="http://www.w3.org/2000/svg">
+        <rect id="square" fill="white"></rect>
+    </svg>
+    
+    <script>
+        var canvas = document.getElementById("canvas");
+        var cube = document.getElementById("square");
+
+        var square = {
+        x: window.innerWidth/2-25,
+        y: window.innerHeight/2-25,
+        size: 50
+        };
+
+        function updateSquare() {
+        cube.setAttribute("x", square.x);
+        cube.setAttribute("y", square.y);
+        cube.setAttribute("width", square.size);
+        cube.setAttribute("height", square.size);
+        }
+
+        function handleTouchStart(event) {
+        if (event.touches.length == 1) {
+        square.startTouchX = event.touches[0].clientX;
+        square.startTouchY = event.touches[0].clientY;
+
+        } else if (event.touches.length == 2) {
+        square.pinchStart = touchGap(event.touches[0], event.touches[1]);
+        }
+        }
+
+        function handleTouchEnd(event) {
+        if (event.touches.length > 0) {
+        square.startTouchX = event.touches[0].clientX;
+        square.startTouchY = event.touches[0].clientY;
+        }
+        }
+
+        function handleTouchMove(event) {
+        event.preventDefault();
+
+        if (event.touches.length === 1) {
+            var changeX = event.touches[0].clientX - square.startTouchX;
+            var changeY = event.touches[0].clientY - square.startTouchY;
+
+            square.x += changeX;
+            square.y += changeY;
+
+            square.startTouchX = event.touches[0].clientX;
+            square.startTouchY = event.touches[0].clientY;
+
+        } else if (event.touches.length === 2) {
+            var pinchGap = touchGap(event.touches[0], event.touches[1]);
+
+            var pinchChange = pinchGap - square.pinchStart;
+
+            if ((square.size += pinchChange) < 2) {
+                square.size = 2;
+            } else {
+                square.x -= pinchChange/2;
+                square.y -= pinchChange/2;
+            }
+
+            square.pinchStart = pinchGap;
+        }
+
+        updateSquare();
+        }
+
+        function touchGap(touch1, touch2) {
+        var dx = touch1.clientX - touch2.clientX;
+        var dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        canvas.addEventListener("touchstart", handleTouchStart);
+        canvas.addEventListener("touchmove", handleTouchMove);
+        canvas.addEventListener("touchend", handleTouchEnd);
+
+        updateSquare();
+    </script>
+</body>
+</html>

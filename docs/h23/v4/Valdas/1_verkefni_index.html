@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verkefni 4 - Touch og notendaupplifun - Valdas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-image: radial-gradient(circle, white 0%, yellow 500%);
+    }
+    #svg-container {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    #svg-element {
+      width: 350px;
+      height: 350px;
+      background-image: conic-gradient(
+    green 0%, green 25%,
+    rgb(255, 217, 0) 25%, rgb(255, 217, 0) 50%,
+    #0084ff 50%, #0084ff 75%,
+    #FF4500 75%,#FF4500  100%
+);
+      border-color: black;
+      position: absolute;
+      left: 50px;
+      top: 50px;
+      transform-origin: 50% 50%;
+      
+    }
+  </style>
+</head>
+<body>
+  <div id="svg-container">
+    <svg id="svg-element" xmlns="http://www.w3.org/2000/svg">
+        <rect/>
+    </svg>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var svgElement = document.getElementById('svg-element');
+      var svgContainer = document.getElementById('svg-container');
+      var initialX, initialY, currentScale = 1;
+
+      var hammertime = new Hammer(svgElement);
+
+      hammertime.get('pinch').set({ enable: true });
+
+      hammertime.on('pinch', function(ev) {
+        if(ev.type === 'pinch') {
+          var scale = ev.scale * currentScale;
+          svgElement.style.transform = 'scale(' + scale + ')';
+        }
+      });
+
+      hammertime.on('panstart', function(ev) {
+        initialX = parseFloat(svgElement.style.left) || 0;
+        initialY = parseFloat(svgElement.style.top) || 0;
+      });
+
+      hammertime.on('panmove', function(ev) {
+        var xMovement = initialX + ev.deltaX;
+        var yMovement = initialY + ev.deltaY;
+        svgElement.style.left = xMovement + 'px';
+        svgElement.style.top = yMovement + 'px';
+      });
+
+      hammertime.on('pinchstart', function(ev) {
+        currentScale = parseFloat(svgElement.style.transform.match(/scale\(([^)]+)\)/)[1]) || 1;
+      });
+
+      hammertime.on('pinchend', function(ev) {
+        currentScale = parseFloat(svgElement.style.transform.match(/scale\(([^)]+)\)/)[1]) || 1;
+      });
+    });
+  </script>
+</body>
+</html>
