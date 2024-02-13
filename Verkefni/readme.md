@@ -1,4 +1,4 @@
-### Verkefnin Vor 2024
+### Verkefni - Vor 2024
 - Verkefni 1: 2D tölvugrafík og kvikun 15%
 - Verkefni 2: Snertiskynjun (e. touch) 15%
 - Verkefni 3: 3D tölvugrafík 15%
