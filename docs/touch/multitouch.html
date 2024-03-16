@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Touch events: multitouch count</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<style>
+#touch-region {
+   height: 200px;
+   background: #ddd;
+}
+.circle {
+   margin: 2px;
+   padding: 4px;
+   display: inline-block;
+   border-radius: 100%;
+}
+</style>
+</head>
+<body>
+<p>Try tapping onto the region below with multiple fingers. You'll notice the total number of touch points output here.</p>
+<div id="touch-region"></div>
+<div id="output">0</div>
+
+<script>
+var touchRegionElement = document.getElementById('touch-region');
+var outputElement = document.getElementById('output');
+
+function showTouchPoints(e) {
+   outputElement.innerText = e.touches.length;
+}
+
+touchRegionElement.addEventListener('touchstart', showTouchPoints);
+touchRegionElement.addEventListener('touchmove', showTouchPoints);
+touchRegionElement.addEventListener('touchend', showTouchPoints);
+</script>
+
+</body>
+</html>
