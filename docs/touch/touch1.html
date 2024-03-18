@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch</title>
+    <style>
+        #one {
+            background-color: aqua;
+            width:90%;  
+            min-height:20rem;
+            border: 1px solid red; 
+            padding: 2rem;
+            margin: 1rem;
+            box-sizing: border-box;
+           }
+        .dot {
+            background-color: red;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+<h2>Touch I (í vafra)</h2>
+ <ol>
+    <li>Stilltu á <em>Mobile view í dev mode (F12)</em> í vafra og hafðu <code>console</code> opið.</li>
+    <li>smelltu á músina og haltu takkanum niðri án þess að hreyfa. <code>touchstart</code></li>
+    <li>færðu svo músina til á skjánum. <code>touchmove</code></li>
+    <li>slepptu músatakkanum. <code>touchend</code></code> </li>
+    <li>skoðaðu í console TouchEvent upplýsingar í eftirfarandi touch listum:</li>
+        <ul>
+            <li><code>touches</code> - <em>listi af upplýsingum fyrir hvern fingur sem er að snerta skjá.</em></li>
+            <li><code>targetTouches</code> - <em>listi af upplýsingum fyrir hvern fingur sem er að snerta element (target) sem EventListener er að hlusta á.</em></li>    
+            <li><code>changedTouches</code> - <em>listi af upplýsingum af touch sem hefur breyst síðan síðasta event var fired.</em></li>  
+        </ul>
+    </li>
+ </ol> 
+
+
+<p>Nánar um <a href="https://developer.mozilla.org/en-US/docs/Web/API/Touch/clientX">Touch properties</a>;<br>
+<em>clientX/clientY, force, identifier, pageX/pageY, radiusX/radiusY, rotationAngle, screenX/screenY og target</em>.</p>
+
+<hr>
+
+<h2>Svæði til að prófa touch.</h2>
+<div id="one"></div>
+
+<script>
+// Touchstart keyrir einu sinni, gagnlegt fyrir setup
+document.getElementById("one").addEventListener("touchstart", e => {
+    console.log("Start");  
+    console.log(e);                              // prentar út TouchEvent Object 
+    // console.log(e.changedTouches);            // prentar út TouchList hjá changedTouches  
+    // console.log(e.changedTouches[0]);         // prentar út Touch úr TouchList hjá changedTouches
+    // console.log(e.changedTouches[0].PageY);   // prentar út PageY gildi   
+}); 
+
+// Touchmove mun er keyrt oft, á meðan við erum að færa til fingur (mús). Gott fyrir útreikninga.
+document.getElementById("one").addEventListener("touchmove", e => {
+    console.log("Move");   
+ 
+});  // }, { once: true });        // param: fire only once, ef við vijum bara að move keyri einu sinni.
+
+// Touchend keyrir einu sinni. Gott fyrir cleanup og reset.
+document.getElementById("one").addEventListener("touchend", e => {
+    console.log("End"); 
+       
+});
+
+</script>
+</body>
+</html>
