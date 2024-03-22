@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+        width: 50px;
+        height: 50px;
+        background-color: black;
+        }
+
+        .box.active-animation {
+        animation: party 5s infinite;
+        }
+
+        @keyframes party{
+            0% {background-color: red;}
+            10% {background-color: orange;}
+            20% {background-color: yellow;}
+            30% {background-color: green;}
+            40% {background-color: blue;}
+            50% {background-color: purple;} 
+        }
+    </style>
+</head>
+<body>
+    <div id="box" class="box"></div>
+<script>
+    let box = document.getElementById('box');
+    box.addEventListener("click", (e) =>{
+        // add class to CSS and activate animation
+        box.classList.add('active-animation');
+    });
+</script>
+</body>
+</html>
+
