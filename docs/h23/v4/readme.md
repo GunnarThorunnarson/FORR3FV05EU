@@ -16,7 +16,6 @@ touch-  og hand gesture með 3D (og AR)
 - Fannar
   - [multi-touch](https://fannarfent.github.io/Vi-mot/multi.html)
   - [bolti](https://fannarfent.github.io/Vi-mot/)
-- Friðrik - vantar
 - Gísli
   - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/RotateSVG/index.html)
   - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/HandGestureCube/index.html)
