@@ -6,7 +6,6 @@ Hand gestures með 3D (og AR)
 MediaPipe:
 
 - Kristófer (hand landmarks detection )
-  - [touch](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part1-Kristófer/index.html)
   - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)
 - Héðinn (gesture recognition)
   - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Hedinn/Lidur2.html)
