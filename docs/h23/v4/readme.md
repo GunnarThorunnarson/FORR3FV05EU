@@ -1,4 +1,4 @@
-## Verkefni 4 Haust 2023 - Hand gestures með 3D (og AR)
+## Hand gestures með 3D (og AR) __(Verkefni 4 Haust 2023)
 
 
 #### `Hand landmarks detection` með MediaPipe:
