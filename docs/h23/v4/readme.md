@@ -1,12 +1,8 @@
-## Verkefni 4 Haust 2023
-Hand gestures með 3D (og AR)
+## Verkefni 4 Haust 2023 - Hand gestures með 3D (og AR)
 
----
 
 #### `Hand landmarks detection` með MediaPipe:
 - Kristófer, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)
-
----
 
 #### `Gesture recoginition` með MediaPipe:
 
@@ -20,8 +16,6 @@ Hand gestures með 3D (og AR)
 - Valdas, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Valdas/2_verkefni_index.html)
 - Þorgeir, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Þorgeir/seinni/index.html)
 - Tumi, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Tumi/part2/part2/main.html)
-
----
 
 #### Annað:
 - Bjarni (React + mediapipe)
