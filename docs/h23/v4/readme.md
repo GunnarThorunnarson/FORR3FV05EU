@@ -1,4 +1,4 @@
-### Verkefni 4 Haust 2023
+## Verkefni 4 Haust 2023
 Hand gestures með 3D (og AR)
 
 ---
