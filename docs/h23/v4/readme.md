@@ -15,9 +15,7 @@ _Verkefni 4 Haust 2023_
 - Tumi, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Tumi/part2/part2/main.html)
 
 #### Annað:
-- Bjarni (React + mediapipe)
-  - [hand](https://bjarni123.github.io/Vidmotsforritun_verkefni4/)  
-- Andrés (Tenserflow + handpose)
-  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Andres/Hand/index.html) 
+- Bjarni (React + mediapipe), [hand](https://bjarni123.github.io/Vidmotsforritun_verkefni4/)  
+- Andrés (Tenserflow + handpose), [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Andres/Hand/index.html) 
 
 
