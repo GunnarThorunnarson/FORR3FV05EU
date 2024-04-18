@@ -7,12 +7,8 @@ _Verkefni 4 Haust 2023_
 
 #### `Gesture recoginition` með MediaPipe:
 
-- Björn 
-  - [3D](https://bjornthor21.github.io/verk4-vidmot/3dObject.html)
-  - [AR](https://bjornthor21.github.io/verk4-vidmot/ar.html)
-- Gísli 
-  - [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/HandGestureCube/index.html)
-  - [AR](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/AR/index.html)
+- Björn, [3D](https://bjornthor21.github.io/verk4-vidmot/3dObject.html) og [AR](https://bjornthor21.github.io/verk4-vidmot/ar.html)
+- Gísli, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/HandGestureCube/index.html) og [AR](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/AR/index.html)
 - Héðinn, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Hedinn/Lidur2.html)
 - Valdas, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Valdas/2_verkefni_index.html)
 - Þorgeir, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Þorgeir/seinni/index.html)
