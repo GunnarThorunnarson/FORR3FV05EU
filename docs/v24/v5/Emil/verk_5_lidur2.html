@@ -1,0 +1,37 @@
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Skilaverkefni 5 Part2</title>
+    
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@v0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@v0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="verk_5_lidur2.css">
+</head>
+
+<body style="display: flex;">
+    <div width: 50%;>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <div style='position: relative;'>
+            <video id='webcam' autoplay></video>
+            <canvas id='output_canvas' width='480' height='360'
+                style='position: absolute; left: 0px; top: 0px;'></canvas>
+        </div>
+        <h1><p style="font-weight: bold;" class='iconcon'>Vinstri þumall og vísifingur: ↔</p>
+        <p style="font-weight: bold;" class="iconcon">Hægri þumall og vísifingur: ↕</p></h1>
+
+    </div>
+        <div id="scene-container">
+    </div>
+
+    <script type="module" src="verk_5_lidur2.js"></script>
+   
+</body>
+
+</html>

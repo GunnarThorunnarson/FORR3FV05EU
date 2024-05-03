@@ -1,0 +1,25 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
+}
+button:hover {
+  scale: 120%;
+}
+h1 {
+  display: inline-block;
+}
+
+h2 {
+  display: inline-block;
+}
+
+.container {
+  display: flex;
+}
+
+.camera, .TheCube {
+  width: 50%;
+  border: 1pxsolid black;
+  margin: 10px;
+}
