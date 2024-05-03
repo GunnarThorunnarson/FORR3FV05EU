@@ -1,4 +1,3 @@
-# handapatsstjórnun (e. hand gestures).
 
 ## Tilbúið handapat (e. gesture recognition)
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil)
