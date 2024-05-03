@@ -7,6 +7,6 @@
 - [Þorvaldur Daði](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/ThorvaldurDadi)
 
 ### Eigið handapat (hand landmark detection)
-- [Emil](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/docs/v24/v5/Emil/verk_5_lidur2.html) 
+- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) 
 
 <!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
