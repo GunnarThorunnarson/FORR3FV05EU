@@ -1,6 +1,6 @@
 
 ### Tilbúið handapat (e. gesture recognition)
-- [Árni](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Arni/index.html)
+<!-- - [Árni](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Arni/index.html) gallað -->
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil)
 - [Hróar](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Hroar)
 - [Jökull](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Jokull)
