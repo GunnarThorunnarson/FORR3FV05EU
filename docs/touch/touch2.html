@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch properties</title>
+</head>
+<body>
+
+<h3>Properties í TouchEvent</h3>
+<ul>
+    <li>target</li>
+    <li>timeStamp</li>
+    <li>type</li>
+    <li>TouchLists: <code>touches, changedTouches, targetTouches </code></li>
+</ul>
+
+
+<hr>
+
+<h3>Properties í Touch (object)</h3>
+<ol>
+    <li>Stilltu á <em>Mobile view í dev mode (F12)</em> í vafra og hafðu <code>console</code> opið.</li>
+    <li>Smelltu með fingri á skjá, þar sérðu properties í <code>Touch</code> sem  <code>TouchList</code></li>
+</ol>
+
+<p>Touch object eitt eða fleiri (eitt pr. fingur) er að finna í TouchLists</p>
+
+<ul>
+
+    <li><strong>identifier:</strong> - begins at 0 and increments by 1 with every new touch point.</li>
+    <li><strong>target:</strong> - Returns the Element on which the touch point started when it was first placed on the surface</li>
+    <li><strong>clientX/clientY:</strong> - x and y co-ordinates of the touch point relative to the browser viewport.</li>
+    <li><strong>screenX/screenY:</strong> - the x and y co-ordinates of the touch point relative to the device's screen</li>
+    <li><strong>pageX/pageY:</strong> - the x and y co-ordinates of the touch point relative to the HTML page.</li>
+    <li><strong>force:</strong> (touch area) - Returns the amount of pressure being applied to the surface by the user </li>
+    <li><strong>radiusX/radiusY:</strong> (touch area)</li>
+    <li><strong>rotationAngle:</strong> (touch area)</li>
+</ul>
+
+
+<img src="https://gunnarthorunnarson.github.io/FORR3FV05EU/myndir/page_client_screen.png">
+
+
+<p>Nánar um <a href="https://developer.mozilla.org/en-US/docs/Web/API/Touch#instance_properties">Touch properties</a></p>
+
+
+<br>
+
+<script>
+document.addEventListener("touchstart", e => {
+    console.log(e.changedTouches[0]);           // prentar út Touch úr TouchList hjá changedTouches
+    // console.log(e.changedTouches[0].PageY);  // prentar út PageY gildi   
+}); 
+</script>
+</body>
+</html>
