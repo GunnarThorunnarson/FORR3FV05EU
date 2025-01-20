@@ -1,1 +1,0 @@
-Kóðasýnidæmi með touch
