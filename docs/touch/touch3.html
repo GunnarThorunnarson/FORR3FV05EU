@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch</title>
+    <style>
+        #touch-region {
+            background-color: aqua;
+            width:90%;  
+            min-height:20rem;
+            border: 1px solid red; 
+            padding: 2rem;
+            margin: 1rem;
+            box-sizing: border-box;
+           }
+        .circle {
+            background-color: red;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+<h3>Sýnidæmi: Touch Properties</h3>
+<ol>
+    <li>Stilltu á <em>Mobile view í dev mode (F12)</em> í vafra og hafðu <code>Elements</code> opið.</li>
+    <li>Smelltu og færðu til mús eða fingur</li>
+    <li>Skoðaðu JavaScript kóðann</li>
+    <li>Getur þú búið til einfalt <em>Paint forrit</em> með smá breytingu á kóðanum?</em></li>
+</ol>
+
+<hr>
+
+<h3>Svæði til að prófa touch.</h3>
+<div id="touch-region"></div>
+
+
+<script>
+// Touchstart keyrir einu sinni, gagnlegt fyrir setup
+// teiknum dot
+document.getElementById("touch-region").addEventListener("touchstart", e => {
+    // breytum changedTouches lista í alvöru array svo við getum notað forEach  
+    [...e.changedTouches].forEach( touch => {
+        const dot = document.createElement("div");
+        dot.classList.add("circle");
+        dot.style.top = `${touch.pageY}px`;             // staðsetning
+        dot.style.left = `${touch.pageX}px`;            // staðsetning 
+        dot.id = touch.identifier;                      // hvert touch er með id, 0 ef single-touch   
+        document.getElementById("touch-region").append(dot);     // teiknum á skjá
+    })      
+}); 
+
+// Touchmove er keyrt oft, á meðan við erum að færa til fingur (mús). Gott fyrir útreikninga.
+// uppfærum staðsetningu á dot
+document.getElementById("touch-region").addEventListener("touchmove", e => { 
+    [...e.changedTouches].forEach( touch => {
+        const dot = document.getElementById(touch.identifier);  
+        dot.style.top = `${touch.pageY}px`;   // uppfærum hnit á dot svo hann færist með fingrahreyfingu
+        dot.style.left = `${touch.pageX}px`;  // uppfærum hnit á dot svo hann færist með fingrahreyfingu
+    })  
+});  
+
+// Touchend keyrir einu sinni. Gott fyrir frágang og endurstillingar.
+// eyðum dot þegar við sleppum fingri af skjá
+document.getElementById("touch-region").addEventListener("touchend", e => { 
+    [...e.changedTouches].forEach( touch => {
+        const dot = document.getElementById(touch.identifier);  
+        dot.remove();
+    })  
+});
+</script>
+</body>
+</html>
