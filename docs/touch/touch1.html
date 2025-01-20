@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch</title>
+    <style>
+        #touch-region {
+            background-color: aqua;
+            width:90%;  
+            min-height:20rem;
+            border: 1px solid red; 
+            padding: 2rem;
+            margin: 1rem;
+            box-sizing: border-box;
+           }
+    </style>
+</head>
+<body>
+
+<h2>TouchListeners</h2>
+<ul>
+<li><strong>Touchstart</strong> keyrir einu sinni, gagnlegt fyrir setup </li>
+<li><strong>Touchmove</strong> er keyrt oft, á meðan við erum að færa til fingur (mús). Gott fyrir útreikninga. </li>
+<li><strong>Touchend</strong> keyrir einu sinni þegar fingur fer af eða útfyrir skjá (ath. ekki element). Gott fyrir cleanup og reset. </li>
+<li><strong>Touchcancel</strong> keyrir þegar touch event fer óvænt úrskeiðis (ytri ástæður t.d. hardware event (takki), screen orientation, of margir fingur), einskonar try/catch virkni.</li>
+</ul>
+
+<hr>
+
+<h3>Gerðu eftirfarandi:</h3>
+ <ol>
+    <li>Stilltu á <em>Mobile view í dev mode (F12)</em> í vafra og hafðu <code>console</code> opið.</li>
+    <li>smelltu á músina og haltu takkanum niðri án þess að hreyfa. <code>touchstart</code></li>
+    <li>færðu svo músina til á skjánum. <code>touchmove</code></li>
+    <li>slepptu músatakkanum. <code>touchend</code></code> </li>
+    <li>skoðaðu afar lauslega í console <code>TouchEvent</code> objectið. t.d target, timeStamp og Touchlists (touches, changedTouches, targetTouches)</li>
+ </ol> 
+
+
+<hr>
+
+<h3>Svæði til að prófa touch.</h3>
+<div id="touch-region"></div>
+
+<script>
+// Touchstart keyrir einu sinni, gagnlegt fyrir setup
+document.getElementById("touch-region").addEventListener("touchstart", e => {
+    console.log("Start");  
+    console.log(e);  // prentar út TouchEvent Object 
+}); 
+
+// Touchmove er keyrt oft, á meðan við erum að færa til fingur (mús). Gott fyrir útreikninga.
+document.getElementById("touch-region").addEventListener("touchmove", e => {
+    console.log("Move");   
+ 
+});  
+// }, { once: true }); // param: fire only once, ef við vijum bara að move keyri einu sinni.
+
+// Touchend keyrir einu sinni. Gott fyrir cleanup og reset.
+document.getElementById("touch-region").addEventListener("touchend", e => {
+    console.log("End"); 
+       
+});
+
+document.getElementById("touch-region").addEventListener("touchcancel", e => {
+    console.log("Eitthvað fór úrskeiðis, Touch was canceled!"); 
+       
+});
+
+
+</script>
+</body>
+</html>
