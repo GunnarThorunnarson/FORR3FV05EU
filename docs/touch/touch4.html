@@ -73,7 +73,7 @@ document.getElementById("one").addEventListener("touchmove", e => {
     console.log(e.touches[0]);    
     console.log(e.changedTouches[0]);    
     console.log(e.targetTouches[0]);       
-}); 
+}, { once: true });  // keyrum bara einu sinni (svo við fáum ekki of mikið af listum)
 
 document.getElementById("one").addEventListener("touchend", e => {
     // Við viljum ekki default touch virkni eins og td. swipe trufli
