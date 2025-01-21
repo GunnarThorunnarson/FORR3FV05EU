@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- prevent zooming  user-scalable=no -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no>
+     <!-- prevent zooming  user-scalable=no -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Touch</title>
     <style>
         #one {
@@ -36,17 +36,39 @@
 <h4>changedTouches</h4>
 <ul>
     <li>fingur (touch object) sem hafa hreyft sig á skjá <strong>(staða breyst)</strong></li>
-    <li>Þegar notað með <code>touchstart</code> þá er bara einn touch object fyrir síðasti fingurinn sem snerti skjáinn í changedTouches (þó við hreyfum hann)</li>
-    <li>Þegar notað með <code>touchend</code> þá geymir changedTouches upplýsingar um touch object af fingri sem fer af skjá (bara einn í einu).</li>
-    <li>On touchstart, changedTouches holds all touch points that came into contact with the touch surface to cause the event.</li>
-    <li>On touchmove, changedTouches holds all touch points that moved past their previous position to cause the event.</li>
-    <li>On touchend, changedTouches holds all touch points that exited the touch surface to cause the event.</li>
+    <li>Þegar notað með <code>touchstart</code> þá er bara einn touch object fyrir síðasti fingurinn sem snerti skjáinn í changedTouches (þó við hreyfum hann), fleiri fingur ef samtímis</li>
+    <li>Þegar notað með <code>touchend</code> þá geymir changedTouches upplýsingar um touch object af fingri sem fer af skjá (síðasti), fleiri ef samtímis.</li>
+    <li>Þegar notað með <code>toucmove</code> þá geymir changedTouches alla touch objecta sem eru á skjá og hafa fært sig (ný staða)</li>li>
 </ul>
 
 <h4>targetTouches</h4>
 <ul>
     <li>fingur (touch object) sem eru að snerta skjáinn <strong>(núverandi)</strong> og sama <code>element</code> (<strong>target</strong>).</li>
 </ul>
+
+<h3>Examples</h3>
+
+<p>
+    I put a finger down, all three lists <code>touches, targetTouches, changedTouches</code> will have the same information. 
+    It will be in changedTouches because putting the finger down is what caused the event.
+</p>
+<p>
+    When I put a second finger down, touches will have <strong>two items</strong>, one for each finger. 
+    <code>targetTouches</code> will have two items only if the finger was placed in the same node as the first finger. 
+    <code>changedTouches</code> will have the information related to the second finger, because it’s what caused the event.
+</p>
+<p>
+    If I put two fingers down at exactly the same time, it’s possible to have two items in changedTouches, one for each finger.
+</p>
+<p>
+    If I move my fingers, the only list that will change is changedTouches and will contain information related to as many fingers as have moved (at least one). 
+</p>
+<p>
+    When I lift a finger, it will be removed from touches, targetTouches and will appear in changedTouches since it’s what caused the event.
+</p>
+<p>
+    Removing my last finger will leave touches and targetTouches empty, and changedTouches will contain information for the last finger.
+</p>
 
 <p>Nánari upplýsingar og kóðadæmi um <a href="https://www.codeguage.com/courses/js/touch-events-the-touchlist-interface">TouchList Interface</a></p>
 
@@ -65,7 +87,7 @@ document.getElementById("one").addEventListener("touchstart", e => {
     console.log(e.touches[0]);    
     console.log(e.changedTouches[0]);       
     console.log(e.targetTouches[0]);    
-}); 
+});  
 
 document.getElementById("one").addEventListener("touchmove", e => {
     // Við viljum ekki default touch virkni eins og td. swipe trufli
