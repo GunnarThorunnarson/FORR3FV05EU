@@ -23,7 +23,7 @@ Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja virkni (t
 1. Hugaðu vel að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
 
-> ath. einfalt rotation dugar ekki sem lausn.
+> ath. einfalt rotation er ekki nóg.
 
 ---
 
