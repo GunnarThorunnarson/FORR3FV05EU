@@ -15,13 +15,15 @@
 1. Notaðu `swipe` gesture á SVG til að láta það skjótast af skjánum.
    
 #### 2. Multi-touch (50%)
-Hannaðu þitt eigið (nýtt) multi-touch gesture fyrir sérsniðinn (customized) hlekk `<a href>`.
+Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja virkni (t.d. opna aðra vefsíðu).
 
-1. Notaðu amk. þrjá fingur.
-1. Hannaðu (UI) fyrir touch target (hlekk) notaðu html/SVG, CSS og kvikun.
+1. Notaðu amk. tvo fingur.
+1. Hannaðu (UI) fyrir touch target, notaðu html/SVG, CSS og kvikun.
 1. Hugaðu vel að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
-   
+
+> ath. einfalt rotation dugar ekki sem lausn.
+
 ---
 
 ## Námsmat og skil
