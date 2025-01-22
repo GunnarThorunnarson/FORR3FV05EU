@@ -19,7 +19,7 @@
 Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja virkni (t.d. opna aðra vefsíðu).
 
 1. Notaðu amk. tvo fingur.
-1. Hannaðu (UI) fyrir touch target area, notaðu html/SVG, CSS og kvikun.
+1. Hannaðu (UI) fyrir touch target area og touch element. Notaðu html/SVG, CSS og kvikun.
 1. Hugaðu vel að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
 
