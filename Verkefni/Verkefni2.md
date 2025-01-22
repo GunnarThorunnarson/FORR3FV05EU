@@ -17,7 +17,7 @@
 #### 2. Multi-touch (50%)
 Hannaðu þitt eigið (nýtt) multi-touch gesture fyrir sérsniðinn (customized) hlekk `<a href>`.
 
-1. Notaðu amk.tvo fingur.
+1. Notaðu amk. þrjá fingur.
 1. Hannaðu (UI) fyrir touch target (hlekk) notaðu html/SVG, CSS og kvikun.
 1. Hugaðu vel að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
