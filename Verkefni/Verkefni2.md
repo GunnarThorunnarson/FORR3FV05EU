@@ -12,7 +12,8 @@
 1. Útfærðu `long pressures` virkni á SVG (frjáls úfærsla).
 1. Færðu svo SVG til á skjánum í aðra endastöðu með `pan` gesture.
 1. Þegar þú sleppir fingri af skjá þá er SVG komið í endastöðu (SVG hverfur ekki af skjá).
-1. Notaðu `swipe` gesture á SVG til að láta það skjótast (hverfa) af skjánum.
+
+<!-- 1. Notaðu `swipe` gesture á SVG til að láta það skjótast (hverfa) af skjánum. -->
    
 #### 2. Multi-touch (50%)
 Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja virkni (t.d. opna aðra vefsíðu).
