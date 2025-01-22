@@ -84,27 +84,27 @@
 <script>
 document.getElementById("one").addEventListener("touchstart", e => {
     console.log("touchstart:")
-    console.log(e.touches[0]);    
-    console.log(e.changedTouches[0]);       
-    console.log(e.targetTouches[0]);    
+    console.log(e.touches);    
+    console.log(e.changedTouches);       
+    console.log(e.targetTouches);    
 });  
 
 document.getElementById("one").addEventListener("touchmove", e => {
     // Við viljum ekki default touch virkni eins og td. swipe trufli
     e.preventDefault()
     console.log("touchmove:")
-    console.log(e.touches[0]);    
-    console.log(e.changedTouches[0]);    
-    console.log(e.targetTouches[0]);       
+    console.log(e.touches);    
+    console.log(e.changedTouches);    
+    console.log(e.targetTouches);       
 }, { once: true });  // keyrum bara einu sinni (svo við fáum ekki of mikið af listum)
 
 document.getElementById("one").addEventListener("touchend", e => {
     // Við viljum ekki default touch virkni eins og td. swipe trufli
     e.preventDefault()
     console.log("touchend:")
-    console.log(e.touches[0]);    
-    console.log(e.changedTouches[0]);
-    console.log(e.targetTouches[0]);           
+    console.log(e.touches);    
+    console.log(e.changedTouches);
+    console.log(e.targetTouches);           
 });
 </script>
 </body>
