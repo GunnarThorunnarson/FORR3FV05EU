@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Multi-touch: Rotation</title>
+    <style>
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+        rect {
+            transform-origin: center;
+            transition: transform 0.1s;
+        }
+    </style>
+</head>
+<body>
+<p>notaðu tvo fingur til að snúa ferning.</p>
+<svg width="400" height="400" style="border:3px solid black">
+    <rect id="logo" x="100" y="100" width="200" height="200" fill="red"/>
+</svg>
+
+<script>
+    let icon = document.getElementById('logo');
+    let byrjunarHorn;
+
+    icon.addEventListener('touchstart', e => {
+        // ef tveir fingur eru á skjánum og hornið milli þeirra er ekki skilgreint
+        if (e.touches.length === 2 && byrjunarHorn == undefined) {
+           // Reiknar út hornið (gráðurnar) á milli fingra (x,y hnita) (frá x ásnum).
+           // Math.atan2 skilar horninu í radíönum svo við þurfum að margfalda með (180 / Math.PI) til að fá gráður.
+           byrjunarHorn = Math.atan2(e.touches[0].clientY - e.touches[1].clientY, e.touches[0].clientX - e.touches[1].clientX) * (180 / Math.PI);
+           console.log(byrjunarHorn);
+        }
+    });
+
+    icon.addEventListener('touchmove', e => {
+        preventDefault();
+        console.log(e.touches);
+        // ef tveir fingur eru á skjánum
+        if (e.touches.length === 2) {
+            let horn = Math.atan2(e.touches[0].clientY - e.touches[1].clientY, e.touches[0].clientX - e.touches[1].clientX) * (180 / Math.PI) - byrjunarHorn;
+            icon.style.transform = `rotate(${horn}deg)`;
+        }
+    });
+</script>
+</body>
+</html>
