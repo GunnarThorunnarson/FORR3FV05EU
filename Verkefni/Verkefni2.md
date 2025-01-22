@@ -15,7 +15,7 @@
 1. Notaðu `swipe` gesture á SVG til að láta það skjótast af skjánum.
    
 #### 2. Multi-touch (50%)
-Hannaðu þitt eigið (nýtt) multi-touch gesture fyrir sérbúinn hlekk `<a href>`.
+Hannaðu þitt eigið (nýtt) multi-touch gesture fyrir sérsniðinn (customized) hlekk `<a href>`.
 
 1. Notaðu amk.tvo fingur.
 1. Hannaðu (UI) fyrir touch target (hlekk) notaðu html/SVG, CSS og kvikun.
