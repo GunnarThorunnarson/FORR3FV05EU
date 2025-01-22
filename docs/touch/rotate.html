@@ -17,7 +17,7 @@
 </head>
 <body>
 <p>notaðu tvo fingur til að snúa ferning.</p>
-<svg width="400" height="400" style="border:3px solid black">
+<svg width="400" height="400" style="border:2px solid black">
     <rect id="logo" x="100" y="100" width="200" height="200" fill="red"/>
 </svg>
 
@@ -36,7 +36,6 @@
     });
 
     icon.addEventListener('touchmove', e => {
-        preventDefault();
         console.log(e.touches);
         // ef tveir fingur eru á skjánum
         if (e.touches.length === 2) {
