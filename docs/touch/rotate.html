@@ -36,6 +36,7 @@
     });
 
     icon.addEventListener('touchmove', e => {
+        e.preventDefault();
         console.log(e.touches);
         // ef tveir fingur eru á skjánum
         if (e.touches.length === 2) {
