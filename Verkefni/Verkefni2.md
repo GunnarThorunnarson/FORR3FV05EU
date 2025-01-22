@@ -33,7 +33,7 @@ Einkunn fyrir hvorn lið:
 - 2,5 lítil virkni.
 - 0 lausn vantar eða stórlega ábótavant.
      
-Skilaðu í Innu html skrám, sem innihalda CSS, SVG og JavaScript. 
+Skilaðu í Innu tvær html skrár sem innihalda CSS, SVG og JavaScript. 
 
 <!-- 
 The speed of the user’s gesture should be matched by the speed of the element being moved across the screen.
