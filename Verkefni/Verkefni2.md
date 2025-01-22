@@ -10,7 +10,7 @@
 
 #### 1. Single-touch (50%)
 1. Útfærðu `long pressures` virkni á SVG (frjáls úfærsla).
-1. Færðu með þessa touch vikni SVG til hliðar í aðra endastöðu á skjá með `pan` gesture (translate).
+1. Færðu með þessa touch vikni SVG til hliðar í aðra endastöðu á skjá með `pan` gesture.
    
 
 #### 2. Multi-touch (50%)
