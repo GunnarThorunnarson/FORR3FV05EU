@@ -16,11 +16,11 @@
 <!-- 1. Notaðu `swipe` gesture á SVG til að láta það skjótast (hverfa) af skjánum. -->
    
 #### 2. Multi-touch (50%)
-Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja virkni (t.d. opna aðra vefsíðu).
+Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja einfalda virkni (t.d. opna vefsíðu).
 
 1. Notaðu amk. tvo fingur.
-1. Hannaðu (UI) fyrir touch target area og touch element. Notaðu html/SVG, CSS og kvikun.
-1. Hugaðu vel að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
+1. Hannaðu touch viðmót (touch element). Notaðu html/SVG, CSS og kvikun.
+1. Hugaðu að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Touch#ui--ux) (UX).
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
 
 > ath. einfalt rotation er ekki nóg.
