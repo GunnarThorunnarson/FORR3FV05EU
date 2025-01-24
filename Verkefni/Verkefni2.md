@@ -13,6 +13,7 @@
 1. Færðu svo SVG til á skjánum í aðra endastöðu með `pan` gesture.
 1. Þegar þú sleppir fingri af skjá þá er SVG komið í endastöðu (SVG hverfur ekki af skjá).
 
+<!-- sýndu með smá kvikun þegar þú mátt byrja að hreyfa SVG með pan gesture -->
 <!-- 1. Notaðu `swipe` gesture á SVG til að láta það skjótast (hverfa) af skjánum. -->
    
 #### 2. Multi-touch (50%)
