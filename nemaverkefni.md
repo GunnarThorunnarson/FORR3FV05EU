@@ -1,4 +1,4 @@
-### AR verkefni - Haust 2024
+### AR verkefni - Haust 2023
 
 - Björn:
   - [Fire Ball: Björn](https://github.com/bjornthor21/verk5-vidmot/blob/main/README.md)
