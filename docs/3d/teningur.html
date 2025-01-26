@@ -32,10 +32,10 @@ camera.position.z = 1;
 
 // scene
 const scene = new THREE.Scene();
-    // Teningur sem við viljum birta
-    const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-    const material = new THREE.MeshNormalMaterial();
-    const mesh = new THREE.Mesh( geometry, material );
+// Teningur (obj) sem við viljum birta í scene
+const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+const material = new THREE.MeshNormalMaterial();
+const mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
 
 // renderer
