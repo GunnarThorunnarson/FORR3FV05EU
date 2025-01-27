@@ -1,8 +1,5 @@
 ## AR verkefni (nemendur) 
 
-### Vor 2025
-- Væntanlegt
-  
 ### Vor 2024
 - [Hróar: körfubolti (scan)](https://hroihrolfs.github.io/vidmotsforr_2024/) 
 - [Kristján Ómar: epli (scan)](https://kristjanomar.github.io/docs/)
