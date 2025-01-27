@@ -1,17 +1,16 @@
-### AR verkefni - Haust 2023
+## AR verkefni (nemendur) 
 
-- Björn:
-  - [Fire Ball: Björn](https://github.com/bjornthor21/verk5-vidmot/blob/main/README.md)
-  - https://bjornthor21.github.io/verk3-vidmot/
-  - github: https://github.com/bjornthor21/verk3-vidmot
-- Héðinn:
-  - https://hedinn1.github.io/forr3v3/
-  - github: https://github.com/hedinn1/forr3v3
-- Friðrik:
-  - github: https://github.com/GilliGalli/FORR3FV05EU-lokaverkefni
-- Kristofer:
-  - https://kr1stof3r.github.io/Vidmotsforritun/Verkefni3/index.html
-  - github: https://github.com/Kr1stof3r/Kr1stof3r.github.io/tree/main/Vidmotsforritun/Verkefni3
-- Valdas:
-  - https://valdaska21.github.io/FORR3FV05EU---Verkefni-3---Valdas/
+### Vor 2025
+- Væntanlegt
+  
+### Vor 2024
+- [Hróar: körfubolti](https://hroihrolfs.github.io/vidmotsforr_2024/) 
+- [Kristján Ómar: epli](https://kristjanomar.github.io/docs/)
+  
+### Haust 2023
+- [Björn Þór: Fireball](https://bjornthor21.github.io/verk3-vidmot/>) og github: https://github.com/bjornthor21/verk3-vidmot
+- [Friðrik: 3D bodyscan](https://github.com/GilliGalli/FORR3FV05EU-lokaverkefni) 
+- [Valdas](https://valdaska21.github.io/FORR3FV05EU---Verkefni-3---Valdas/)
+- [Héðinn](https://hedinn1.github.io/forr3v3/ ) og github: https://github.com/hedinn1/forr3v3
+- [Kristofer](https://kr1stof3r.github.io/Vidmotsforritun/Verkefni3/index.html) og github: https://github.com/Kr1stof3r/Kr1stof3r.github.io/tree/main/Vidmotsforritun/Verkefni3
 
