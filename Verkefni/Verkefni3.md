@@ -6,7 +6,7 @@
 ---
 
 ### Verkefnalýsing
-Búðu til einfalda vöruvefsíðu (e-commerce) þar sem hægt er að lesa sig til um og skoða vöru sem er í þrívídd. Eins á að vera hægt að smella á takka og skoða vöru í víðbættum veruleika (AR) með símanum, [sýnidæmi](https://www.onirix.com/learn-about-ar/e-commerce-3d-viewer/).
+Búðu til vöruvefsíðu (e-commerce) þar sem hægt er að lesa sig til um og skoða vöru sem er í þrívídd. Eins á að vera hægt að smella á takka og skoða vöru í víðbættum veruleika (AR) með símanum, [sýnidæmi](https://www.onirix.com/learn-about-ar/e-commerce-3d-viewer/).
 
 #### 1. Three.js (80%)
 1. [ ] Vafri er [sveigjanlegur](https://threejs.org/manual/#en/responsive) þar sem 3D hlutur heldur réttum hlutföllum innan um texta á vefsíðu. (**10%**)
