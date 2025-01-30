@@ -1,4 +1,4 @@
-# Verkefni 4 
+# Verkefni 4  _(drög)_
 - 10% af heildareinkunn
 - Einstaklingsverkefni 
 - [Handapatsstjórnun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Handapatsstj%C3%B3rnun)
