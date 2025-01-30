@@ -12,7 +12,8 @@ Markmið lokaverkefnis er að fara aðeins dýpra í valin viðfangsefni áfanga
 
 Dæmi um verkefni:
 - 2D gagnvirkt mælaborð (e. dashboard) sem sýnir kvikuð rauntímagögn með snertistjórnun.
-- Gagnvirkur kortaleiðarvísir með [MapBox GL JS](https://www.mapbox.com/mapbox-gljs).
+- Veðurapp fyrir börn, sem sýnir hvernig þau eigi að klæðast byggt á gögnum frá veðurvefþjónustu, [2D sýnidæmi](https://www.youtube.com/watch?v=rgoMadXGiQs), [3D sýnidæmi](https://scandinavianoutdooraward.com/reima-reima-weather-app/).
+- 2D/3D Gagnvirkur kortaleiðarvísir með [MapBox GL JS](https://www.mapbox.com/mapbox-gljs).
 - AR gagnvirkt viðmót með handapatsstjórnun og myndgreiningavefþjónustu.
   
 <br>
@@ -33,8 +34,8 @@ GitHub geymsla (public) sem inniheldur skýrslu í `readme.md`:
 1. Útkoman. Hvernig til tókst, hver væru næstu skref ef haldið væri áfram þróun frumgerðar.
 
 > [!NOTE]
-Vel gerð skýrsla er forsenda fyrir námsmati. <br>
-Halda þarf stutta kynningu í kennslustund í síðasta tímanum (28.02.25).
+Vel gerð skýrsla er forsenda fyrir námsmati. 
+<!-- Halda þarf stutta kynningu í kennslustund í síðasta tímanum (28.02.25). -->
 
 ---
 
