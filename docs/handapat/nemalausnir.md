@@ -1,11 +1,13 @@
 ## Hand gestures með 3D (og AR) 
 
+
 #### `Hand landmarks detection` með MediaPipe:
 
-- [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html) _Haust 2023 (Verkefni 4)_
-- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024 (Verkefni 4)
+- [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  _Haust 2023 (Verkefni 4)_
+- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024 (Verkefni 4)_
 
 <!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
+
 
 #### `Gesture recoginition` með MediaPipe:
 
