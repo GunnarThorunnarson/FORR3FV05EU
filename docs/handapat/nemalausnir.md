@@ -1,4 +1,4 @@
-## Hand gestures með 3D (og AR) 
+### Hand gestures með 3D (og AR) 
 
 
 #### `Hand landmarks detection` með MediaPipe:
