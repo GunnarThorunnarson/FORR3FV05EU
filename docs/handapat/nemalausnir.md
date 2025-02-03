@@ -1,5 +1,6 @@
 ### Hand gestures með 3D (og AR) 
 
+---
 
 #### `Hand landmarks detection` með MediaPipe:
 
@@ -8,6 +9,7 @@
 
 <!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
 
+---
 
 #### `Gesture recoginition` með MediaPipe:
 
