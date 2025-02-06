@@ -31,6 +31,8 @@ Búðu til vöruvefsíðu (e-commerce) þar sem hægt er að lesa sig til um og 
 - Fyrir hvern lið er gefið fullt fyrir fullnægjandi útfærslu, hálft ef hann er ábótavant.
 - Skilaðu á Innu kóðaskrár.
 
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
+
 <!-- vefslóð sem sýnir 3D hlut. Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D hlut (link á raw skrá). -->
 
 <!--
