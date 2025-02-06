@@ -61,6 +61,8 @@ Einkunn:
 
 Skilaðu á Innu kóða og gögnum í möppu (zip).
 
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni.
+
 <!--
 - Vinna með [ARCore Geospatial API](https://www.youtube.com/watch?v=udoSz_UBUdc).
 - Handapatsstjórnun fyrir úttakstæki t.d. [RGB 64x64 LedMatrix](https://www.adafruit.com/product/3649), leds eða hljóð, sjá [IX projects](https://interactions.acm.org/enter/section/how-was-it-made). 
