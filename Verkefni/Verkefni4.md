@@ -12,8 +12,8 @@
 
 ### 1. Tilbúið handapat. (**50%**)
 Notaðu eitthvað af [gesture recognition](https://developers.google.com/mediapipe/solutions/vision/gesture_recognizer) modelum; _"Closed_Fist", "Open_Palm", "Pointing_Up", "Thumb_Down", "Thumb_Up", "Victory", "ILoveYou"_ til að: 
-   1. [ ] snúa (e.rotate) 3D hlut (x, z, y ás) á skjá.
-   1. [ ] stækka og minnka 3D hlut á skjá.
+   1. [ ] snúa (e.rotate) 3D hlut sem þú scannaðir í verkefni 3 (x, z, y ás) á skjá.
+   1. [ ] stækka og minnka 3D hlutinn á skjá.
 
 Sjá nánar [myndband](https://www.youtube.com/watch?v=cJgDuywJv8Y) og [kóðadæmi](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/docs/handapat/hand_gesture_recognition.html).
 
