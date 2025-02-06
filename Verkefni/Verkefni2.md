@@ -40,6 +40,8 @@ Einkunn fyrir hvorn lið:
      
 Skilaðu í Innu tvær html skrár sem innihalda CSS, SVG og JavaScript. 
 
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
+
 <!-- 
 The speed of the user’s gesture should be matched by the speed of the element being moved across the screen.
 Spjaldtölva og minileik með tilbúna objecta í canvas í síma og spjaldtölvu. 
