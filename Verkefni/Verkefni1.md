@@ -53,3 +53,5 @@ Einkunn fyrir hvorn lið:
 
 Skilaðu html skrá sem inniheldur CSS og JavaScript sem og Inkscape (hráskjali) á Innu. 
 
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
+
