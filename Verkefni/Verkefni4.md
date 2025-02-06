@@ -18,7 +18,10 @@ Notaðu eitthvað af [gesture recognition](https://developers.google.com/mediapi
 Sjá nánar [myndband](https://www.youtube.com/watch?v=cJgDuywJv8Y) og [kóðadæmi](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/docs/handapat/hand_gesture_recognition.html).
 
 ### 2. Eigið handapat. (**50%**)
-Hannaðu þitt eigið handapatsstjórnun með [Hand landmarks detection](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker). Notaðu hnit (x, y og z) af einhverjum af 21 liðamótunum í höndinni (eða höndum) til að eiga við (e. transform) eða færa 3D hlut á skjá (eða AR) með Three.js. Hér er [skýringarmyndband](https://www.youtube.com/watch?v=hV5S4iQhNkI) og dæmi um [lausn](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Krist%C3%B3fer/index.html) til að skoða.
+Hannaðu þitt eigið handapatsstjórnun með [Hand landmarks detection](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker). Notaðu hnit (x, y og z) af einhverjum af 21 liðamótunum í höndinni (eða höndum) til að eiga við (e. transform) eða færa 3D hlut á skjá (eða AR) með Three.js. Hér er [skýringarmyndband](https://www.youtube.com/watch?v=hV5S4iQhNkI).
+<!--
+dæmi um [lausn](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Krist%C3%B3fer/index.html) til að skoða.
+-->
 
 <!-- [Github](https://github.com/GunnarThorunnarson/FORR3FV05EU/tree/master/docs/h23/v4/Kristofer/Part2-Krist%C3%B3fer) -->
 
