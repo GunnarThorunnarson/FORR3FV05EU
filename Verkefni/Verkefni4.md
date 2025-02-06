@@ -40,4 +40,6 @@ Einkunn fyrir hvorn lið:
 
 Skilaðu á Innu kóðaskrá ásamt leiðbeiningum um notkun með handapatsstjórnun.
 
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
+
 <!-- vefslóð á Github með vefrót (notaðu docs möppu sem rót) sem hýsir og sýnir 3D hlut og notkun þess með handapatsstjórnun.
