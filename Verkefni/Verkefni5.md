@@ -26,7 +26,7 @@ Verkefnaval er háð samþykki kennara og þarf að liggja fyrir í **upphafi** 
 
 ---
 
-### Skýrsla og kynning
+### Skýrsla 
 GitHub geymsla (public) sem inniheldur skýrslu í `readme.md`:
 
 1. Upplýsingar um höfund, áfanga og skóla.
