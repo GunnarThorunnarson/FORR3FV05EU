@@ -2,15 +2,6 @@
 
 ---
 
-#### `Hand landmarks detection` með MediaPipe:
-
-- [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  _Haust 2023_
-- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024_
-
-<!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
-
----
-
 #### `Gesture recoginition` með MediaPipe:
 
 Vor 2024 
@@ -35,3 +26,14 @@ Haust 2023
 - Bjarni (React + mediapipe), [hand](https://bjarni123.github.io/Vidmotsforritun_verkefni4/)  
 - Andrés (Tenserflow + handpose), [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Andres/Hand/index.html) 
 -->
+
+---
+
+#### `Hand landmarks detection` með MediaPipe:
+
+- [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  _Haust 2023_
+- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024_
+
+<!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
+
+
