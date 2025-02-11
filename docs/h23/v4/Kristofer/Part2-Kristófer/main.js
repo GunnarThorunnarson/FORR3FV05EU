@@ -40,6 +40,11 @@ function calculatePlaneAngles(p1, p2, p3) {
     return { angleX, angleY };
 }
 
+/*
+The calculateYawAngle calculates the yaw angle between three points in 3D space. 
+The yaw angle is the angle between the projection of the normal vector of the plane formed by the three points onto the XZ plane and the Z-axis. 
+This function is useful in applications such as gesture recognition or 3D modeling where understanding the orientation of objects in space is important.
+*/
 function calculateYawAngle(point1, point2, point3) {
     // Calculate the vectors v1 and v2
     let v1 = {
