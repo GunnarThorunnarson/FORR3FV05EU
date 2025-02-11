@@ -20,7 +20,8 @@ Sjá nánar [myndband](https://www.youtube.com/watch?v=cJgDuywJv8Y) og [kóðad�
 <!--   1. [ ] _valkvæmt:_ stækka og minnka 3D hlutinn á skjá. -->
 
 ### 2. Eigið handapat. (**50%**)
-Hannaðu þitt eigið handapatsstjórnun með [Hand landmarks detection](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker). Notaðu hnit (x, y og z) af einhverjum af 21 liðamótunum í höndinni (eða höndum) til að eiga við (e. transform) eða færa 3D hlut á skjá (eða AR) með Three.js. Hér er [skýringarmyndband](https://www.youtube.com/watch?v=hV5S4iQhNkI).
+Hannaðu þitt eigið handapatsstjórnun með [Hand landmarks detection](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker). Notaðu hnit (x, y og z) af einhverjum af 21 liðamótunum í höndinni (eða höndum) til að eiga við (e. transform) eða færa 3D hlut á skjá með Three.js. Hér er [skýringarmyndband](https://www.youtube.com/watch?v=hV5S4iQhNkI).
+
 <!--
 dæmi um [lausn](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Krist%C3%B3fer/index.html) til að skoða.
 -->
