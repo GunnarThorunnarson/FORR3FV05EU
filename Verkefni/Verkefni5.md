@@ -15,7 +15,7 @@ Dæmi um verkefni:
 - Veðurapp fyrir börn, sem sýnir hvernig þau eigi að klæða sig eftir veðri byggt á veðurvefþjónustu, [2D sýnidæmi](https://www.youtube.com/watch?v=rgoMadXGiQs), [3D sýnidæmi](https://scandinavianoutdooraward.com/reima-reima-weather-app/).
 - 2D gagnvirkt mælaborð (e. dashboard) sem sýnir kvikuð rauntímagögn með snertistjórnun, t.d. [Material UI](https://mui.com/material-ui/getting-started/templates/dashboard/) eða [D3.js](https://observablehq.com/@d3/gallery?utm_source=d3js-org&utm_medium=hero&utm_campaign=try-observable).
 - 2D/3D Gagnvirkur kortaleiðarvísir með [MapBox GL JS](https://www.mapbox.com/mapbox-gljs).
-- AR gagnvirkt viðmót með handapatsstjórnun og myndgreiningavefþjónustu.
+- AR gagnvirkt viðmót með myndgreiningavefþjónustu.
 
 Hér eru ýmis [lokaverkefni](https://github.com/GunnarThorunnarson/FORR3FV05EU/tree/master/docs/lokaverkefni) sem nemendur hafa gert.
 
