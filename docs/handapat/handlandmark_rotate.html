@@ -3,20 +3,11 @@
     <meta charset='UTF-8'>
     <title>Handlandmark - rotation</title>
     <style>    
-    @use "@material";
     body {
       font-family: roboto;
       margin: 2em;
       color: #3d3d3d;
-      --mdc-theme-primary: #007f8b;
-      --mdc-theme-on-primary: #f1f3f4;
-    }
-
-    h1 {
-      color: #007f8b;
-    }
-    h2 {
-      clear: both;
+      display: flex;
     }
     video {
       clear: both;
@@ -26,71 +17,14 @@
       -moz-transform: rotateY(180deg);
       height: 280px;
     }
-    section {
-      opacity: 1;
-      transition: opacity 500ms ease-in-out;
-    }
-    .removed {
-      display: none;
-    }
-    .invisible {
-      opacity: 0.2;
-    }
-    .detectOnClick {
-      position: relative;
-      float: left;
-      width: 48%;
-      margin: 2% 1%;
-      cursor: pointer;
-    }
-    .videoView {
-      position: absolute;
-      float: left;
-      width: 48%;
-      margin: 2% 1%;
-      cursor: pointer;
-      min-height: 500px;
-    }
-    .videoView p,
-    .detectOnClick p {
-      padding-top: 5px;
-      padding-bottom: 5px;
-      background-color: #007f8b;
-      color: #fff;
-      border: 1px dashed rgba(255, 255, 255, 0.7);
-      z-index: 2;
-      margin: 0;
-    }
-    .highlighter {
-      background: rgba(0, 255, 0, 0.25);
-      border: 1px dashed #fff;
-      z-index: 1;
-      position: absolute;
-    }
-    .canvas {
-      z-index: 1;
-      position: absolute;
-      pointer-events: none;
-    }
     #output_canvas {
+      position: absolute; left: 0px; top: 0px;
       transform: rotateY(180deg);
       -webkit-transform: rotateY(180deg);
       -moz-transform: rotateY(180deg);
     }
-    .detectOnClick {
-      z-index: 0;
-      font-size: calc(8px + 1.2vw);
-    }
-    .detectOnClick img {
-      width: 45vw;
-    }
-    .output {
-      display: none;
-      width: 100%;
-      font-size: calc(8px + 1.2vw);
-    }
     #scene-container {
-        display: inline-block;
+        display: block;
         width: 50%;
     }
     .palmicon {
@@ -103,13 +37,12 @@
     }
   </style>
 </head>
-<body style="display: flex;">
-    <div width: 50%;>
+<body>
+    <div>
         <button id='webcamButton'>ENABLE WEBCAM</button>
         <div style='position: relative;'>
             <video id='webcam' autoplay></video>
-            <canvas id='output_canvas' width='480' height='360'
-                style='position: absolute; left: 0px; top: 0px;'></canvas>
+            <canvas id='output_canvas' width='480' height='480'></canvas>
         </div>
         <p class='iconcon'>V: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
         <p class="iconcon">H: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
@@ -167,7 +100,7 @@ scene.add(directionalLight);
 camera.lookAt(cube.position);
 const light = new THREE.AmbientLight(0x404040); // soft white light
 scene.add(light);
-      
+
 let yangle = 0;
 let xangle = 0;
 function animate() {
@@ -191,14 +124,15 @@ window.addEventListener("resize", onWindowResize);
 // Snúum (rotate) ferning (three.js) með handlandmark með að snúa hendi 
 // Búum til lófaflöt (e. plane) útfrá þremur 3D Handmark hnitum á hendi (5, 17, 0)  
 
-import { GestureRecognizer, HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+import { HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
 
 let results = undefined;
+
 let handLandmarker;
 let runningMode = 'IMAGE';   // IMAGE or VIDEO
 let webcamRunning = false;
-const videoWidth = '380px';
-const videoHeight = '292px';
+const videoWidth = '480px';
+const videoHeight = '480px';
 const video = document.getElementById('webcam');
 const canvasElement = document.getElementById('output_canvas');
 const canvasCtx = canvasElement.getContext('2d');
@@ -293,26 +227,18 @@ async function predictWebcam() {
         }
 
         for (const landmarks of results.landmarks) {
-            drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
-                color: '#00FF00',
-                lineWidth: 5
+            drawingUtils.drawConnectors(landmarks,  HandLandmarker.HAND_CONNECTIONS, {
+              color: "#00FF00",
+              lineWidth: 5
             });
-
-            drawingUtils.drawLandmarks(landmarks, {
-                color: '#FF0000',
-                lineWidth: 2
+            drawingUtils.drawLandmarks(landmarks, { 
+                color: "#FF0000", 
+                lineWidth: 2 
             });
         }
+    
     }
-    /*
-    for (const landmarks of handLandmarkerResult.landmarks) {
-    drawConnectors(cxt, landmarks, HAND_CONNECTIONS, {
-      color: "#00FF00",
-      lineWidth: 5
-    });
-    drawLandmarks(cxt, landmarks, { color: "#FF0000", lineWidth: 1 });
-    }
-    */
+ 
     canvasCtx.restore();
     // Call this function again to keep predicting when the browser is ready.
     if (webcamRunning === true) {
