@@ -29,7 +29,8 @@ Búðu til vöruvefsíðu (e-commerce) þar sem hægt er að lesa sig til um og 
 
 ### Námsmat og skil
 - Fyrir hvern lið er gefið fullt fyrir fullnægjandi útfærslu, hálft ef hann er ábótavant.
-- Skilaðu á Innu kóðaskrár.
+- Skilaðu á Innu öllum skrám.
+<!-- (líka ljósmynd af skönnuðum hlut) -->
 
 > **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
 
