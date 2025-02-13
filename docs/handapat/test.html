@@ -1,0 +1,363 @@
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Handlandmark - rotation</title>
+    <style>    
+    @use "@material";
+    body {
+      font-family: roboto;
+      margin: 2em;
+      color: #3d3d3d;
+      --mdc-theme-primary: #007f8b;
+      --mdc-theme-on-primary: #f1f3f4;
+    }
+
+    h1 {
+      color: #007f8b;
+    }
+    h2 {
+      clear: both;
+    }
+    video {
+      clear: both;
+      display: block;
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      -moz-transform: rotateY(180deg);
+      height: 280px;
+    }
+    section {
+      opacity: 1;
+      transition: opacity 500ms ease-in-out;
+    }
+    .removed {
+      display: none;
+    }
+    .invisible {
+      opacity: 0.2;
+    }
+    .detectOnClick {
+      position: relative;
+      float: left;
+      width: 48%;
+      margin: 2% 1%;
+      cursor: pointer;
+    }
+    .videoView {
+      position: absolute;
+      float: left;
+      width: 48%;
+      margin: 2% 1%;
+      cursor: pointer;
+      min-height: 500px;
+    }
+    .videoView p,
+    .detectOnClick p {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      background-color: #007f8b;
+      color: #fff;
+      border: 1px dashed rgba(255, 255, 255, 0.7);
+      z-index: 2;
+      margin: 0;
+    }
+    .highlighter {
+      background: rgba(0, 255, 0, 0.25);
+      border: 1px dashed #fff;
+      z-index: 1;
+      position: absolute;
+    }
+    .canvas {
+      z-index: 1;
+      position: absolute;
+      pointer-events: none;
+    }
+    #output_canvas {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      -moz-transform: rotateY(180deg);
+    }
+    .detectOnClick {
+      z-index: 0;
+      font-size: calc(8px + 1.2vw);
+    }
+    .detectOnClick img {
+      width: 45vw;
+    }
+    .output {
+      display: none;
+      width: 100%;
+      font-size: calc(8px + 1.2vw);
+    }
+    #scene-container {
+        display: inline-block;
+        width: 50%;
+    }
+    .palmicon {
+      height: 50px;
+      width: auto;
+    }    
+    .iconcon {
+      display: inline-block;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body style="display: flex;">
+    <div width: 50%;>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <div style='position: relative;'>
+            <video id='webcam' autoplay></video>
+            <canvas id='output_canvas' width='480' height='360'
+                style='position: absolute; left: 0px; top: 0px;'></canvas>
+        </div>
+        <p class='iconcon'>V: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
+        <p class="iconcon">H: <img class="palmicon" src='https://cdn-icons-png.flaticon.com/512/2717/2717394.png'></p>
+    </div>
+    <div id="scene-container"></div>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@v0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@v0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+// ---- Three.js ----------------------------------------------------
+// Teiknum tening
+
+import * as THREE from "three";
+const container = document.querySelector("#scene-container");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color("white");
+// Create a camera
+const fov = 35; // AKA Field of View
+const aspect = container.clientWidth / container.clientHeight;
+const near = 0.1; // the near clipping plane
+const far = 100; // the far clipping plane
+const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+// Move the camera back so we can view the scene
+camera.position.set(0, 10, 30);
+const cubematerial = new THREE.MeshStandardMaterial({
+  color: new THREE.Color(0xff0000),
+});
+const cubegeometry = new THREE.BoxGeometry(4, 4, 4);
+const cube = new THREE.Mesh(cubegeometry, cubematerial);
+const donutmaterial = new THREE.MeshStandardMaterial({
+  color: new THREE.Color(0xadd8e6),
+});
+// Create the renderer
+const renderer = new THREE.WebGLRenderer({
+  preserveDrawingBuffer: true,
+  precision: "lowp",
+  antialias: true
+}); 
+// Next, set the renderer to the same size as our container element
+renderer.setSize(container.clientWidth, container.clientHeight);
+// Finally, set the pixel ratio so that our scene will look good on HiDPI displays
+renderer.setPixelRatio(window.devicePixelRatio);
+// Add the automatically created <canvas> element to the page
+container.append(renderer.domElement);
+scene.add(cube);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(10, 10, 10);
+directionalLight.target = cube;
+scene.add(directionalLight);
+camera.lookAt(cube.position);
+const light = new THREE.AmbientLight(0x404040); // soft white light
+scene.add(light);
+
+function animate() {
+    console.log(yangle, xangle);  // hnitin frá Handlandmark
+    if (true) {
+      cube.rotation.x = (xangle * Math.PI) / 180; // Convert to radians
+      cube.rotation.y = (yangle * Math.PI) / 180; // Convert to radians
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+animate();
+
+function onWindowResize() {
+    location.reload();
+}
+window.addEventListener("resize", onWindowResize);
+  
+
+// ---- Handlandmarks ---------------------------------------------------
+// Snúum (rotate) ferning (three.js) með handlandmark með að snúa hendi 
+// Búum til lófaflöt (e. plane) útfrá þremur 3D Handmark hnitum á hendi (5, 17, 0)  
+
+import { GestureRecognizer, HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+
+let results = undefined;
+let yangle = 0;
+let xangle = 0;
+let handLandmarker;
+let runningMode = 'IMAGE';   // IMAGE or VIDEO
+let webcamRunning = false;
+const videoWidth = '380px';
+const videoHeight = '292px';
+const video = document.getElementById('webcam');
+const canvasElement = document.getElementById('output_canvas');
+const canvasCtx = canvasElement.getContext('2d');
+let enableWebcamButton = document.getElementById('webcamButton');
+let lastVideoTime = -1;
+
+// Before we can use HandLandmarker class we must wait for it to finish loading.
+// Machine Learning models can be large and take a moment to get everything needed to run.
+const createHandLandmarker = async () => {
+    const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm');
+       handLandmarker = await HandLandmarker.createFromOptions(vision, {
+           baseOptions: {
+                   modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+                   delegate: 'GPU'
+           },
+           numHands: 2,
+           runningMode: runningMode,
+     });
+};
+createHandLandmarker();
+
+function enableCam(event) {
+    if (!handLandmarker) {
+        console.log("Wait for handLandmarker to load before clicking!");
+        return;
+    }
+    if (webcamRunning === true) {
+            webcamRunning = false;
+        } else{
+            webcamRunning = true;
+    }
+    // getUsermedia parameters.
+    const constraints = { video: true };
+    // Activate the webcam stream.
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+        video.srcObject = stream;
+        video.addEventListener('loadeddata', predictWebcam);
+    });
+}
+enableWebcamButton.addEventListener('click', enableCam);
+
+async function predictWebcam() {
+    const webcamElement = document.getElementById('webcam');
+    if (runningMode === "IMAGE") {
+        runningMode = "VIDEO";
+        await handLandmarker.setOptions({ runningMode: "VIDEO" });
+    }
+
+    let startTimeMs = performance.now();
+    if (video.currentTime !== lastVideoTime) {
+        lastVideoTime = video.currentTime;
+        // fáum niðurstöður eftir greiningu
+        results = handLandmarker.detectForVideo(video, startTimeMs);
+    }
+
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    const drawingUtils = new DrawingUtils(canvasCtx);
+    canvasElement.style.height = videoHeight;
+    webcamElement.style.height = videoHeight;
+    canvasElement.style.width = videoWidth;
+    webcamElement.style.width = videoWidth;
+    
+    // data
+    if (results.landmarks.length > 0) {
+        let r = null;
+        let l = null;
+        let telj = 0;
+
+        for (const hendi of results.handednesses) {
+
+            if (hendi[0].displayName == "Right") {
+                r = telj;
+
+            } else {
+                l = telj;
+            }
+            telj += 1;
+        }
+        console.log("l", l, "r", r);
+        if (l != null) {
+            const p1 = results.landmarks[l][5];
+            const p2 = results.landmarks[l][17];
+            const p3 = results.landmarks[l][0];
+            yangle = calculateYawAngle(p1, p2, p3);
+        }
+        if (r != null) {
+            const p21 = results.landmarks[r][5];
+            const p22 = results.landmarks[r][17];
+            const p23 = results.landmarks[r][0];
+            xangle = calculateYawAngle(p21, p22, p23);
+        }
+
+        for (const landmarks of results.landmarks) {
+            drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
+                color: '#00FF00',
+                lineWidth: 5
+            });
+
+            drawingUtils.drawLandmarks(landmarks, {
+                color: '#FF0000',
+                lineWidth: 2
+            });
+        }
+    }
+    /*
+    for (const landmarks of handLandmarkerResult.landmarks) {
+    drawConnectors(cxt, landmarks, HAND_CONNECTIONS, {
+      color: "#00FF00",
+      lineWidth: 5
+    });
+    drawLandmarks(cxt, landmarks, { color: "#FF0000", lineWidth: 1 });
+    }
+    */
+    canvasCtx.restore();
+    // Call this function again to keep predicting when the browser is ready.
+    if (webcamRunning === true) {
+        window.requestAnimationFrame(predictWebcam);
+    }
+}
+
+// Calculates the yaw angle between three points in 3D space. 
+// The yaw angle is the angle between the projection of the normal vector of the plane formed by the three points onto the XZ plane and the Z-axis. 
+function calculateYawAngle(point1, point2, point3) {
+    // Calculate the vectors v1 and v2
+    let v1 = {
+        x: point2.x - point1.x,
+        y: point2.y - point1.y,
+        z: point2.z - point1.z
+    };
+    let v2 = {
+        x: point3.x - point1.x,
+        y: point3.y - point1.y,
+        z: point3.z - point1.z
+    };
+    // Calculate the cross product of v1 and v2 to get the normal vector N
+    let N = {
+        x: v1.y * v2.z - v1.z * v2.y,
+        y: v1.z * v2.x - v1.x * v2.z,
+        z: v1.x * v2.y - v1.y * v2.x
+    };
+    // Normalize the normal vector 
+    let magnitude = Math.sqrt(N.x * N.x + N.y * N.y + N.z * N.z);
+    let normalizedN = {
+        x: N.x / magnitude,
+        y: N.y / magnitude,
+        z: N.z / magnitude
+    };
+    // Calculate the yaw angle using atan2
+    let yawRadians = Math.atan2(normalizedN.x, normalizedN.z);
+
+    // Convert radians to degrees
+    let yawDegrees = yawRadians * (180 / Math.PI);
+  
+    // Ensure the angle is in the range [0, 360)
+    if (yawDegrees < 0) {  yawDegrees += 360; }
+  
+    return yawDegrees;
+}
+  </script>
+</body>
+</html>
