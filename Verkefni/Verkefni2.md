@@ -25,6 +25,7 @@ Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja einfalda 
 1. Skrifaðu skýringar í html sem útskýrir multi-touch virknina.
 
 > ath. einfalt rotation er ekki nóg.
+<!-- skilað skjáupptöku af notkun -->
 
 ---
 
