@@ -43,4 +43,6 @@ Haust 2023
 
 </details>
 
+<br>
+
 > [AR Fireball](https://github.com/bjornthor21/verk5-vidmot/blob/main/README.md#ar-fireball). Að nota báðar myndavélarnar (framan og aftan) á símanum til að sjá og stýra 3D hlut í AR
