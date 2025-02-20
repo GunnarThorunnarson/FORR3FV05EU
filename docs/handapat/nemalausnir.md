@@ -23,7 +23,6 @@ Haust 2023
 - Þorgeir, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Þorgeir/seinni/index.html)
 - Tumi, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Tumi/part2/part2/main.html)
 
-> Að nota báðar myndavélarnar (framan og aftan) á símanum til að sjá og stýra 3D hlut í AR, [AR Fireball sýnidæmi](https://github.com/bjornthor21/verk5-vidmot/blob/main/README.md#ar-fireball).
 
 <!--
 #### Annað:
@@ -42,3 +41,4 @@ Haust 2023
 
 </details>
 
+> Að nota báðar myndavélarnar (framan og aftan) á símanum til að sjá og stýra 3D hlut í AR, [AR Fireball sýnidæmi](https://github.com/bjornthor21/verk5-vidmot/blob/main/README.md#ar-fireball).
