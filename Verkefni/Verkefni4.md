@@ -15,7 +15,7 @@ Notaðu eitthvað af [gesture recognition](https://developers.google.com/mediapi
    1. [ ] Til að snúa (e.rotate) 3D hlut sem þú scannaðir í verkefni 3 (x, z, y ás) á skjá.
    1. [ ] Notaðu `drawingUtils.drawConnectos` og `drawingUtils.drawLandmarks` til að sjá gestur detection á hönd (frjáls útfærsla).
 
-Sjá nánar [myndband](https://www.youtube.com/watch?v=cJgDuywJv8Y) og [kóðadæmi](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/docs/handapat/hand_gesture_recognition.html).
+Sjá nánar [myndband](https://www.youtube.com/watch?v=cJgDuywJv8Y) og [kóðadæmi](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/gesture_recognition.html).
 
 <!--   1. [ ] _valkvæmt:_ stækka og minnka 3D hlutinn á skjá. -->
 
