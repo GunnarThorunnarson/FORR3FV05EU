@@ -3,7 +3,7 @@
 ---
 
 <details>
-<summary>`Gesture recoginition` með MediaPipe</summary>
+<summary>Gesture recoginition með MediaPipe</summary>
 
 <br>
 
@@ -33,7 +33,7 @@ Haust 2023
 
 </details>
 <details>
-<summary> `Hand landmarks detection` með MediaPipe</summary>
+<summary>Hand landmarks detection með MediaPipe</summary>
 
 - [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  _Haust 2023_
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024_
