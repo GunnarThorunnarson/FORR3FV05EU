@@ -7,7 +7,8 @@
 - [LuaMQTT Display client fyrir Minecraft](https://github.com/Brakku/vidmots-lokaverk/tree/main) _kerfi sem sýnir handarstöðu í Minecraft með því að nota vefmyndavél og hreyfiviðurkenni._
 - [Sonos Stjórnunarsíða](https://github.com/GabrielMani15/verkefni5sonos) _stjórna tónlist og hljómi með því að nota sveifur (swipes) og smelli_
 - [Handapat í AR](https://github.com/ellaleaf/Vi-m-tsForritun_Verkefni5) _Nota eigin hendi til þess að interacta við hluti í xr_
-- [Veðurapp fyrir börn](https://asmodeus-cruentus.com/)
+- [Veðurapp fyrir börn](https://github.com/AsmodeusCruentus/Weather) og [live](https://asmodeus-cruentus.com/)
+- [dice](https://github.com/OrnTrausti/dicejs) _3d dice roller using gravity and hand gesture to change the dice and start rolling with an animation on a nat20_
   
 ---
 
