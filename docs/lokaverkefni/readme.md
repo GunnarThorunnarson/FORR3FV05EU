@@ -1,5 +1,16 @@
 ## Lokaverkefni hjá nemendum
 
+### Vor 2025
+
+- [Wizard Fight](https://github.com/Belistov/wizard-fight) _Turn Based RPG milli 2 galdrakarla (PvE). Notast er við Hand tracking til að áhveða hvað blái galdrakarlinn gerir._
+- [2D scroll SVG Game](https://github.com/nxtxe/LokaverkefniWEB)  _notandi stýrir leikmann með hreyfingum handarinnar_
+- [LuaMQTT Display client fyrir Minecraft](https://github.com/Brakku/vidmots-lokaverk/tree/main) _kerfi sem sýnir handarstöðu í Minecraft með því að nota vefmyndavél og hreyfiviðurkenni._
+- [Sonos Stjórnunarsíða](https://github.com/GabrielMani15/verkefni5sonos) _stjórna tónlist og hljómi með því að nota sveifur (swipes) og smelli_
+- [Handapat í AR](https://github.com/ellaleaf/Vi-m-tsForritun_Verkefni5) _Nota eigin hendi til þess að interacta við hluti í xr_
+- [Veðurapp fyrir börn](https://asmodeus-cruentus.com/)
+  
+---
+
 ### Vor 2024
 - Árni: [Drag and drop Mouse and Touch with Three.js Raycasting](https://github.com/ElderlyStudent/vidmodforr/blob/testing/verk6/Skyrsla.md)
 - Emil: [Skanna 3D hlut og nota hendur til að hreyfa hann í gegnum völundarhús](https://github.com/Emilb05/FORR3FV05EU/blob/main/Verk_6/Readme.md)
