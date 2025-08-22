@@ -1,9 +1,8 @@
 ## 404 vefsíður 
 
-Nemendalausnir: Verkefni 1, vor 2025. <br>
-_svg, css, anime.js_ 
+Nemendalausnir: Verkefni 1, vor 2025 _(svg, css, anime.js)_ 
 
-- [1](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/1.html)
-- [2](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/2.html)
-- [3](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/3.html)
-- [4](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/4.html)
+- [nemandi 1](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/1.html)
+- [nemandi 2](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/2.html)
+- [nemandi 3](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/3.html)
+- [nemandi 4](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v1/4.html)
