@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Page - Hallgrímskirkja</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            margin: auto;
+            width: 75%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(255, 243, 105);
+        }
+
+        .hoverzone {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            z-index: 10;
+        }
+
+        .svg_container {
+            width: 100%;
+            height: auto;
+            width: 400px;
+            overflow: visible;
+        }
+
+        .hallgrimskirkja {
+            rotate: -90deg;
+            transform-origin: center;
+        }
+
+        /* Pulsing circle effect */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1.6);
+            }
+            50% {
+                transform: scale(1.7);
+            }
+        }
+
+        .backcirkle {
+            animation: pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div id="hoverzone" class="hoverzone"></div>
+        <div class="svg_container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.901 63.5529" style="overflow:visible">
+                <defs>
+                    <style>
+                        .leingjur { fill: none; stroke: #000; stroke-width: .2646; }
+                        .staurar { fill: none; stroke: #000; stroke-width: .2646; }
+                        .kross { fill: none; stroke: #000; stroke-width: .1253; }
+                        .haus { fill: none; stroke: #000; stroke-width: .2646; }
+                        .klukka { fill: none; stroke: #000; stroke-width: .2646; }
+                    </style>
+                </defs>
+                <!-- Background circle -->
+                <circle class="backcirkle" id="circle9" style="overflow:visible;fill:rgb(255, 243, 105);transform-origin: center" cx="30.346691" cy="33.427868" r="37.090405"/>
+
+                <!-- Hallgrímskirkja shape -->
+                <g class="hallgrimskirkja">
+                
+                    <g class="hallgrimskirkja" >
+                        <path transform="translate(-68.1036 -68.106)" class="leingjur" d="M68.1244 114.3737c6.555-1.0471 13.11-2.0942 17.2306-7.8223s5.8066-16.1367 7.4926-26.5456 M127.9837 114.374c-6.555-1.0471-13.11-2.0942-17.2306-7.8223-4.1206-5.728-5.8065-16.1367-7.4925-26.5455"/>
+                        <path transform="translate(-68.1036 -68.106)"class="staurar"  d="M92.8398 80.0199v35.9337" transform="matrix(1 0 0 .95965 0 3.2288)"/>
+                        <path transform="translate(-57.7036 -68.106)"class="staurar"  d="M92.8398 80.0199v35.9337" transform="matrix(1 0 0 .95998 10.4155 3.203)"/>
+                        <path transform="translate(-68.1036 -68.106)"class="kross"  d="m98.5662 68.8148-1.1262-.0025"/>
+                        <path transform="translate(-68.1036 -68.106)"class="kross"  d="m98.006 70.397-.0024-2.2909"/> 
+                        <path transform="translate(133.2, -68.106) scale(-1, 1)" class="haus"  d="m 98.035758,80.028801 c 0.333801,-1.738052 0.667502,-3.475904 1.544252,-5.094853 0.87675,-1.618849 2.29635,-3.118594 3.71605,-4.618239" id="path6" />
+                        <path transform="translate(-68.1036 -68.106)" class="haus"  d="M92.8445 80.0284c.335-1.738.6699-3.4758 1.5318-5.0942.8618-1.6183 2.2505-3.117 3.6393-4.6157" id="path7" />
+                        <path transform="translate(-68.1036 -68.106)" class="haus"  d="M92.8369 80.0491h10.4275" id="path8" />
+                        <rect id="base" transform="translate(-68.1036 -68.106)" width="0" height="1.6641" x="68.1518" y="115.3972" fill="#1a1a1a" />
+                        <circle transform="translate(-68.1036 -68.106)" class="klukka" cx="98.0042" cy="85.5649" r="3" />
+                    </g>
+
+                <!-- Text -->
+                <g class="text">
+                    <text x="50%" y="90%" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">
+                        404
+                    </text>
+                    <text x="50%" y="100%" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#333">
+                        það hefur komið upp villa
+                    </text>
+                    
+                </g>
+            </svg>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const circle = document.getElementById('circle9');
+            const hoverzone = document.getElementById('hoverzone');
+
+            // Line drawing animation
+            anime({
+                targets: '.hallgrimskirkja path',
+                strokeDashoffset: [anime.setDashoffset, 0],
+                easing: 'easeInOutSine',
+                duration: 2500,
+                delay: anime.stagger(100),
+            });
+
+            anime({
+                targets: '.hallgrimskirkja #base',
+                width: '60',
+                easing: 'easeInOutSine',
+                duration: 2000,
+            });
+
+            anime({
+                targets: '.hallgrimskirkja',
+                translateY: [-500, 0],
+                easing: 'spring(1, 80, 10, 0)',
+                rotate: '90deg',
+                duration: 3000,
+                
+
+            });
+
+            // Hover animations
+            hoverzone.addEventListener('mouseenter', () => {
+                anime({
+                    targets: circle,
+                    fill: 'rgb(255, 221, 0)',
+                    scale: 1.2,
+                    duration: 700,
+                    easing: 'easeInOutQuad',
+                });
+                console.log('hovered');
+            });
+
+            hoverzone.addEventListener('mouseleave', () => {
+                anime({
+                    targets: circle,
+                    fill: 'rgb(255, 243, 105)',
+                    scale: 1,
+                    duration: 700,
+                    easing: 'easeInOutQuad',
+                });
+                console.log('hovered out');
+            });
+
+            
+        });
+    </script>
+</body>
+</html>
