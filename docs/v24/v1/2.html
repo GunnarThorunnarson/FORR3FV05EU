@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="svg_kvikun.css">
+    <link rel="stylesheet" type="text/css" href="svg_kvikun.css">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+body{
+    background-color: rgb(233, 241, 186);
+}
+
+text {
+    font-family: "Anton", serif;
+    white-space: pre;
+    fill: rgb(80, 80, 80);
+}
+
+.switch {
+    fill: rgb(80, 80, 80);
+}
+
+.petals {
+    fill: url(#grad1)
+}
+
+.yard {
+    fill: rgb(140, 216, 140);
+}
+
+.back-sky {
+    fill: #b3cfef;
+    stroke: none;
+}
+
+.back-slide {
+    fill: url(#patt1);
+}
+
+.line {
+    stroke: rgb(154, 196, 226);
+    stroke-width: 2%;
+    fill: none;
+}
+
+
+.sun {
+    fill: url(#sungrad)
+}
+
+
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <svg id="svg" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="sungrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" stop-color="rgba(247,245,155,1)" />
+                <stop offset="100%" stop-color="rgba(251,180,63,1)" />
+            </radialGradient>
+            <radialGradient id="moongrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="20%" stop-color="rgba(227,227,226,1)" />
+                <stop offset="100%" stop-color="rgba(168,179,180,1)" />
+            </radialGradient>
+
+            <g id="all-flower">
+                <pattern id="patt1" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <use href="#flower" transform="translate(10 10)"/>
+                </pattern>
+                
+                <linearGradient x1="0.3" y1="0.3" x2="100%" y2="150%" id="grad1">
+                    <stop offset="5%" stop-color="rgba(242,93,216,1)" />
+                    <stop offset="64%" stop-color= "rgba(250,167,218,1)" />
+                </linearGradient>
+
+                <path id="petals" class="petals" d="M0 0 v-2 a1 1 0 0,0 -1.5,0.6 z" />
+
+                <g id="flower">
+                    <use href="#petals"/>
+                    <use href="#petals" transform="rotate(45)"/>
+                    <use href="#petals" transform="rotate(90)"/>
+                    <use href="#petals" transform="rotate(135)"/>
+                    <use href="#petals" transform="rotate(180)"/>
+                    <use href="#petals" transform="rotate(225)"/>
+                    <use href="#petals" transform="rotate(270)"/>
+                    <use href="#petals" transform="rotate(315)"/>
+                    <circle cx="0" cy="0" r="0.5" fill="yellow"/>
+                </g>
+            </g>
+        </defs>
+
+        <g id="background">
+            <ellipse id="yard" class="yard" cx="150" cy="120" rx="100" ry="10"/>
+            <g transform="translate(50 5) scale(0.4 0.3)">
+                <path id="back-sky" class="back-sky" d="M47.2 367.2c0 0-35.5-101.8-3.3-117.1 32.3-15.4-6.7-113.3 55.6-130.6s34.9-92.4 140.7-61.7C346.1 88.4 353 5.2 402.5 87.6c49.5 82.4 26.3 122.6 62.6 134 36.3 11.4 17.4 114.8-11.6 145.6C253.2 367.2 47.2 367.2 47.2 367.2z"/>
+                <path id="line" class="line" d="M47.2 367.2c0 0-35.5-101.8-3.3-117.1 32.3-15.4-6.7-113.3 55.6-130.6s34.9-92.4 140.7-61.7C346.1 88.4 353 5.2 402.5 87.6c49.5 82.4 26.3 122.6 62.6 134 36.3 11.4 17.4 114.8-11.6 145.6"/>
+                <circle id="sun" class="sun" cx="0" cy="0" r="10" />
+            </g>
+            
+        </g>
+
+        <text id="text" transform="translate(-174 110) scale(5)" >
+            4 0 4
+        </text>
+
+        <g id="hallgrimskirkja" transform="translate(120 27) scale(0.3)">
+            <path id="kirkja" d="M 89.3 3 v 12.1 H 75.7 v 4 h 13.6 v 23.3 c -2.2 4.3 -5.6 15.1 -10.8 37.3 c -17.9 76.5 -14.2 62.4 -14.2 62.4 v 34.2 H 52.8 v 38.8 H 42.5 v 42.2 H 31 v 40 l 59.8 -0.2 l 0 0 l 61.1 -0.2 v -39.2 h -11.5 v -42.2 H 130.2 v -38.8 h -11.5 v -34.2 s 3.7 14.1 -14.2 -62.4 c -5.2 -22.4 -8.6 -33.2 -10.8 -37.4 v -23.6 h 13.8 v -4 H 93.6 V 3 Z" style="fill:#999; stroke:none;"/>
+            <path id="switch" class="switch" d="M85 296v-14s0 -22 8-22c8 0 8 22 8 22v14z"/>
+            <circle id="switch" class="switch" cx="91" cy="150" r="15" />
+        </g>  
+        
+        <g id="flowers">
+            <g id="flowers1">
+                <use href="#flower" transform="translate(150 -3)"/>
+                <use href="#flower" transform="translate(160 -5)"/>
+                <use href="#flower" transform="translate(200 -3)"/>
+            </g>
+
+            <g id="flowers2">
+                <use href="#flower" transform="translate(190 -5)"/>
+                <use href="#flower" transform="translate(130 -5)"/>
+                <use href="#flower" transform="translate(90 -8)"/>
+            </g>
+            <g id="flowers3">
+                <use href="#flower" transform="translate(120 -7)"/>
+                <use href="#flower" transform="translate(180 -3)"/>
+                <use href="#flower" transform="translate(220 -7)"/>
+            </g>
+            <g id="flowers4">
+                <use href="#flower" transform="translate(100 -5)"/>
+                <use href="#flower" transform="translate(230 -8)"/>
+                <use href="#flower" transform="translate(70 -7)"/>
+            </g>
+        </g>
+    </svg>
+    <script>
+        
+// morph sky
+anime({
+    targets: '#back-sky',
+    easing: 'easeInOutSine',
+    duration: 3000,
+    loop: true,
+    d: [
+      { 
+        value: ['M47.2 367.2c0 0-35.5-101.8-9.2-125.2 32.3-15.4-6.7-113.3 65-128s34.9-92.4 144-74C346.1 88.4 353 5.2 402 103c49.5 82.4 26.3 122.6 63 119 36.3 11.4 17.4 114.8-13 145C253.2 367.2 47.2 367.2 47.2 367.2z',]
+      },
+      { 
+        value: ['M47.2 367.2c0 0-35.5-101.8-3.3-117.1 32.3-15.4-6.7-113.3 55.6-130.6s34.9-92.4 140.7-61.7C346.1 88.4 353 5.2 402.5 87.6c49.5 82.4 26.3 122.6 62.6 134 36.3 11.4 17.4 114.8-11.6 145.6C253.2 367.2 47.2 367.2 47.2 367.2z']
+      }
+    ]
+  });
+
+  // morph line with sky
+  anime({
+    targets: '#line',
+    easing: 'easeInOutSine',
+    duration: 3000,
+    loop: true,
+    d: [
+      { 
+        value: ['M47.2 367.2c0 0-35.5-101.8-9.2-125.2 32.3-15.4-6.7-113.3 65-128s34.9-92.4 144-74C346.1 88.4 353 5.2 402 103c49.5 82.4 26.3 122.6 63 119 36.3 11.4 17.4 114.8-13 145']
+      },
+      { 
+        value: ['M47.2 367.2c0 0-35.5-101.8-3.3-117.1 32.3-15.4-6.7-113.3 55.6-130.6s34.9-92.4 140.7-61.7C346.1 88.4 353 5.2 402.5 87.6c49.5 82.4 26.3 122.6 62.6 134 36.3 11.4 17.4 114.8-11.6 145.6']
+      }
+    ]
+  });
+
+  // draw line
+  anime({
+    targets: '#line',
+    strokeDashoffset: [anime.setDashoffset, 0],
+    duration: 7000,
+    easing: 'linear',
+    loop: true,
+    direction:'alternate',
+  });
+
+  // make sun follow line
+  var path = anime.path('#line');
+
+  anime({
+    targets: '#sun',
+    translateX: path('x'),
+    translateY: path('y'),
+    scale: 3,
+    easing: 'linear',
+    duration: 7000,
+    direction:'alternate',
+    loop: true
+  });
+
+
+// notandavirkni
+  document.getElementById('svg');
+  let toggle = false;
+  svg.addEventListener('click', handleInput);
+  function handleInput() {
+    document.querySelector('body').style.background = toggle ? 'rgb(233, 241, 186)' : 'rgb(110, 115, 155)';
+    document.getElementById('sun').style.fill = toggle ? 'url(#sungrad)' : 'url(#moongrad)';
+    
+    if(!toggle){
+      toggle = true;
+    }else{
+      toggle= false;
+    }
+  }
+
+  var tl = anime.timeline({
+    easing: 'linear',
+    duration: 5000
+  });
+  
+  // Add children
+  tl
+  .add({
+    targets: '#flowers1',
+    translateY: 127,
+  })
+  .add({
+    targets: '#flowers2',
+    translateY: 127,
+  },'-=3000')
+  .add({
+    targets: '#flowers3',
+    translateY: 127,
+  },'-=4000')
+  .add({
+    targets: '#flowers4',
+    translateY: 127,
+  },'-=3000');
+
+
+
+    </script>    
+</body>
+</html>
