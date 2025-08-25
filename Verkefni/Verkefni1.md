@@ -7,7 +7,7 @@
 
 ### Verkefnalýsing
 
-Hannaðu og útfærðu [404](https://www.svgator.com/blog/404-page-error-animation-examples/) villusíðu með SVG, CSS og kvikun (Anime.js), [sýnidæmi](https://codepen.io/uiswarup/pen/dyoyLOp) fyrir Tækniskólann. 404 síðan þarf að innihalda m.a. SVG path teikningu af [logo skólans](https://github.com/GunnarThorunnarson/FORR3FV05EU/tree/master/Myndir/logo) með kvikun.
+Hannaðu og útfærðu [404](https://www.svgator.com/blog/404-page-error-animation-examples/) villusíðu með SVG, CSS og kvikun (Anime.js V4), [sýnidæmi](https://codepen.io/uiswarup/pen/dyoyLOp) fyrir Tækniskólann. 404 síðan þarf að innihalda m.a. SVG path teikningu af [logo skólans](https://github.com/GunnarThorunnarson/FORR3FV05EU/tree/master/Myndir/logo) með kvikun.
 
 Á [freepik](https://www.freepik.com/search?file_type=svg&format=search&last_filter=page&last_value=4&page=4&query=404&selection=1&type=vector#uuid=cefaedb1-963d-4c51-b0fc-779198024d0c)
 er hægt að sækja 404 vektormyndir til að vinna útfrá, [leiðbeiningar (youtube)](https://www.youtube.com/watch?v=-qoAh70-sQI). 
