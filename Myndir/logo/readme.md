@@ -1,1 +1,0 @@
-SVG logo af Tækniskólanum
