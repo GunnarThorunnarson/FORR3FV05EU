@@ -25,7 +25,7 @@ er hægt að sækja 404 vektormyndir til að vinna útfrá, [leiðbeiningar (you
 
 #### Kvikun þarf að innihalda eftirfarandi þætti (lágmark): (70%)
 
-- [ ] Samsett kvikun (e. sequencing) sem fer af stað við e. load á vefsíðu og keyrir endalaust. Tengdu amk. **3** kvikanir saman með `Timeline` í anime.js.
+- [ ] Samsett kvikun (e. sequencing) sem fer af stað við e. load á vefsíðu. Tengdu amk. **3** kvikanir saman með `Timeline` í anime.js.
 - [ ] Notendavikrni t.d. click á hluta síðu (t.d. SVG) til að framkalla nýja kvikun á vefsíðu eða hluta þess.
 - [ ] Transitions (easing) til að gera mjúka breytingu frá einni stöðu í aðra stöðu.
 - [ ] Transformation til að breyta frá einni stöðu í aðra stöðu: 
