@@ -33,7 +33,7 @@ er hægt að sækja 404 vektormyndir til að vinna útfrá, [leiðbeiningar (you
   - [ ] rotate
   - [ ] scale 
 - [ ] Line drawing animation.
-- [ ] Morphing.
+- [ ] Morphing (sjá líka [Morphing shapes með Inkscape](https://www.youtube.com/watch?v=FYC_fVWOIyE)).
 - [ ] Path following.
 
 
