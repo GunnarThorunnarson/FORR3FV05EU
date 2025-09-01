@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pointer Events: teikna</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas {
+             touch-action: none;
+             border: solid black 5px;
+             box-sizing: border-box; 
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="600" height="600"></canvas>
+    <button id="clear">Clear canvas</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // látum canvas fylla window.
+        canvas.width = window.innerWidth - 15;
+        canvas.height = window.innerHeight - 15;
+
+        // Mapping from the pointerId to the current finger position
+        const ongoingTouches = new Map();
+        const colors = ["red", "green", "blue"];
+
+        // The handleStart function listens to the pointerdown event and draws a circle at the start of the touch.
+        function handleStart(event) {
+            const touch = {
+                pageX: event.pageX,
+                pageY: event.pageY,
+                color: colors[ongoingTouches.size % colors.length],
+            };
+            ongoingTouches.set(event.pointerId, touch);
+
+            ctx.beginPath();
+            ctx.arc(touch.pageX, touch.pageY, 4, 0, 2 * Math.PI, false);
+            ctx.fillStyle = touch.color;
+            ctx.fill();
+        }
+
+        canvas.addEventListener("pointerdown", handleStart, false);
+
+        // The handleEnd function listens to the pointerup event and draws a square at the end of the touch.
+        function handleEnd(event) {
+            const touch = ongoingTouches.get(event.pointerId);
+
+            if (!touch) {
+                console.error(`End: Could not find touch ${event.pointerId}`);
+                return;
+            }
+
+            ctx.lineWidth = 4;
+            ctx.fillStyle = touch.color;
+            ctx.beginPath();
+            ctx.moveTo(touch.pageX, touch.pageY);
+            ctx.lineTo(event.pageX, event.pageY);
+            ctx.fillRect(event.pageX - 4, event.pageY - 4, 8, 8);
+            ongoingTouches.delete(event.pointerId);
+            }
+
+        canvas.addEventListener("pointerup", handleEnd, false);
+
+        // The handleMove function listens to the pointermove event and draws a line between the start and end of the touch.
+        function handleMove(event) {
+            const touch = ongoingTouches.get(event.pointerId);
+
+            // Event was not started
+            if (!touch) {
+                return;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(touch.pageX, touch.pageY);
+            ctx.lineTo(event.pageX, event.pageY);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = touch.color;
+            ctx.stroke();
+
+            const newTouch = {
+                pageX: event.pageX,
+                pageY: event.pageY,
+                color: touch.color,
+            };
+
+            ongoingTouches.set(event.pointerId, newTouch);
+            }
+
+        canvas.addEventListener("pointermove", handleMove, false);
+
+            
+        document.getElementById("clear").addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+</body>
+</html>
