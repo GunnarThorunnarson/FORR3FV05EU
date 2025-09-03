@@ -15,7 +15,6 @@ Notaðu **Pointer Events** til að leysa eftirfarandi (Touch events er ekki í b
 1. Færðu svo SVG til á skjánum í aðra endastöðu með `pan` gesture.
 1. Þegar þú sleppir fingri af skjá þá er SVG komið í endastöðu (SVG hverfur ekki af skjá).
 1. Sýndu með kvikun þegar þú hefur þrýst nógu lengi og mátt byrja að hreyfa SVG með pan gesture. Sýndu einnig með kvikun þegar þú sleppur fingri af skjá. Frjáls útfærsla.
-1. Útbúðu leiðbeiningar (skjáupptöku, icon, texti) sem útskýrir touch virknina.
    
 #### 2. Multi-touch (50%)
 Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja einfalda virkni (t.d. opna 404 vefsíðuna).
