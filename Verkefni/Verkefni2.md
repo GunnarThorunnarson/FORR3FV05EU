@@ -12,16 +12,16 @@ Notaðu **Pointer Events** til að leysa eftirfarandi (Touch events er ekki í b
 
 #### 1. Single-touch (50%)
 1. Útfærðu `long pressures` virkni á SVG (frjáls úfærsla).
-1. Færðu svo SVG til á skjánum í aðra endastöðu með `pan` gesture.
+1. Færðu svo SVG til á skjánum í aðra endastöðu með `pan / drag` gesture.
 1. Þegar þú sleppir fingri af skjá þá er SVG komið í endastöðu (SVG hverfur ekki af skjá).
-1. Sýndu með kvikun þegar þú hefur þrýst nógu lengi og mátt byrja að hreyfa SVG með pan gesture. Sýndu einnig með kvikun þegar þú sleppur fingri af skjá. Frjáls útfærsla.
+1. Sýndu með kvikun þegar þú hefur þrýst nógu lengi og mátt byrja að hreyfa SVG. Sýndu einnig með kvikun þegar þú sleppur fingri af skjá. Frjáls útfærsla.
    
 #### 2. Multi-touch (50%)
 Hannaðu þitt eigið sérsniðið multi-touch gesture fyrir einhverja einfalda virkni (t.d. opna 404 vefsíðuna).
 
-1. Hannaðu eigið gesture, notaðu amk. tvo fingur.
+1. Hannaðu eigið multi-touch gesture virkni, notaðu amk. tvo fingur.
 1. Hannaðu touch viðmót (UI) fyrir multi-touch gesture ( [sýnidæmi](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/Myndir/UI_multi-touch.png) ). Notaðu SVG og CSS.
-1. Notaðu kvikun (frjáls útfærsla) fyrir gesture.
+1. Notaðu kvikun (frjáls útfærsla) fyrir multi-touch gesture virkni.
 1. hugaðu að [notendaupplifun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Snertistjornun#ui--ux) (UX).
 1. Útbúðu leiðbeiningar (skjáupptöku, icon, texti) sem útskýrir multi-touch virknina.
 
