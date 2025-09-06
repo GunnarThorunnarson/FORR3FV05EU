@@ -1,7 +1,6 @@
 ## Verkefni 3
 - [3D tölvugrafík](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/3D-t%C3%B6lvugraf%C3%ADk)
 - 15% af heildareinkunn
-- Einstaklingsverkefni
 
 ---
 
