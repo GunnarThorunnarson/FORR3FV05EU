@@ -43,7 +43,7 @@ Vel gerð skýrsla er forsenda fyrir námsmati.
 ---
 
 ### Námsmat og skil
-Metið er vinnuframlag (virkni í tímum) og eftirfarand þættir*:
+Metið er vinnuframlag (virkni í tímum) og eftirfarand þættir:
 
 1. Viðmót (SVG, CSS, 3D models) og úttak. (**25%**)
 1. Kvikun. (**25%**)
