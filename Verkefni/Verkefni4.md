@@ -27,7 +27,7 @@ Búðu til vefsíðu (símaútgáfa) sem inniheldur ljósmynd af hlut (sem þú 
 - Skilaðu á Innu öllum skrám ásamt ljósmynd af hlutnum sem þú skannaðir.
 
 
-> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn munnlega til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
+> **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn til að fá einkunn fyrir verkefni (ef kennari óskar eftir því).
 
 <!-- vefslóð sem sýnir 3D hlut. Notaðu Github Pages (notaðu docs möppu sem vefrót) sem hýsir og sýnir 3D hlut (link á raw skrá). -->
 
