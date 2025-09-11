@@ -17,7 +17,7 @@ Búðu til einfalda vefsíðu með Three.js. Vefsíðan inniheldur 3D hlut ásam
 1. [ ] Veldu grunnform til að vinna með (t.d. terrain) í senu. Notaðu material t.d. `MeshStandardMaterial` sem tekur ljós (_ekki nota MeshBasicMaterial_). Notaðu TextureLoader og texture að eigin vali. (**10%**) 
 1. [ ] Bættu við tilbúnum hlut (glTF) að eigin vali (með eða án animation clip) í senuna. (**20%**) 
 1. [ ] Bættu við ljósi (Directional Lighting og Ambient Lighting) og skugga í senuna. (**10%**)
-1. [ ] Notaðu anime.js með Three.js. Láttu 3D hlut birtast með transition og svo snúast sjálfkrafa. Reyndu að láta 3D hlut einnig breyta t.d um lit eða lögun, [sýnidæmi](https://henryegloff.com/how-to-use-anime-js-with-three-js/). (**20%**) 
+1. [ ] Notaðu anime.js með Three.js. Láttu 3D hlut birtast með transition og svo snúast sjálfkrafa, [sýnidæmi](https://henryegloff.com/how-to-use-anime-js-with-three-js/). Láttu 3D hlut einnig breyta t.d um lit eða lögun eða vinna með innbyggða kvikun (þ.e. ef glTF inniheldur animation clip). (**20%**) 
 1. [ ] Camera Control. Notaðu Orbit control og valdar stillingar til að geta skoðað 3D hluti í þrívídd (snúið í allar áttir). (**15%**)
 
 <br>
