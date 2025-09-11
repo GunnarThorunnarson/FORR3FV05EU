@@ -1,4 +1,3 @@
-## AR lausnir (nemendur) 
 
 ### Vor 2024
 - [Hróar: körfubolti (scan)](https://hroihrolfs.github.io/vidmotsforr_2024/) 
