@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kentucky Chicken Bucket
+* source:	https://sketchfab.com/3d-models/kentucky-chicken-bucket-6e24a775b37948a387c6d5a19ea7d5a0
+* author:	Mcx1m (https://sketchfab.com/maximmihajlovich)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kentucky Chicken Bucket" (https://sketchfab.com/3d-models/kentucky-chicken-bucket-6e24a775b37948a387c6d5a19ea7d5a0) by Mcx1m (https://sketchfab.com/maximmihajlovich) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

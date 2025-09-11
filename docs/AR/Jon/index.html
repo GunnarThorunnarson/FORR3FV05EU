@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce 3D Models</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+    <h1 class="page-title">3D Model Store</h1>
+    <div class="product-container">
+        <div class="product">
+            <h2>Witch King of Angmar</h2>
+            <div class="model-viewer" id="container_1"></div>
+            <p class="description">This is a high-quality Scan of a 3D printed Witch King of Angmar helmet.</p>
+            <button class="ar-button" data-model="models/witchking.glb">View in AR</button>
+        </div>
+        <div class="product">
+            <h2>Raspberry Pi 4 Case</h2>
+            <div class="model-viewer" id="container_3"></div>
+            <p class="description">3D model of a Case for Raspberyy PI 4, simply exported from render program.</p>
+            <button class="ar-button" data-model="models/raspberry4pibox.glb">View in AR</button>
+        </div>
+        <div class="product">
+            <h2>Plague-Doctor</h2>
+            <div class="model-viewer" id="container_5"></div>
+            <p class="description">3D model of a Plague-Doctor helmet, unfinished 3d model.</p>
+            <button class="ar-button" data-model="models/plaguedoctor.glb">View in AR</button>
+        </div>
+        <div class="product">
+            <h2>Predator Faceplate</h2>
+            <div class="model-viewer" id="container_6"></div>
+            <p class="description">3D Model of the Predator Faceplate.</p>
+            <button class="ar-button" data-model="models/predator.glb">View in AR</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="js/witchking.js"></script>
+    <script src="js/model2.js"></script>
+    <script src="js/raspberry.js"></script>
+    <script src="js/model4.js"></script>
+    <script src="js/plaguedoctor.js"></script>
+    <script src="js/predator.js"></script>
+    <script src="js/kfclast.js"></script>
+    <script src="js/ar.js"></script>
+</body>
+</html>

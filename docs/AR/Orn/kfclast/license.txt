@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kfclast
+* source:	https://sketchfab.com/3d-models/kfclast-b5542a8157c842bc89c7dca78a96c4b5
+* author:	ornstyff (https://sketchfab.com/ornstyff)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kfclast" (https://sketchfab.com/3d-models/kfclast-b5542a8157c842bc89c7dca78a96c4b5) by ornstyff (https://sketchfab.com/ornstyff) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

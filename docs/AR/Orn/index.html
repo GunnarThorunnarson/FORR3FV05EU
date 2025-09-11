@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer with AR</title>
+    <link rel="stylesheet" href="verk3.css">
+</head>
+<body>
+    <h1>We are just "Winging" this hot wing deal</h1>
+    <div class="container">
+        <div class="group">
+            <p>This amazing Wing is here to stay and buy with the unreal price of 0.99$ what a steal right? What more can I say but go buy and eat it now!</p>
+        </div>
+        <div class="group dice"> <!-- If you think I am gonna spend a minute fixing this old dice name you would be wrong.-->
+
+            <div class="bar" id="ar-button-container"></div>
+
+            <canvas id="c"></canvas>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js",
+                "three/examples/jsm/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js",
+                "three/examples/jsm/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js",
+                "three/examples/jsm/webxr/ARButton.js": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/webxr/ARButton.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="verk3.js"></script>
+</body>
+</html>

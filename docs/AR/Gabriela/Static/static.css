@@ -1,0 +1,72 @@
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px 20px;
+}
+
+canvas {
+   width: 100%;
+   height: 100%;
+   display: block;
+}
+
+h1 {
+  font-size: 50px;
+  text-decoration: underline;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.texti{
+  display: flex;
+  width: 300px;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+
+.myndir {
+  margin: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .myndir img {
+    min-width: 10%;
+    min-height: 10%;
+    max-width: 80%;
+    max-height: 80%;
+  }
+
+/* Styles for screens wider than 600px */
+@media (min-width: 600px) {
+    .container {
+      display: flex;
+      flex-direction: row;
+      width: auto;
+      height: auto;
+    }
+
+    h1 {
+      font-size: 100px;
+    }
+
+    .texti {
+        width: 900px;
+        height: auto;
+    }
+
+    .model {
+        width: 1800px;
+        height: auto;
+    }
+  }
