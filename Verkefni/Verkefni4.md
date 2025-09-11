@@ -18,7 +18,7 @@ Búðu til vefsíðu (símaútgáfa) sem inniheldur ljósmynd af hlut (sem þú 
    
 <br>
 
-> **Ath:** Senan sem inniheldur 3D hluti þarf að vera með heildrænt útlit og þeir þurfa að tengjast með skynsamlegum hætti. Nemendur mega heldur ekki hafa sama eða sambærilegan 3D skannaðan hlut. 
+> **Ath:** Nemendur mega ekki hafa sama eða sambærilegan 3D skannaðan hlut. 
 
 ---
 
