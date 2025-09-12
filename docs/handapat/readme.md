@@ -2,9 +2,9 @@
 ## Gesture recoginition
 
 Vor 2025
-- [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/)
-- [Gabriela](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/)
-- [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) 
+- [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_1.html)
+- [Gabriela](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Gabriela/index.html)
+- [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Breki/index.html) 
 
 
 
@@ -40,9 +40,9 @@ Vor 2025
 
 ## Hand landmarks detection
 
-- [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) _Vor 2025_
-- [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) _Vor 2025_
-- [Sindri](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) _Vor 2025_
+- [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_2.html) _Vor 2025_
+- [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Breki/index.html) _Vor 2025_
+- [Sindri](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Sindri/index.html) _Vor 2025_
 - [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  _Haust 2023_
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html) _Vor 2024_
 
