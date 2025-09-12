@@ -1,0 +1,18 @@
+canvas {
+    display: block;
+ }
+
+ .container {
+    display: flex;
+    flex-direction: column;
+    
+ }
+
+ /* Styles for screens wider than 600px */
+@media (min-width: 600px) {
+   .container {
+     display: flex;
+     flex-direction: row;
+     justify-content: space-around;
+   }
+ }

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Wooden Wine Barrel
+* source:	https://sketchfab.com/3d-models/wooden-wine-barrel-c75aa49368da487aa3b360d0fad446f5
+* author:	Joseph Gush (https://sketchfab.com/joe.gush_3d)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Wooden Wine Barrel" (https://sketchfab.com/3d-models/wooden-wine-barrel-c75aa49368da487aa3b360d0fad446f5) by Joseph Gush (https://sketchfab.com/joe.gush_3d) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

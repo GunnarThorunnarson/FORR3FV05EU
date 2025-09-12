@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recognize hand gestures using the MediaPipe HandGestureRecognizer task</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+        {
+            "imports": {
+               "three": "https://unpkg.com/three@0.132.2/build/three.module.js"
+            }
+        }
+     </script>
+  
+
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="three.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@latest"></script>    
+    
+    <script src="main.js" type="module"></script>
+
+
+</head>
+
+<body style="margin-top: 0px;">
+
+    <div style="white-space: pre-wrap;">
+        Open_Palm → Rotate right
+        Closed_Fist → Rotate left
+        Thumb_Up → Tilt up
+        Thumb_Down → Tilt down
+        Victory → Rotate around the Z-axis
+        ILoveYou → Rotate back around the Z-axis
+    </div>
+    
+    <h3>press together the thumb tip and pinky finger tip to open another site </h3>
+    <p id="hiddentext" style="display: none;">it takes some time to activate gesture recognition, plese wait</p>
+
+
+    <div id="modelContainer">
+        <canvas id="threeCanvas"></canvas>
+    </div>
+
+  
+    <div id="liveView" class="videoView">
+        <button id="webcamButton" class="mdc-button mdc-button--raised">
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__label">ENABLE WEBCAM</span>
+        </button>
+        <div style="position: relative;">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+        <p id='gesture_output' class="output">
+        </div>
+    </div>
+
+</body>
+
+</html>

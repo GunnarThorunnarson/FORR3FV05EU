@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="Static/static.css">
+</head>
+<body>
+    
+    <div class="container">
+        <div>
+            <button id='webcamButton'>ENABLE WEBCAM</button>
+            <div style='position: relative;'>
+                <video id='webcam' autoplay></video>
+                
+                <canvas id='output_canvas' width='480' height='360'
+                    style='position: absolute; left: 0px; top: 0px;'></canvas>
+                <h1 id='gesture_output'>
+                <h1 id='gesture_output_hand'></h1>
+                <h2>X <span id='x_output'></span></h2>
+                <h2>Y <span id='y_output'></span></h2>
+                <h2>Distance <span id='distance'></span></h2>
+            </div>
+        </div>
+        <div>
+            <canvas id="c"></canvas>
+
+            <h2>left hand 👍 ← </h2>
+            <h2>right hand 👍 → </h2>
+            <h2> 👌 ← →</h2>
+        </div>
+    </div>
+    
+
+    <script  type="importmap">{
+        "imports": {
+            "three": "https://threejs.org/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three/examples/jsm/"
+        }
+    }</script>
+
+    <script type='module' src="gesture_verkefni.js"></script>
+    
+</body>
+</html>
