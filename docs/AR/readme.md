@@ -1,6 +1,6 @@
 
 ### Vor 2025
-- [Gabríela: Stytta](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Gabriela/index.html)
+- [Gabríela: Ballerína stytta](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Gabriela/index.html)
 - [Jón: Vörusíða](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Jon/index.html)
 - [Örn: KFC](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Orn/index.html)
 - [Sindir: bjórglas og tunna](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Sindri/index.html)
