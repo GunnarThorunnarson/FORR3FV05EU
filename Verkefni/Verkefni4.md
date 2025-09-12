@@ -12,7 +12,7 @@ Búðu til vefsíðu (símaútgáfa) sem inniheldur ljósmynd af hlut (sem þú 
 1. [ ] Búðu til vefsíðu sem inniheldur ljósmynd af hlut að eigin vali og AR takka. (**10%**)
 1. [ ] Skannaðu 3D hlutinn (glTF/GLB) og bættu honum í senuna. (**30%**)
 1. [ ] Það er hægt að sjá 3D hlut í bland við raunverulegt umhverfi með símanum þegar smellt er á `AR` takka á vefsíðunni. (**15%**)
-1. [ ] Notaðu `hit test` og [Anchors](https://developers.google.com/ar/develop/anchors) t.d. hring til að staðsetja 3D hlut í umhverfinu, bættu við takka til að framkallar 3d hlutinn. (**15%**)
+1. [ ] Notaðu `hit test` og [Anchors](https://developers.google.com/ar/develop/anchors) t.d. hring til að staðsetja 3D hlut í umhverfinu, bættu við takka til að framkalla 3d hlutinn. (**15%**)
 1. [ ] Útfærðu loading á meðan 3d hlutur er sóttur (download), [sýnidæmi](https://jsfiddle.net/sojzu8a5/1/). (**15%**)
 1. [ ] hægt er að stækka og minnka 3d hlut. (**15%**)
 
