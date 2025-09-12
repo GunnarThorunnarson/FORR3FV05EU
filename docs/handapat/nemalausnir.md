@@ -1,8 +1,5 @@
-## Hand gestures 
-
----
-
-### Gesture recoginition með MediaPipe
+ 
+## Gesture recoginition með MediaPipe
 
 Vor 2025
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/)
@@ -26,7 +23,7 @@ Haust 2023
 
 ---
 
-### Hand landmarks detection með MediaPipe
+## Hand landmarks detection með MediaPipe
 
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) _Vor 2025_
 - [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/) _Vor 2025_
