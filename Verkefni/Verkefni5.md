@@ -9,7 +9,7 @@
 
 Hannaðu þitt eigið handapatsstjórnun með [Hand landmarks detection](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker). Notaðu hnit (x, y og z) af einhverjum af 21 liðamótunum í höndinni (eða höndum).
 
-1. Vefsíða innheldur 3D scannaðan hlut, svæði fyrir myndavél fyrir handapatsstjórnun og leiðbeiningar um notkun (myndband). **(10%)**
+1. Vefsíða innheldur 3D scannaðan hlut, svæði fyrir myndavél fyrir handapatsstjórnun og skýrar leiðbeiningar um notkun. **(10%)**
 1. Hannaðu handapatsstjórnun (ein eða tvær hendur) sem stýrir scannaðan 3D hlut á vefsíðu með Three.js ([skýringarmyndband](https://www.youtube.com/watch?v=hV5S4iQhNkI)): 
    1. Translate: færir 3D hlutinn til á skjánum  td. um x ás eða fleiri. **(20%)**
    2. Rotate: snýr 3D hlutnum um einn ás eða fleiri. **(20%)**
