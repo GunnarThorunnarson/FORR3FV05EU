@@ -30,7 +30,7 @@ Verkefnaval er háð samþykki kennara og þarf að liggja fyrir í **upphafi** 
 GitHub geymsla (public) sem inniheldur skýrslu í `readme.md`:
 
 1. Upplýsingar um höfund, áfanga og skóla.
-1. Stutt verkefnalýsing.
+1. Stutt verkefnalýsing og skýrar leiðbeiningar um notkun.
 1. Vefslóð á GitHub sem hýsir vefappið (ef það á við).
 1. Myndir og myndband (mp4) af frumgerð og notkun þess.
 1. Heimildir og söfn notuð. 
