@@ -1,5 +1,5 @@
  
-## Gesture recoginition
+## Gesture recognition
 
 Vor 2025
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_1.html)
