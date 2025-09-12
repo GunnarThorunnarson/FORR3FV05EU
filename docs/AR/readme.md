@@ -1,4 +1,10 @@
 
+### Vor 2025
+- [Gabríela: Stytta](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Gabriela/index.html)
+- [Jón: Vörusíða](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Jon/index.html)
+- [Örn: KFC](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Orn/index.html)
+- [Sindir: bjórglas og tunna](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Sindri/index.html)
+    
 ### Vor 2024
 - [Hróar: körfubolti (scan)](https://hroihrolfs.github.io/vidmotsforr_2024/) 
 - [Kristján Ómar: epli (scan)](https://kristjanomar.github.io/docs/)
