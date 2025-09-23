@@ -27,6 +27,7 @@ Vor 2025
 <summary>Haust 2023 :</summary>
 
 <br>
+
 - Björn, [3D](https://bjornthor21.github.io/verk4-vidmot/3dObject.html) 
 - Gísli, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Gisli/HandGestureCube/index.html) 
 - Héðinn, [hand](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Hedinn/Lidur2.html)
