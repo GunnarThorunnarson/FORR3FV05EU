@@ -47,7 +47,7 @@ Metið er vinnuframlag (virkni í tímum) og eftirfarand þættir:
 
 1. Viðmót (SVG, CSS, 3D models) og úttak. (**25%**)
 1. Kvikun. (**25%**)
-1. Notendastýring (snerti eða handapatsstýring). (**25%**)
+1. Notendastýring (snerti- eða handapatsstýring). (**25%**)
 1. Önnur viðmótsforritun og virkni. (**25%**)
 
 Einkunn: 
