@@ -13,9 +13,10 @@
 - [Kiara]()
 - [Knútur]()
 - [Lukas]()
-- [Marijonas]()
 - [Marino]()
 - [Reginn]()
+
+<!-- Marijonas notaði gesture-->
 
 </details>
   
