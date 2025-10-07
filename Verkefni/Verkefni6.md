@@ -59,7 +59,8 @@ Einkunn:
 - 2 lausn er stórlega ábótavant.
 - 0 lausn vantar eða er óunnin.
 
-Skilaðu á Innu kóða og gögnum í möppu (zip).
+Skilaðu á Innu kóða og gögnum í möppu (zip). <br>
+Vinsamlegast gerið einnig eftirfarandi (þ.e. ef þið samþykkið birtingu): [Samþykki fyrir birtingu verkefnis á vef](https://github.com/GunnarThorunnarson/FORR3FV05EU/blob/master/Verkefni/samthykki_fyrir_birtingu_verkefnis.md)
 
 > **Ath:** Nemandi þarf að geta gert grein fyrir öllum kóða og lausn til að fá einkunn fyrir verkefni ef kennari óskar eftir því.
 
