@@ -30,13 +30,19 @@ Haust 2023
 
 ## Gesture recognition
 
-Vor 2025
+<details>
+<summary>Vor 2025</summary>
+  
+<br>
+
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_1.html)
 - [Gabriela](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Gabriela/index.html)
 - [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Breki/index.html) 
 
+</details>
+
 <details>
-<summary>Vor 2024 :</summary>
+<summary>Vor 2024</summary>
 
 <br>
 
@@ -49,7 +55,7 @@ Vor 2025
 </details>
 
 <details>
-<summary>Haust 2023 :</summary>
+<summary>Haust 2023</summary>
 
 <br>
 
