@@ -5,7 +5,6 @@
   
 <br>
 
-
 - [Aron]()
 - [Bjarni]()
 - [Emil]()
@@ -20,16 +19,32 @@
 
 </details>
   
-Vor 2025
+<details>
+<summary>Vor 2025</summary>
+  
+<br>
+
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_2.html) 
 - [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Breki/index.html) 
 - [Sindri](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Sindri/index.html)
+</details>
 
-Vor 2024
+<details>
+<summary>Vor 2024</summary>
+  
+<br>
+
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/Emil/verk_5_lidur2.html)
 
+</details>
+<details>
+<summary>Haust 2023</summary>
+  
+<br>
 Haust 2023
 - [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  
+
+</details>
 
 <!-- [Davíð](https://gunnarthorunnarson.github.io/FORR3FV05EU/v24/v5/David) -->
 
