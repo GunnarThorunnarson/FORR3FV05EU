@@ -7,8 +7,6 @@ Með undirritun staðfesti ég að:
 1. Réttur til að gleymast: Ef samþykki er dregið til baka mun Tækniskólinn fjarlægja verkefnið af vefsvæði sínu án ástæðulausrar tafar (samkvæmt rétti einstaklings til að gleymast, sbr. 17. gr. persónuverndarlaga).
 1. Tækniskólinn ber ábyrgð á meðferð persónuupplýsinga samkvæmt gildandi persónuverndarlögum.
 
-ath. verkefnið er **ópersónugreinanlegt**.
-
 ---
 
 ### Leiðbeiningar
