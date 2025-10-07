@@ -41,7 +41,7 @@
 <summary>Haust 2023</summary>
   
 <br>
-Haust 2023
+
 - [Kristofer](https://gunnarthorunnarson.github.io/FORR3FV05EU/h23/v4/Kristofer/Part2-Kristófer/index.html)  
 
 </details>
