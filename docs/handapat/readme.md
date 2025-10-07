@@ -1,6 +1,11 @@
 ## Hand landmarks detection
 
-Haust 2025
+<details>
+<summary>Haust 2025</summary>
+  
+<br>
+
+
 - [Aron]()
 - [Bjarni]()
 - [Emil]()
@@ -13,6 +18,8 @@ Haust 2025
 - [Marino]()
 - [Reginn]()
 
+</details>
+  
 Vor 2025
 - [Orn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Orn/verk_4_2.html) 
 - [Breki](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/V25/Breki/index.html) 
