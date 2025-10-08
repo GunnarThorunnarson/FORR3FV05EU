@@ -5,16 +5,16 @@
   
 <br>
 
-- [Aron]()
-- [Bjarni]()
-- [Emil]()
+- [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Aron/index.html)
+- [Bjarni](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Bjarni/index.html)
+- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Emil/index.html)
 - [Hörður]()
-- [Ingimar]()
-- [Kiara]()
-- [Knútur]()
-- [Lukas]()
-- [Marino]()
-- [Reginn]()
+- [Ingimar](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Ingimar/index.html)
+- [Kiara](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Kiara/index.html)
+- [Knútur](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Knutur/index.html)
+- [Lukas](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Lukas/index.html)
+- [Marino](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Marino/index.html)
+- [Reginn](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Reginn/index.html)
 
 <!-- Marijonas notaði gesture-->
 
