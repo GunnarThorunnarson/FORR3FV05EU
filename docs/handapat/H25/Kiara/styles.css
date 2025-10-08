@@ -1,0 +1,219 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      background: linear-gradient(135deg, #ffd6e7, #c2f0ff);
+      font-family: 'Verdana, sans-serif';
+      color: #5a5a8a;
+    }
+    
+    #landmarkCanvas { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      z-index: 10;
+      pointer-events: none;
+    }
+    
+    #outputCanvas { display: none; }
+    
+    #ui-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      color: #5a5a8a;
+      padding: 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      max-width: 300px;
+      box-shadow: 0 8px 20px rgba(162, 162, 255, 0.2);
+    }
+    
+    #instructions h3 {
+      color: #ff7eb9;
+      margin-bottom: 10px;
+      font-size: 1.3em;
+      text-align: center;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    #instructions ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    #instructions li {
+      margin: 8px 0;
+      padding-left: 25px;
+      position: relative;
+      font-size: 0.9em;
+    }
+    
+    #instructions li:before {
+      content: "✨";
+      position: absolute;
+      left: 0;
+    }
+    
+    #status {
+      font-size: 0.9em;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    #status.detected { 
+      background: rgba(162, 255, 206, 0.5); 
+      color: #2a8a5a;
+      border: 1px dashed #2a8a5a;
+    }
+    
+    #status.searching { 
+      background: rgba(255, 230, 162, 0.5); 
+      color: #8a7a2a;
+      border: 1px dashed #8a7a2a;
+    }
+    
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    button {
+      background: linear-gradient(to right, #ff9ec9, #a2d2ff);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(162, 162, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(162, 162, 255, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ffd6e7, #c2f0ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(255, 255, 255, 0.5);
+      border-top: 5px solid #ff7eb9;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #fps-counter {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #5a5a8a;
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-family: monospace;
+      z-index: 100;
+      box-shadow: 0 4px 10px rgba(162, 162, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    #rotation-info {
+      margin-top: 10px;
+      font-size: 0.8em;
+      color: #888;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    #rotation-info div {
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    .hand-icon {
+      font-size: 1.2em;
+      margin-right: 5px;
+    }
+    
+    .floating-objects {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+    
+    .floating-object {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.3;
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+    
+    .title {
+      text-align: center;
+      font-size: 2.5em;
+      color: #ff7eb9;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 1em;
+      color: #8a7a9a;
+      margin-bottom: 20px;
+    }

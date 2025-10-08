@@ -1,0 +1,82 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+/* fyrir 3js og myndavék */
+.content-row {
+  display: flex;
+  justify-content: center;  
+  align-items: stretch;  
+  gap: 20px;            
+  flex-wrap: wrap;         
+  width: 100%;
+}
+
+ /* splita video og 3js á milli content row */
+#three-container,
+.video-container {
+  flex: 1;
+  max-width: 50%;
+  display: flex;      
+}
+
+/* 3js container */
+#three-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Video container */
+.video-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* mynd passarr */
+#webcam {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+ /* takki */
+#webcamButton {
+  background-color: whitesmoke;
+  border-color: whitesmoke;
+}
+
+/* canvas á myndbandið */
+#output_canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;   
+  height: 100%;  
+  background: transparent;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* takki or allt það */
+.controls {
+  text-align: center;
+  margin-top: 1rem; 
+}
+
+ /* tutorial */
+#uppl {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
+  max-width: 250px;
+}

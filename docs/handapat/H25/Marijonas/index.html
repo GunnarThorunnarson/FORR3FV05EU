@@ -1,0 +1,47 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>3dVerk</title>
+        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+        <script type="importmap">
+            {
+                "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@v0.180.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.180.0/examples/jsm/"
+                }
+            }
+        </script>  
+
+    </head>
+    <body>
+        
+    <div class="content-row">
+        <div class="video-container">
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="output_canvas"></canvas>
+        </div>
+
+        <div id="three-container"></div>
+    </div>
+    <div id="uppl">
+        <ul>
+            <li>🖐️→ Gera Hlutinn Stærri</li>
+            <li>✊→ Gera Hlutinn Minni</li>
+            <li>☝️→ Snúa</li>
+            <li>👍→ Færa Til Hægri</li>
+            <li>👎→ Færa Til Vinstri</li>
+        </ul>
+    </div>
+
+    <div class="controls">
+    <button id="webcamButton">Enable Webcam</button>
+    <div id="gesture_output"></div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+    <script src="js/anime.esm.min.js" type="module"></script>
+    </body>
+
+    </html>

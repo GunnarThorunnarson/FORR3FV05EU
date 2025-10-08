@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verkefni 5</title>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&display=swap");
+
+      body {
+        font-family: "Alan Sans", sans-serif;
+        font-optical-sizing: auto;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        gap: 32px;
+      }
+
+      .webcam {
+        position: relative;
+      }
+
+      #videoElement {
+        display: block;
+        width: 500px;
+        height: auto;
+      }
+
+      #outputCanvas {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+      }
+
+      .canvas {
+        display: block;
+        width: 500px;
+        height: 375px;
+      }
+
+      .instructions {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgb(27, 27, 27);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .instructions h3 {
+        margin: 0;
+        color: #ec0c31;
+      }
+
+      .instructions .gesture {
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      .instructions .gesture-name {
+        font-weight: bold;
+        color: #ec0c31;
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="instructions">
+      <h3>Handapatsstjórnun</h3>
+      <div class="gesture">
+        <span class="gesture-name">Vinstri hönd:</span> Rotate + Scale (færa
+        hendi, opinn/lokaður hnefi)
+      </div>
+      <div class="gesture">
+        <span class="gesture-name">Hægri hönd:</span> Færa flugvélina
+        upp/niður/vinstri/hægri
+      </div>
+    </div>
+
+    <div class="webcam">
+      <video autoplay="true" id="videoElement"></video>
+      <canvas id="outputCanvas"></canvas>
+    </div>
+    <div class="canvas"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import {
+        FilesetResolver,
+        HandLandmarker,
+      } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js";
+
+      const scene = new THREE.Scene();
+
+      const canvasElement = document.querySelector(".canvas");
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+      renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      canvasElement.appendChild(renderer.domElement);
+
+      const camera = new THREE.PerspectiveCamera(
+        65,
+        canvasElement.clientWidth / canvasElement.clientHeight,
+        0.1,
+        150
+      );
+      camera.position.set(0, 4, 8);
+
+      const hemisphereLight = new THREE.HemisphereLight(
+        0xffffff,
+        0x444444,
+        1.75
+      );
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(3, 10, 10);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024 * 2;
+      directionalLight.shadow.mapSize.height = 1024 * 2;
+      scene.add(directionalLight);
+
+      let planeModel = null;
+
+      const loader = new GLTFLoader();
+      loader.load("./models/plane/3DModel.gltf", (gltf) => {
+        planeModel = gltf.scene;
+        planeModel.scale.set(15, 15, 15);
+        planeModel.rotation.y = Math.PI;
+        scene.add(planeModel);
+
+        // búa til box svo myndavélin horfi á miðju modelsins
+        const box = new THREE.Box3().setFromObject(planeModel);
+        const center = box.getCenter(new THREE.Vector3());
+        camera.lookAt(center);
+      });
+
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+      });
+
+      window.addEventListener("resize", () => {
+        const width = canvasElement.clientWidth;
+        const height = canvasElement.clientHeight;
+
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      });
+
+      const video = document.getElementById("videoElement");
+      const canvas = document.getElementById("outputCanvas");
+      const canvasCtx = canvas.getContext("2d");
+
+      let handLandmarker = null;
+      let lastHandCenterX = null;
+      let lastFistOpenness = null;
+      let lastSecondHandCenter = null;
+      const baseScale = 15;
+
+      const drawPoint = (pos, hue) => {
+        canvasCtx.fillStyle = `hsl(${hue}, 100%, 50%, 1.0)`;
+        canvasCtx.beginPath();
+        canvasCtx.arc(pos.x, pos.y, 5, 0, Math.PI * 2, true);
+        canvasCtx.fill();
+      };
+
+      // reikna fjarlægð milli tveggja punkta
+      const getDistance = (point1, point2) => {
+        const dx = point1.x - point2.x;
+        const dy = point1.y - point2.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      };
+
+      // reikna miðju handar
+      const getHandCenter = (landmarks) => {
+        let totalX = 0,
+          totalY = 0;
+        landmarks.forEach((point) => {
+          totalX += point.x;
+          totalY += point.y;
+        });
+        return {
+          x: totalX / landmarks.length,
+          y: totalY / landmarks.length,
+        };
+      };
+
+      // reikna "fist openness" (meðaltal fjarlægðar frá lófa að fingurgómunum)
+      const getFistOpenness = (landmarks) => {
+        const WRIST = 0;
+        const THUMB_TIP = 4;
+        const INDEX_TIP = 8;
+        const MIDDLE_TIP = 12;
+        const RING_TIP = 16;
+        const PINKY_TIP = 20;
+
+        const palmCenter = landmarks[WRIST];
+        const fingertips = [
+          landmarks[THUMB_TIP],
+          landmarks[INDEX_TIP],
+          landmarks[MIDDLE_TIP],
+          landmarks[RING_TIP],
+          landmarks[PINKY_TIP],
+        ];
+
+        let totalDistance = 0;
+        fingertips.forEach((tip) => {
+          totalDistance += getDistance(palmCenter, tip);
+        });
+
+        return totalDistance / fingertips.length;
+      };
+
+      // reikna hand gestures fyrir model stýringu
+      const processGestures = (landmarks) => {
+        if (!planeModel || landmarks.length === 0) return;
+
+        const firstHand = landmarks[0];
+        const handCenter = getHandCenter(firstHand);
+
+        // vinstri hönd: rotation stýring (lárétt hreyfing handar)
+        if (lastHandCenterX !== null) {
+          const deltaX = handCenter.x - lastHandCenterX;
+          planeModel.rotation.y += deltaX * 3; // *3 fyrir sensitivity
+        }
+        lastHandCenterX = handCenter.x;
+
+        // vinstri hönd: scale stýring (lófi)
+        const currentFistOpenness = getFistOpenness(firstHand);
+        if (lastFistOpenness !== null) {
+          const opennessFactor = currentFistOpenness / lastFistOpenness;
+          const newScale = planeModel.scale.x * opennessFactor;
+
+          // ekki láta model vera minna en 5 og stærra en 20
+          const clampedScale = Math.max(5, Math.min(20, newScale));
+          planeModel.scale.set(clampedScale, clampedScale, clampedScale);
+        }
+        lastFistOpenness = currentFistOpenness;
+
+        // hægri hönd: movement stýring
+        if (landmarks.length > 1) {
+          const secondHand = landmarks[1];
+          const secondHandCenter = getHandCenter(secondHand);
+
+          if (lastSecondHandCenter !== null) {
+            const deltaX = (secondHandCenter.x - lastSecondHandCenter.x) * 20; // hreyfing X axis
+            const deltaY = (secondHandCenter.y - lastSecondHandCenter.y) * 20; // hreyfing Y axis
+
+            planeModel.position.x += deltaX;
+            planeModel.position.y -= deltaY;
+          }
+          lastSecondHandCenter = secondHandCenter;
+        } else {
+          // endurstilla hægri hönd þegar hún er ekki í mynd
+          lastSecondHandCenter = null;
+        }
+      };
+
+      const animationLoop = () => {
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        if (
+          handLandmarker &&
+          video.readyState >= HTMLMediaElement.HAVE_METADATA
+        ) {
+          const handResults = handLandmarker.detectForVideo(video, Date.now());
+          if (handResults.landmarks) {
+            processGestures(handResults.landmarks);
+
+            for (const landmarks of handResults.landmarks) {
+              landmarks.forEach((l, i) => {
+                const pos = {
+                  x: l.x * canvas.width,
+                  y: l.y * canvas.height,
+                };
+
+                const hue = (i * 360) / landmarks.length;
+                drawPoint(pos, hue);
+              });
+            }
+          }
+        }
+
+        requestAnimationFrame(animationLoop);
+      };
+
+      const createHandLandmarker = async () => {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+        );
+
+        handLandmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+            delegate: "GPU",
+          },
+          numHands: 2,
+          runningMode: "VIDEO",
+        });
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices
+            .getUserMedia({
+              video: {
+                facingMode: "user",
+              },
+            })
+            .then(function (stream) {
+              video.srcObject = stream;
+              video.play();
+
+              video.addEventListener("loadedmetadata", () => {
+                canvas.width = video.clientWidth;
+                canvas.height = video.clientHeight;
+              });
+            })
+            .catch(function (error) {
+              console.error("Error accessing webcam: ", error);
+            });
+        }
+      };
+      createHandLandmarker().then(() => {
+        animationLoop();
+      });
+    </script>
+  </body>
+</html>

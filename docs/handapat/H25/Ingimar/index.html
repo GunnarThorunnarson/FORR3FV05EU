@@ -1,0 +1,399 @@
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Handlandmark - rotation</title>
+    <style>    
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: #1e1e2f;
+    color: #f0f0f5;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 480px;
+    max-width: 90%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    background: #2e2e3f;
+}
+
+video, #output_canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: rotateY(180deg);
+    border-radius: 15px;
+}
+
+#output_canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#scene-container {
+    flex: 1;
+    min-width: 480px;
+    max-width: 1000px;
+    min-height: 800px;
+    background: #2e2e3f;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+button#webcamButton {
+    display: block;
+    margin: 10px auto;
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button#webcamButton:hover {
+    background-color: #ff4b3a;
+    transform: scale(1.05);
+}
+
+#lockStatus {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+    color: #f0f0f5;
+}
+
+.iconcon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 5px 0;
+    font-weight: 500;
+    color: #f0f0f5;
+}
+
+.palmicon {
+    height: 40px;
+    width: auto;
+}
+
+canvas {
+    border-radius: 15px;
+}
+.overlay-image {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <p id="lockStatus" style="font-size: 20px; font-weight: bold; color: red;">Status: Unknown</p>
+<div class="video-wrapper">
+    <video id='webcam' autoplay></video>
+    <canvas id='output_canvas' width='480' height='480'></canvas>
+    <img src="f973b456-c007-41c5-97fb-169642dd787e.png" alt="Your Image" class="overlay-image">
+</div>
+
+    </div>
+
+    <div id="scene-container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@v0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@v0.158.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from "three";
+        const container = document.querySelector("#scene-container");
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("white");
+
+        const fov = 35;
+        const aspect = container.clientWidth / container.clientHeight;
+        const near = 0.1;
+        const far = 100;
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        camera.position.set(0, 10, 30)
+
+        const cubematerial = new THREE.MeshStandardMaterial({ color: new THREE.Color(0xff0000) })
+        const cubegeometry = new THREE.BoxGeometry(4, 4, 4)
+        const cube = new THREE.Mesh(cubegeometry, cubematerial)
+
+        scene.add(cube)
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+        directionalLight.position.set(10, 10, 10);
+        directionalLight.target = cube;
+        scene.add(directionalLight);
+
+        camera.lookAt(cube.position);
+        const light = new THREE.AmbientLight(0x404040);
+        scene.add(light)
+
+        const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, precision: "lowp", antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.append(renderer.domElement);
+
+        let scaleValue = 1
+
+    
+        function animate() {
+            cube.scale.set(scaleValue, scaleValue, scaleValue)
+            renderer.render(scene, camera)
+            requestAnimationFrame(animate)
+        }
+        animate()
+
+        function onWindowResize() {
+            location.reload();
+        }
+        window.addEventListener("resize", onWindowResize);
+
+        import { HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+
+        let results = undefined;
+        let handLandmarker;
+        let runningMode = 'IMAGE';
+        let webcamRunning = false;
+        const videoWidth = '480px';
+        const videoHeight = '480px';
+        const video = document.getElementById('webcam');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        let enableWebcamButton = document.getElementById('webcamButton');
+        let lastVideoTime = -1;
+
+
+
+
+        const createHandLandmarker = async () => {
+            const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm');
+            handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+                    delegate: 'GPU'
+                },
+                numHands: 2,
+                runningMode: runningMode,
+            });
+        };
+        createHandLandmarker();
+
+
+
+
+        function enableCam(event) {
+            if (!handLandmarker) {
+                console.log("Wait for handLandmarker to load before clicking!");
+                return;
+            }
+            webcamRunning = !webcamRunning;
+
+            const constraints = { video: true };
+            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+                video.srcObject = stream;
+                video.addEventListener('loadeddata', predictWebcam);
+            });
+        }
+        enableWebcamButton.addEventListener('click', enableCam);
+
+
+
+
+        async function predictWebcam() {
+            const webcamElement = document.getElementById('webcam');
+            if (runningMode === "IMAGE") {
+                runningMode = "VIDEO";
+                await handLandmarker.setOptions({ runningMode: "VIDEO" });
+            }
+
+            let startTimeMs = performance.now();
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                results = handLandmarker.detectForVideo(video, startTimeMs);
+            }
+
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            const drawingUtils = new DrawingUtils(canvasCtx);
+            canvasElement.style.height = videoHeight;
+            webcamElement.style.height = videoHeight;
+            canvasElement.style.width = videoWidth;
+            webcamElement.style.width = videoWidth;
+
+            if (results.landmarks.length > 0) {
+                let r = null;
+                let l = null;
+                let telj = 0;
+
+                for (const hendi of results.handednesses) {
+                    if (hendi[0].displayName == "Right") r = telj;
+                    else l = telj;
+                    telj += 1;
+                }
+
+
+                if (l != null && r != null) {
+
+                    const leftWrist = new THREE.Vector3(
+                        results.landmarks[l][0].x,
+                        results.landmarks[l][0].y,
+                        results.landmarks[l][0].z
+                    )
+                    const rightWrist = new THREE.Vector3(
+                        results.landmarks[r][0].x,
+                         results.landmarks[r][0].y,
+                        results.landmarks[r][0].z
+                    )
+
+                     const dir = new THREE.Vector3().subVectors(rightWrist, leftWrist).normalize()
+
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(results.landmarks[l][0].x * canvasElement.width, results.landmarks[l][0].y * canvasElement.height)
+                    canvasCtx.lineTo(results.landmarks[r][0].x * canvasElement.width, results.landmarks[r][0].y * canvasElement.height)
+                    canvasCtx.strokeStyle = "blue"
+                    canvasCtx.lineWidth = 4
+                    canvasCtx.stroke()
+
+                    const fingers = [
+                        { tip: 4, knuckle: 2 },
+                        { tip: 8, knuckle: 5 },
+                        { tip: 12, knuckle: 9 },
+                        { tip: 16, knuckle: 13 },
+                        { tip: 20, knuckle: 17 }
+                    ]
+
+                    const leftOpen = fingers.every(f => {
+                        const tip = results.landmarks[l][f.tip];
+                        const knuckle = results.landmarks[l][f.knuckle];
+                        const tipVec = new THREE.Vector3(tip.x, tip.y, tip.z);
+                        const knuckleVec = new THREE.Vector3(knuckle.x, knuckle.y, knuckle.z);
+                        const dist = tipVec.distanceTo(knuckleVec);
+
+                        let isOpen = false
+                        if (dist > 0.05) {
+                            isOpen = true
+                        } else {
+                            isOpen = false
+                        }
+                        return isOpen
+                    })
+
+
+                    const rightOpen = fingers.every(f => {
+                        const tip = results.landmarks[r][f.tip]
+                        const knuckle = results.landmarks[r][f.knuckle]
+                        const tipVec = new THREE.Vector3(tip.x, tip.y, tip.z)
+                        const knuckleVec = new THREE.Vector3(knuckle.x, knuckle.y, knuckle.z)
+                        const dist = tipVec.distanceTo(knuckleVec)
+                        let isOpen = false
+                        if (dist > 0.05) {
+                            isOpen = true
+                        } else {
+                            isOpen = false
+                        }
+                        return isOpen
+                    })
+
+
+
+                    if (leftOpen && rightOpen) {
+                        let statusText = document.getElementById("lockStatus")
+
+                        statusText.textContent = "Status: Unlocked"
+                        statusText.style.color = "green"
+                
+                        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+                            new THREE.Vector3(1, 0, 0),
+                            dir
+                        )
+                        cube.quaternion.copy(quaternion)
+
+                        const dx = leftWrist.x - rightWrist.x
+                        const dy = leftWrist.y - rightWrist.y
+                        const dz = leftWrist.z - rightWrist.z
+                        scaleValue = Math.sqrt(dx*dx + dy*dy + dz*dz)*2
+
+                        const midX = (leftWrist.x + rightWrist.x) / 2
+                        const midY = (leftWrist.y + rightWrist.y) / 2
+                        const midZ = (leftWrist.z + rightWrist.z) / 2
+
+                        
+                        const mappedX = (0.5 - midX) * 30
+                        const mappedY = (0.5 - midY) * 30
+                        const mappedZ = (midZ - 0.5) * -30
+
+                        cube.position.set(mappedX+1, mappedY+10, mappedZ)
+
+                    }
+                     else {
+                        let statusText = document.getElementById("lockStatus")
+                        statusText.textContent = "Status: Locked"
+                        statusText.style.color = "red"
+    }
+                }
+
+
+                for (const landmarks of results.landmarks) {
+                    drawingUtils.drawConnectors(landmarks,  HandLandmarker.HAND_CONNECTIONS, { color: "#00FF00", lineWidth: 5 });
+                    drawingUtils.drawLandmarks(landmarks, { color: "#FF0000", lineWidth: 2 });
+                }
+            }
+
+            canvasCtx.restore();
+            if (webcamRunning === true) {
+                window.requestAnimationFrame(predictWebcam);
+            }
+        }
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

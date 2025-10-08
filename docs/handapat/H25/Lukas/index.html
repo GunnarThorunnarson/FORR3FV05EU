@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            font-family: roboto;
+            margin: 2em;
+            color: gray;
+    }
+        video {
+            clear: both;
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+            -moz-transform: rotateY(180deg);
+        }
+            #output_canvas {
+            position: absolute; left: 0px; top: 0px;
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+            -moz-transform: rotateY(180deg);
+        }
+        img{
+            width: 25px; height: 25px;
+        }
+
+        @media screen and (min-width: 0px) {
+            #container{
+                position: relative;
+                flex-direction: column;
+                
+            }
+            #video-container{
+                position: relative;
+                scale: 0.6;
+                left: -60px;
+                top: -250px;
+
+            }
+            #scene-container{
+                position: relative;
+                scale: 0.6;
+                left: -90px;
+                bottom: -200px;
+                top: -75px;
+
+            }
+        }
+
+        @media screen and (min-width: 900px) {
+            #container{
+                top: 0px;
+                position: static;
+                flex-direction: row;
+            }
+            #video-container{
+                position: static;
+                scale: 1;
+                left: 20px;
+                top: 0px;
+
+            }
+            #scene-container{
+                position: static;
+                scale: 1;
+                left: 0px;
+                bottom: 0px;
+                top: 0px;
+
+            }
+        }
+    </style>
+
+    <script type="importmap">
+        {
+            "imports": {
+               "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+               "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+            }
+        }
+     </script> 
+</head>
+<body>
+    
+
+
+    <div>
+        <button id='webcamButton'>ENABLE WEBCAM</button>
+        <p style="color: black;">
+            <img src="./open-hand.jpg">: <img src="./move-icon.png">. hreyfir kassan, <br>
+
+            <img src="./open-hand.jpg" style="rotate: -20deg;">-<img src="./open-hand.jpg" style="rotate: 20deg;">: <img src="./rotate-icon.jpg">. snúar kassan, <br>
+
+            <img src="./open-hand.jpg"> til <img src="./close-hand.png">. stækka/minnka kassan
+
+        </p>
+        <div id="container" style="display: flex;">
+            <div id="scene-container" style="width: 480px; height: 480px;"></div>
+            <div id="video-container" style='position: relative;'>
+                <video id='webcam' style="height: 480px; left: 30px;" autoplay></video>
+                <canvas id='output_canvas' width='480' height='480'></canvas>
+            </div>
+            
+        </div>
+    </div>
+
+    <script type="module">
+        // ---- Three.js ----------------------------------------------------
+        import * as THREE from "three";
+        import { animate, utils  } from './anime.esm.min.js'; 
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        let pringles;
+        const pringlesBaseScale = 10;
+        const pringlesBaseRot = -100;
+
+        const loader = new GLTFLoader();
+
+        const sceneDiv = document.getElementById("scene-container");
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("black");
+
+        // Create a camera
+        const fov = 35; // AKA Field of View
+        const aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
+        const near = 0.1; // the near clipping plane
+        const far = 100; // the far clipping plane
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        // Move the camera back so we can view the scene
+        camera.position.set(0, 0, 70);
+
+        // Create the renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+        sceneDiv.appendChild(renderer.domElement);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(0, 10, 10);
+        //directionalLight.target = cube;
+        scene.add(directionalLight);
+
+        const light = new THREE.AmbientLight(0x404040,0.3); // soft white light
+        scene.add(light);
+
+        loader.load("./49f0ae67a41e410cacdf0b975fa6f21d/3DModel.gltf",
+            (gltf) => {
+                pringles = gltf.scene
+
+                pringles.position.set(0,0,0)
+                pringles.scale.set(pringlesBaseScale,pringlesBaseScale,pringlesBaseScale)
+                camera.lookAt(pringles.position);
+
+                scene.add(pringles)
+            }
+        );
+
+        
+
+        renderer.setAnimationLoop(() => {
+
+            renderer.render(scene, camera);
+        })
+
+        window.addEventListener("resize", () =>{
+            camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+        });
+
+        // ---- Handlandmarks ---------------------------------------------------
+        // Snúum (rotate) ferning (three.js) með handlandmark með að snúa hendi 
+        // Búum til lófaflöt (e. plane) útfrá þremur 3D Handmark hnitum á hendi (5, 17, 0)  
+
+        import { HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+
+        let results = undefined;
+
+        let handLandmarker;
+        let runningMode = 'VIDEO';   // IMAGE or VIDEO
+        let webcamRunning = false;
+        const videoWidth = '480px';
+        const videoHeight = '480px';
+        const video = document.getElementById('webcam');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        let enableWebcamButton = document.getElementById('webcamButton');
+        let lastVideoTime = -1;
+
+        // Before we can use HandLandmarker class we must wait for it to finish loading.
+        // Machine Learning models can be large and take a moment to get everything needed to run.
+        const createHandLandmarker = async () => {
+            const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm');
+            handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+                        delegate: 'GPU'
+                },
+                numHands: 1,
+                runningMode: runningMode,
+            });
+        };
+        createHandLandmarker();
+
+        function enableCam(event) {
+            if (!handLandmarker) {
+                alert("Wait for handLandmarker to load before clicking!");
+                return;
+            }
+            if (webcamRunning === true) {
+                    webcamRunning = false;
+                } else{
+                    webcamRunning = true;
+            }
+            // getUsermedia parameters.
+            const constraints = { video: true };
+            // Activate the webcam stream.
+            navigator.mediaDevices.getUserMedia(constraints).then( (stream) => {
+                video.srcObject = stream;
+                video.addEventListener('loadeddata', predictWebcam);
+            });
+        }
+        enableWebcamButton.addEventListener('click', enableCam);
+
+
+        async function predictWebcam() {
+
+            let startTimeMs = performance.now();
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                // fáum niðurstöður eftir greiningu
+                results = handLandmarker.detectForVideo(video, startTimeMs);
+            }
+
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            const drawingUtils = new DrawingUtils(canvasCtx);
+            canvasElement.style.height = videoHeight;
+            canvasElement.style.width = videoWidth;
+            video.style.height = videoHeight;
+            video.style.width = videoWidth;
+            
+            // data
+            if (results.landmarks.length > 0) {
+                let hendi = false;
+
+                if (results.handednesses.length > 0){
+                    hendi = true;
+                }
+                else{
+                    hendi = false
+                }
+
+                // ------------------------------------------------------------------------------------asdasdasd
+
+
+                if (hendi === true && pringles !== null){
+                    const wrist = results.landmarks[0][0];
+                    const midBase = results.landmarks[0][9];
+                    const midTip = results.landmarks[0][12];
+
+                    pringles.position.set(-((50*wrist.x)-(50*0.5)),-((50*wrist.y)-(50*0.5)),0)
+
+                    const degrees = (Math.atan2(wrist.y - midBase.y,wrist.x - midBase.x)*180) / Math.PI
+
+                    pringles.rotation.set(0,0,THREE.MathUtils.degToRad(degrees+pringlesBaseRot))
+
+                    const WTMT_C = Math.sqrt(Math.abs(wrist.x-midTip.x)+Math.abs(wrist.y-midTip.y)) 
+                    const WTMB_C = Math.sqrt(Math.abs(wrist.x-midBase.x)+Math.abs(wrist.y-midBase.y)) 
+
+                    const diff = (WTMT_C*2)/WTMB_C
+
+                    pringles.scale.set(diff*pringlesBaseScale,diff*pringlesBaseScale,diff*pringlesBaseScale)
+
+
+                    for (const landmarks of results.landmarks) {
+                        console.log(landmarks)
+                        
+                        drawingUtils.drawConnectors(landmarks,  HandLandmarker.HAND_CONNECTIONS, {
+                            color: "#00FF00",
+                            lineWidth: 5
+                        });
+                        drawingUtils.drawLandmarks(landmarks, { 
+                            color: "#FF0000", 
+                            lineWidth: 2 
+                        });
+                    
+                    }
+                }
+            }
+        
+            canvasCtx.restore();
+            if (webcamRunning === true) {
+                window.requestAnimationFrame(predictWebcam);
+            }
+        }
+
+  </script>
+</body>
+</html>

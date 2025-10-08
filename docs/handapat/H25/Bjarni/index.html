@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="utf-8">
+    <title>Handapats með 3D</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"></script>
+    <style>
+        body { 
+            margin: 20px; 
+            background: #111; 
+            color: #fff; 
+            font-family: system-ui;
+            display: flex;
+        }
+        #webcam, #overlay {
+            width: 480px;
+            height: 480px;
+            transform: rotateY(180deg);
+            border-radius: 8px;
+        }
+        #overlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        #scene-container {
+            width: 1200px;     
+            height: 800px;
+            margin-left: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #1a1a1a;
+        }
+
+        /* Stíll fyrir leiðbeiningar */
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 16px;
+            color: #fff;
+            background: #333;
+            border-radius: 8px;
+            line-height: 1.6;
+            font-family: system-ui;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #333;
+        }
+        button {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <div>
+        <button id="btnStart">ENABLE WEBCAM</button>
+        <button id="btnReset">RESET SPHERE</button>
+        <div style="position: relative">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="overlay" width="480" height="480"></canvas>
+            <canvas id="effects_canvas" style="position: absolute; left: 0; top: 0; pointer-events: none;"></canvas>
+        </div>
+        <div id="stats"></div>
+        <div class="instructions">
+            1. Gerðu 👌 'OK' gesture til að grípa boltann<br>
+            2. Færðu höndina til að stjórna stöðu<br>
+            3. Sleppið gesture til að sleppa boltanum<br>
+            4. Gerðu 👆 'finger gun' upp til að stækka boltann<br>
+            5. Gerðu 👇 'finger gun' niður til að minnka boltann
+        </div>
+    </div>
+    
+    <div id="scene-container"></div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { HandLandmarker, FilesetResolver, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3';
+        import getEmitter from "./libs/getEmitter.js";
+
+        const emitter = getEmitter();
+        const effectsCanvas = document.getElementById('effects_canvas');
+        const effectsCtx = effectsCanvas.getContext('2d');
+        effectsCanvas.width = 480;
+        effectsCanvas.height = 480;
+
+        // Three.js uppsetning
+        const container = document.querySelector("#scene-container");
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("#111");
+
+        const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 0, 40); // Myndavél frá kúlu
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Kúla
+        const geometry = new THREE.SphereGeometry(2, 32, 32); // Kúla með radius 2
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0x9D00FF,
+            metalness: 0.3,
+            roughness: 0.4 
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Ljós
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040));
+
+        // MediaPipe uppsetning
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const btnStart = document.getElementById('btnStart');
+        const btnReset = document.getElementById('btnReset');
+        const stats = document.getElementById('stats');
+
+        let handLandmarker = null;
+        let lastVideoTime = -1;
+        let isRunning = false;
+        let isGrabbing = false;
+
+        async function setupMediaPipe() {
+            const vision = await FilesetResolver.forVisionTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+            );
+            handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
+                },
+                runningMode: "VIDEO",
+                numHands: 1
+            });
+        }
+
+        // check for OK gesture
+        function checkOKGesture(landmarks) {
+            const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+            const fingerUp = (tip, pip) => tip.y < pip.y - 0.02;
+
+            const pinch = dist(landmarks[4], landmarks[8]) / 
+                         (dist(landmarks[0], landmarks[9]) + 1e-6);
+            
+            const threeUp = fingerUp(landmarks[12], landmarks[10]) &&
+                           fingerUp(landmarks[16], landmarks[14]) &&
+                           fingerUp(landmarks[20], landmarks[18]);
+
+            return {
+                ok: pinch < 0.35 && threeUp,
+                position: {
+                    x: -(landmarks[8].x - 0.5),
+                    y: -(landmarks[8].y - 0.5),
+                    z: landmarks[8].z * 10
+                }
+            };
+        }
+
+        let sphereScale = 1;
+
+        function checkFingerGun(landmarks) {
+            // Athugum hvort þumalfingur sé upp
+            const thumbUp = landmarks[4].x > landmarks[2].x;
+            
+            // Athugum hvort vísifingur sé beinn
+            const indexStraight = Math.abs(landmarks[8].y - landmarks[7].y) > 0.05;
+            
+            // Athugum hvort aðrir fingur séu lokaðir
+            const middleClosed = landmarks[12].y > landmarks[11].y;
+            const ringClosed = landmarks[16].y > landmarks[15].y;
+            const pinkyClosed = landmarks[20].y > landmarks[19].y;
+            
+            const othersClosed = middleClosed && ringClosed && pinkyClosed;
+            
+            // Ef ekki finger gun staða, hættum strax
+            if (!thumbUp || !indexStraight || !othersClosed) {
+                return { isGun: false };
+            }
+            
+            // Stefna vísifingurs - breytt gildi fyrir nákvæmari greiningu
+            const pointingUp = landmarks[8].y < landmarks[5].y - 0.1;
+            const pointingDown = landmarks[8].y > landmarks[5].y + 0.05; // Minnkað bilið fyrir down ??? afh virkar ekki ffs.
+            
+            return {
+                isGun: true,
+                pointingUp: pointingUp,
+                pointingDown: pointingDown
+            };
+        }
+
+        function animate() {
+            if (!isGrabbing) {
+                sphere.rotation.y += 0.01;
+            }
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        async function predictWebcam() {
+            if (!isRunning) return;
+
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                const results = await handLandmarker.detectForVideo(video, performance.now());
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (results.landmarks?.length > 0) {
+                    const drawingUtils = new DrawingUtils(ctx);
+                    const hand = results.landmarks[0];
+
+                    drawingUtils.drawConnectors(hand, HandLandmarker.HAND_CONNECTIONS, 
+                        { color: "#9D00FF", lineWidth: 2 }); // Fjólubláar línur
+                    drawingUtils.drawLandmarks(hand, { 
+                        color: "#FFD700",  // "Gull" litur
+                        lineWidth: 3,      // Aðeins breiðari punktar
+                        radius: 4          // Stærri punktar
+                    });
+
+                    const gesture = checkOKGesture(hand);
+
+                    if (gesture.ok) {
+                        if (!isGrabbing) {
+                            isGrabbing = true;
+                        }
+                        sphere.position.x = gesture.position.x * 40;
+                        sphere.position.y = gesture.position.y * 30;
+                        sphere.position.z = -gesture.position.z * 2;
+                        stats.textContent = `Moving sphere`;
+                    } else {
+                        const fingerGun = checkFingerGun(hand);
+                        if (fingerGun.isGun) {
+                            if (fingerGun.pointingUp) {
+                                sphereScale += 0.05;
+                                stats.textContent = `Enlarging sphere`;
+                                emitter.update(effectsCtx, {
+                                    x: (1 - hand[8].x) * effectsCanvas.width,
+                                    y: hand[8].y * effectsCanvas.height
+                                });
+                            } else if (fingerGun.pointingDown) {
+                                sphereScale = Math.max(sphereScale - 0.05, 0.5);
+                                stats.textContent = `Shrinking sphere`;
+                                emitter.update(effectsCtx, {
+                                    x: (1 - hand[8].x) * effectsCanvas.width,
+                                    y: hand[8].y * effectsCanvas.height
+                                });
+                            }
+                            sphere.scale.set(sphereScale, sphereScale, sphereScale);
+                        } else {
+                            // Hreinsum particles þegar finger gun hættir
+                            emitter.clear(effectsCtx);
+                            if (isGrabbing) {
+                                isGrabbing = false;
+                                stats.textContent = `Sphere placed`;
+                            }
+                        }
+                    }
+                }
+            }
+            requestAnimationFrame(predictWebcam);
+        }
+
+        btnStart.onclick = async () => {
+            try {
+                await setupMediaPipe();
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 480, height: 480 }
+                });
+                video.srcObject = stream;
+                video.addEventListener('loadeddata', () => {
+                    isRunning = true;
+                    predictWebcam();
+                });
+            } catch (err) {
+                alert(`Villa: ${err.name} - ${err.message}`);
+                console.error(err);
+            }
+        };
+
+        btnReset.onclick = () => {
+            // Reset sphere position
+            sphere.position.set(0, 0, 0);
+            // Reset sphere scale
+            sphereScale = 1;
+            sphere.scale.set(1, 1, 1);
+            // Reset sphere rotation
+            sphere.rotation.set(0, 0, 0);
+            // Update status
+            stats.textContent = 'Sphere reset';
+            // Update status
+            stats.textContent = 'Sphere reset';
+        };
+    </script>
+</body>
+</html>

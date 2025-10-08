@@ -1,0 +1,11 @@
+Model Information:
+* title:	Vin
+* source:	https://sketchfab.com/3d-models/vin-875102a0fad5437992b7dcc669279b33
+* author:	MJ06 (https://sketchfab.com/MJ06)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Vin" (https://sketchfab.com/3d-models/vin-875102a0fad5437992b7dcc669279b33) by MJ06 (https://sketchfab.com/MJ06) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

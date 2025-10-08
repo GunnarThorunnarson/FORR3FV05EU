@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Handapatsstjórnun</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #ui {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 30;
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 12px;
+    }
+
+    button {
+      padding: 8px 14px;
+      border: 1px solid #888;
+      background-color: #f8f8f8;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #instructions {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #000;
+    }
+
+    #instructions ul {
+      margin-top: 6px;
+      padding-left: 20px;
+    }
+
+    #three-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #111;
+    }
+
+    #pipContainer {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      width: 320px;
+      height: 240px;
+      z-index: 40;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: black;
+      overflow: hidden;
+    }
+
+    #pipContainer video,
+    #pipContainer canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #pipOverlay {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <button id="enableCamera">enable camera</button>
+    <div id="instructions">
+      <strong>gestures</strong>
+      <ul>
+        <li>open palm -> Translate model (move hand to move object)</li>
+        <li>pinch (thumb+index) -> sotate model (drag while pinched)</li>
+        <li>closed fist -> scale model (move hand up/down to change size)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="three-container"></div>
+  <div id="pipContainer" hidden>
+    <video id="input_video" autoplay playsinline muted></video>
+    <canvas id="pipOverlay"></canvas>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js",
+        "OrbitControls": "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js",
+        "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js"
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'OrbitControls';
+    import { GLTFLoader } from 'GLTFLoader';
+
+    const MODEL_URL = 'terrimodel/3DModel.gltf';
+
+    const container = document.getElementById('three-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.2, 3);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+    scene.add(light);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(3, 10, 10);
+    scene.add(dir);
+
+    let model = new THREE.Group();
+    scene.add(model);
+
+    const loader = new GLTFLoader();
+    loader.load(MODEL_URL, gltf => {
+      const loaded = gltf.scene || gltf.scenes[0];
+      const bbox = new THREE.Box3().setFromObject(loaded);
+      const size = bbox.getSize(new THREE.Vector3()).length();
+      const scale = 1.0 / (size || 1) * 1.2;
+      loaded.scale.setScalar(scale);
+      model.add(loaded);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const videoElement = document.getElementById('input_video');
+    const pipOverlay = document.getElementById('pipOverlay');
+    const pipCtx = pipOverlay.getContext('2d');
+    const pipContainer = document.getElementById('pipContainer');
+
+    function drawLandmarks(landmarks) {
+      pipCtx.clearRect(0, 0, pipOverlay.width, pipOverlay.height);
+      if (!landmarks) return;
+      for (let lm of landmarks) {
+        pipCtx.beginPath();
+        pipCtx.arc(lm.x * pipOverlay.width, lm.y * pipOverlay.height, 5, 0, Math.PI * 2);
+        pipCtx.fillStyle = 'rgba(0,200,255,0.9)';
+        pipCtx.fill();
+      }
+    }
+
+    function distance2D(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    let gestureState = { mode: null, initial: null, initialScale: null, initialRotation: null, initialPos: null };
+
+    const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.5 });
+
+    hands.onResults(results => {
+      pipOverlay.width = videoElement.videoWidth;
+      pipOverlay.height = videoElement.videoHeight;
+      if (!(results.multiHandLandmarks && results.multiHandLandmarks.length > 0)) {
+        drawLandmarks(null);
+        gestureState.mode = null;
+        return;
+      }
+
+      const lm = results.multiHandLandmarks[0];
+      drawLandmarks(lm);
+
+      const fingerDistances = [
+        distance2D(lm[8], lm[6]),
+        distance2D(lm[12], lm[10]),
+        distance2D(lm[16], lm[14]),
+        distance2D(lm[20], lm[18])
+      ];
+      const avgFingerDistance = fingerDistances.reduce((a, b) => a + b, 0) / fingerDistances.length;
+
+      const dThumbIndex = distance2D(lm[4], lm[8]);
+      const pinch = dThumbIndex < 0.05;
+      const closedFist = avgFingerDistance < 0.05;
+
+      const cx = lm.reduce((s, p) => s + p.x, 0) / lm.length;
+      const cy = lm.reduce((s, p) => s + p.y, 0) / lm.length;
+
+      if (closedFist) {
+        if (gestureState.mode !== "scale") {
+          gestureState.mode = "scale";
+          gestureState.initial = cy;
+          gestureState.initialScale = model.scale.clone();
+        } else {
+          const dy = gestureState.initial - cy;
+          let factor = 1 + dy * 3;
+          const s = Math.max(0.05, Math.min(5, gestureState.initialScale.x * factor));
+          model.scale.setScalar(s);
+        }
+      } else if (pinch) {
+        if (gestureState.mode !== "rotate") {
+          gestureState.mode = "rotate";
+          gestureState.initial = { x: cx, y: cy };
+          gestureState.initialRotation = model.rotation.clone();
+        } else {
+          const dx = cx - gestureState.initial.x;
+          const dy = cy - gestureState.initial.y;
+          model.rotation.y = gestureState.initialRotation.y - dx * Math.PI;
+          model.rotation.x = gestureState.initialRotation.x - dy * Math.PI;
+        }
+      } else {
+        if (gestureState.mode !== "translate") {
+          gestureState.mode = "translate";
+          gestureState.initial = { x: cx, y: cy };
+          gestureState.initialPos = model.position.clone();
+        } else {
+          const dx = cx - gestureState.initial.x;
+          const dy = cy - gestureState.initial.y;
+          model.position.x = gestureState.initialPos.x - dx * 2;
+          model.position.y = gestureState.initialPos.y + dy * 2;
+        }
+      }
+    });
+
+    const startCamera = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+      videoElement.srcObject = stream;
+      await videoElement.play();
+      const cameraMP = new Camera(videoElement, {
+        onFrame: async () => { await hands.send({ image: videoElement }); },
+        width: 640,
+        height: 480
+      });
+      cameraMP.start();
+      pipContainer.hidden = false;
+    };
+
+    document.getElementById('enableCamera').addEventListener('click', async () => {
+      await startCamera();
+      document.getElementById('enableCamera').disabled = true;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

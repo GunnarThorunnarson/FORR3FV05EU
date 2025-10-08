@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verkefni 5 - Handapatsstjórnun</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Handapatsstjórnun með 2 höndum</h1>
+        </header>
+
+        <main class="main-content">
+            <div class="camera-section">
+                <h2>Myndavél</h2>
+                <div class="video-container">
+                    <video id="input_video" class="input_video" autoplay muted playsinline></video>
+                    <canvas id="output_canvas" class="output_canvas"></canvas>
+                </div>
+                
+                <div class="landmarks-info">
+                    <div class="landmark-status" id="handStatus">
+                        <span class="status-indicator" id="statusIndicator"></span>
+                        <span id="statusText">Ekki fannst hönd</span>
+                    </div>
+                    
+                    <div id="frameDetector" style="display: none;"></div>
+                    <div id="lShapeIndicator" style="display: none;">
+                        <span id="lShapeDetails">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scene-section">
+                <h2>Módel</h2>
+                <div id="threejs-container" class="threejs-container"></div>
+                
+                <div class="controls-info">
+                    <h3>Stjórnun með handahreyfingum:</h3>
+                    <ul>
+                        <li><strong>🎬 L-form stærðarbreyting:</strong></li>
+                        <li>• 📐 Notaðu báðar hendur í L-formi (þumalfingur og vísifingur í L, aðrir fingur niðri)</li>
+                        <li>• Fjarlægðin milli handa breytir stærð líkansins</li>
+                        <li><strong>🤘 Færsla með rokkmerki:</strong></li>
+                        <li>• Notaðu rokkmerki (vísifingur og litlifingur upp, aðrir fingur niðri)</li>
+                        <li>• Færðu höndina til að hreyfa líkanið um skjáinn</li>
+                        <li><strong>🔫 Snúningur með byssu:</strong></li>
+                        <li>• Notaðu byssumerki (vísifingur, langatöng og þumalfingur upp, aðrir fingur niðri)</li>
+                        <li>• Notaðu aðeins eina hönd í einu fyrir snúning</li>
+                        <li>• Stefnan sem þú bendir í stjórnar snúningsáttinni</li>
+                        <li>• Mundu að beina bissunni rétt upp á við</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- Leiðbeiningar -->
+        <section class="instructions">
+            <h2>Hvernig á að nota</h2>
+            <div class="instruction-grid">
+                <div class="instruction-item">
+                    <h3>🤚 Vinstri hönd</h3>
+                    <p><strong>📐 L-form:</strong> Hafðu þumal og vísifingur í L-formi, hinir fingur niður (báðar hendur fyrir stærðarbreytingu)<br>
+                    <strong>🤘 Rokkmerki:</strong> Vísifingur og litli fingur upp, hinir niðri (aðeins ein hendi þarf til þess að færa)<br>
+                    <strong>🔫 Byssumerki:</strong> Vísifingur, langatöng og þumalfingur upp, hinir niðri (til að snúa til hægri)</p>
+                </div>
+                <div class="instruction-item">
+                    <h3>🤚 Hægri hönd</h3>
+                    <p><strong>📐 L-form:</strong> Hafðu þumal og vísifingur í L-formi, hinir fingur niður (báðar hendur fyrir stærðarbreytingu)<br>
+                    <strong>🤘 Rokkmerki:</strong> Vísifingur og litli fingur upp, hinir niðri (aðeins ein hendi þarf til þess að færa)<br>
+                    <strong>🔫 Byssumerki:</strong> Vísifingur, langatöng og þumalfingur upp, hinir niðri (til að snúa til vinstri)</p>
+                </div>
+
+                <div class="instruction-item">
+                    <h3>📱 Vefmyndavél</h3>
+                    <p>Leyfðu aðgang að myndavélinni þegar beðið er um það. Gakktu úr skugga um að nóg ljós sé til staðar. Báðar hendur eru studdar!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic Hand Gesture 3D Control</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <!-- mediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+</head>
+<body>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>Initializing magic hand tracking...</div>
+  </div>
+
+  <div class="floating-objects"></div>
+  <!-- instructions -->
+  <div id="ui-container">
+    <div class="panel" id="instructions">
+      <div class="title">Magic Hand Control</div>
+      <div class="subtitle">Wave your hand to control the 3D object!</div>
+      
+      
+      <h3>Hand Gesture Controls</h3>
+      <ul>
+        <li><strong>Open Hand Move:</strong> Position X/Y</li>
+        <li><strong>Wrist Twist:</strong> Z-axis Rotation</li>
+        <li><strong>Tilt Up:</strong> X-axis Rotation</li>
+        <li><strong>Tilt Down:</strong> Y-axis Rotation</li>
+        <li><strong>Two Hands:</strong> Stretch to Scale!</li>
+        <li><strong>Pinch (Middle + Thumb):</strong> Change color</li>
+        <li><strong>Fist:</strong> Reset All</li>
+      </ul>
+      <div id="status" class="searching">Searching for hand...</div>
+      <!-- rotation display -->
+      <div id="rotation-info" style="margin-top: 10px; font-size: 0.8em; color: #888;">
+        <div>
+          <span>X:<span id="rot-x">0°</span></span>
+          <span>Y:<span id="rot-y">0°</span></span>
+          <span>Z:<span id="rot-z">0°</span></span>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="resetBtn">Reset Magic Cube</button>
+        <button id="toggleHandBtn">Toggle Hand View</button>
+      </div>
+    </div>
+  </div>
+
+  <video id="inputVideo" style="display:none;"></video>
+  <canvas id="landmarkCanvas"></canvas>
+
+  <script>
+    // ---- initialization ----
+    let isInitialized = false;
+    let showHandView = true;
+
+    // create floating objects
+    const floatingContainer = document.querySelector('.floating-objects');
+    const shapes = ['◆', '◇', '●', '○', '■', '□', '▲', '△', '★', '☆']; // icons found in symbl.cc
+    for (let i = 0; i < 15; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'floating-object';
+      icon.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+      icon.style.left = `${Math.random() * 100}%`;
+      icon.style.top = `${Math.random() * 100}%`;
+      icon.style.animationDuration = `${15 + Math.random() * 20}s`;
+      icon.style.animationDelay = `${Math.random() * 5}s`;
+      floatingContainer.appendChild(icon);
+    }
+
+    // ---- three.js ----
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf0f8ff); // light blue background
+    
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    // soft pastel lighting
+    const ambientLight = new THREE.AmbientLight(0xfff0f5, 0.6); // lavender 
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    scene.add(directionalLight);
+
+    // add a point light
+    const pointLight = new THREE.PointLight(0xffb6c1, 0.5, 100); // light pink
+    pointLight.position.set(0, 5, 5);
+    scene.add(pointLight);
+
+    // add 3D object
+    const geometry = new THREE.IcosahedronGeometry(1, 1);
+    const material = new THREE.MeshStandardMaterial({ 
+      color: 0xff9ec9, // pastel pink
+      roughness: 0.4,
+      metalness: 0.3,
+      transparent: true,
+      opacity: 0.9
+    });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    scene.add(cube);
+
+    // add a soft ground plane
+    const planeGeometry = new THREE.PlaneGeometry(10, 10);
+    const planeMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xd4f1f9, //
+      roughness: 0.9,
+      metalness: 0.1
+    });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -2;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    // add some floating particles around the cube
+    const particleGeometry = new THREE.BufferGeometry;
+    const particleCount = 100;
+    const posArray = new Float32Array(particleCount * 3);
+    
+    for(let i = 0; i < particleCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 10;
+    }
+    
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      size: 0.1,
+      color: 0xffb6c1
+    });
+    
+    const particlesMesh = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particlesMesh);
+
+    camera.position.z = 5;
+
+    // ---- landmark canvas setup----
+    const landmarkCanvas = document.getElementById("landmarkCanvas");
+    const ctx = landmarkCanvas.getContext("2d");
+    
+    function resizeCanvas() {
+      landmarkCanvas.width = window.innerWidth;
+      landmarkCanvas.height = window.innerHeight;
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // ----- mediapipe hands ----
+    const videoElement = document.getElementById("inputVideo");
+    const statusElement = document.getElementById("status");
+
+    const hands = new Hands({
+      locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+      }
+    });
+
+    hands.setOptions({
+      maxNumHands: 2, // enable two-hand detection
+      modelComplexity: 1,
+      minDetectionConfidence: 0.8,
+      minTrackingConfidence: 0.8
+    });
+
+    hands.onResults(onResults);
+
+    // camera setup with error handling
+    let cameraFeed;
+    try {
+      cameraFeed = new Camera(videoElement, {
+        onFrame: async () => {
+          if (videoElement.readyState >= 2) { 
+            await hands.send({image: videoElement});
+          }
+        },
+        width: 1280,
+        height: 720,
+        facingMode: "user"
+      });
+      
+      cameraFeed.start().then(() => {
+        console.log("Camera started successfully");
+        hideLoadingScreen();
+      }).catch(error => {
+        console.error("Camera error:", error);
+        statusElement.innerHTML = "Camera access denied";
+        statusElement.className = "searching";
+      });
+    } catch (error) {
+      console.error("Camera initialization error:", error);
+      statusElement.innerHTML = "Camera not available";
+    }
+
+    // ---- hand gesture recognition ----
+    let lastHandPosition = { x: 0, y: 0 };
+    let isPinching = false;
+    let initialPinchDistance = 0;
+    let initialCubeScale = 1;
+    
+    // two hand scaling variables
+    let isTwoHandScaling = false;
+    let initialTwoHandDistance = 0;
+    let initialTwoHandScale = 1;
+
+    function calculateDistance(point1, point2) {
+      return Math.sqrt(
+        Math.pow(point1.x - point2.x, 2) + 
+        Math.pow(point1.y - point2.y, 2)
+      );
+    }
+
+    function calculateHandDistance(hand1, hand2) {
+      // calculate distance between two hand centers (wrist positions)
+      const wrist1 = hand1[0]; // wrist landmark
+      const wrist2 = hand2[0];
+      return Math.sqrt(
+        Math.pow(wrist1.x - wrist2.x, 2) + 
+        Math.pow(wrist1.y - wrist2.y, 2) +
+        Math.pow((wrist1.z || 0) - (wrist2.z || 0), 2)
+      );
+    }
+
+    function isFist(landmarks) {
+      // simple fist detection based on finger curl
+      const fingerTips = [8, 12, 16, 20]; // index, middle, ring, pinky tips
+      const fingerBases = [6, 10, 14, 18]; // corresponding bases
+      
+      let curledFingers = 0;
+      for (let i = 0; i < fingerTips.length; i++) {
+        const tip = landmarks[fingerTips[i]];
+        const base = landmarks[fingerBases[i]];
+        if (tip.y > base.y) { // tip is below base (curled)
+          curledFingers++;
+        }
+      }
+      return curledFingers >= 3; // most fingers curled
+    }
+
+    function onResults(results) {
+      ctx.clearRect(0, 0, landmarkCanvas.width, landmarkCanvas.height);
+      
+      // flip canvas horizontally for non-mirrored movement
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.translate(-landmarkCanvas.width, 0);
+
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const handCount = results.multiHandLandmarks.length;
+        
+        if (handCount === 2) {
+          // two hands detected - priority: Two-hand scaling
+          const hand1 = results.multiHandLandmarks[0];
+          const hand2 = results.multiHandLandmarks[1];
+          
+          if (showHandView) {
+            // draw both hands
+            drawConnectors(ctx, hand1, HAND_CONNECTIONS, {color: '#ff9ec9', lineWidth: 3});
+            drawLandmarks(ctx, hand1, {color: '#a2d2ff', lineWidth: 2, radius: 4});
+            drawConnectors(ctx, hand2, HAND_CONNECTIONS, {color: '#ff9ec9', lineWidth: 3});
+            drawLandmarks(ctx, hand2, {color: '#a2d2ff', lineWidth: 2, radius: 4});
+          }
+
+          statusElement.innerHTML = "Two hands detected! Stretch to scale";
+          statusElement.className = "detected";
+
+          // two hands scaling
+          const handDistance = calculateHandDistance(hand1, hand2);
+          
+          if (!isTwoHandScaling) {
+            isTwoHandScaling = true;
+            initialTwoHandDistance = handDistance;
+            initialTwoHandScale = cube.scale.x;
+          }
+          
+          const scaleFactor = handDistance / initialTwoHandDistance;
+          const newScale = Math.max(0.2, Math.min(4, initialTwoHandScale * scaleFactor));
+          cube.scale.setScalar(newScale);
+
+          // position control using average of both hands
+          const avgX = -((hand1[8].x + hand2[8].x) / 2 - 0.5) * 6; // added minus to flip X
+          const avgY = -((hand1[8].y + hand2[8].y) / 2 - 0.5) * 6;
+          cube.position.x += (avgX - cube.position.x) * 0.1;
+          cube.position.y += (avgY - cube.position.y) * 0.1;
+
+          // reset single hand states
+          isPinching = false;
+
+        } else if (handCount === 1) {
+          // one hand detected - standard controls
+          const landmarks = results.multiHandLandmarks[0];
+          
+          if (showHandView) {
+            drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {color: '#ff9ec9', lineWidth: 3});
+            drawLandmarks(ctx, landmarks, {color: '#a2d2ff', lineWidth: 2, radius: 4});
+          }
+
+          statusElement.innerHTML = "One hand detected";
+          statusElement.className = "detected";
+
+          // reset two-hand scaling
+          isTwoHandScaling = false;
+
+          // get key points
+          const wrist = landmarks[0];
+          const indexTip = landmarks[8];
+          const thumbTip = landmarks[4];
+          const middleTip = landmarks[12];
+
+          // 1. Position control (Open hand movement)
+          if (!isPinching) {
+            const smoothX = -(indexTip.x - 0.5) * 6; // added minus to flip X
+            const smoothY = -(indexTip.y - 0.5) * 6;
+            
+            cube.position.x += (smoothX - cube.position.x) * 0.1;
+            cube.position.y += (smoothY - cube.position.y) * 0.1;
+          }
+
+          // 2. Rotation control (3-axis rotation)
+          const wristRotation = Math.atan2(
+            landmarks[5].y - landmarks[0].y, 
+            landmarks[5].x - landmarks[0].x
+          );
+          cube.rotation.z += (wristRotation - cube.rotation.z) * 0.1;
+          
+          const palmTilt = Math.atan2(
+            landmarks[9].z - landmarks[0].z,
+            landmarks[9].y - landmarks[0].y
+          );
+          const targetXRotation = palmTilt * 0.5;
+          cube.rotation.x += (targetXRotation - cube.rotation.x) * 0.1;
+          
+          const handLean = Math.atan2(
+            landmarks[20].y - landmarks[8].y,
+            landmarks[20].x - landmarks[8].x
+          );
+          const targetYRotation = handLean * 0.3;
+          cube.rotation.y += (targetYRotation - cube.rotation.y) * 0.1;
+
+          // 3. Single-hand pinch scaling (backup method)
+          const pinchDistance = calculateDistance(thumbTip, indexTip);
+          const middleThumbDistance = calculateDistance(thumbTip, middleTip);
+
+          if (pinchDistance < 0.05) {
+            if (!isPinching) {
+              isPinching = true;
+              initialPinchDistance = pinchDistance;
+              initialCubeScale = cube.scale.x;
+            }
+            
+            const scaleFactor = pinchDistance / initialPinchDistance;
+            const newScale = Math.max(0.1, Math.min(3, initialCubeScale * scaleFactor));
+            cube.scale.setScalar(newScale);
+          } else {
+            isPinching = false;
+          }
+
+          // 4. Color change (Middle + Thumb pinch)
+          if (middleThumbDistance < 0.06) {
+            material.color.setHex(0xa2d2ff);
+            cube.rotation.x += 0.05;
+            cube.rotation.y += 0.05;
+          } else {
+            material.color.setHex(0xff9ec9);
+          }
+
+          // 5. Reset gesture (Fist)
+          if (isFist(landmarks)) {
+            resetCube();
+          }
+
+          lastHandPosition = { x: indexTip.x, y: indexTip.y };
+        }
+
+        // update rotation display
+        updateRotationDisplay();
+
+      } else {
+        // no hands detected
+        statusElement.innerHTML = "Searching for hands...";
+        statusElement.className = "searching";
+        
+        // Reset all gesture states
+        isPinching = false;
+        isTwoHandScaling = false;
+      }
+      
+      // restore canvas transform
+      ctx.restore();
+    }
+
+    // ---- ui control ----
+    document.getElementById('resetBtn').addEventListener('click', resetCube);
+    document.getElementById('toggleHandBtn').addEventListener('click', toggleHandView);
+
+    function resetCube() {
+      cube.position.set(0, 0, 0);
+      cube.rotation.set(0, 0, 0);
+      cube.scale.setScalar(1);
+      material.color.setHex(0xff9ec9);
+      initialCubeScale = 1;
+      initialTwoHandScale = 1;
+      isPinching = false;
+      isTwoHandScaling = false;
+    }
+
+    // toggle hand view
+    function toggleHandView() {
+      showHandView = !showHandView;
+      document.getElementById('toggleHandBtn').innerHTML = 
+        showHandView ? 'Hide Hand View' : 'Show Hand View';
+    }
+    
+    // display rotation angles
+    function updateRotationDisplay() {
+      const toDegrees = (radians) => Math.round(radians * 180 / Math.PI);
+      document.getElementById('rot-x').textContent = `${toDegrees(cube.rotation.x)}°`;
+      document.getElementById('rot-y').textContent = `${toDegrees(cube.rotation.y)}°`;
+      document.getElementById('rot-z').textContent = `${toDegrees(cube.rotation.z)}°`;
+    }
+
+    function hideLoadingScreen() {
+      document.getElementById('loading').style.display = 'none';
+      isInitialized = true;
+    }
+
+    // ---- animation loop ----
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // add subtle floating animation when no hand is detected
+      if (statusElement.className === 'searching' && isInitialized) {
+        const time = performance.now() * 0.001;
+        cube.rotation.x = Math.sin(time * 0.5) * 0.1;
+        cube.rotation.y = Math.cos(time * 0.3) * 0.1;
+        cube.position.y = Math.sin(time * 0.7) * 0.2;
+        
+        // animate particles
+        particlesMesh.rotation.y += 0.005
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // error handling for unsupported browsers
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      statusElement.innerHTML = "Webcam not supported in this browser";
+      hideLoadingScreen();
+    }
+  </script>
+</body>
+</html>
