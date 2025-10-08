@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verkefni 5</title>
+  <style>
+    body { margin: 0; display: flex; gap: 12px; padding: 12px; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    #left, #three-container { position: relative; width: 640px; height: 480px; }
+    #controls { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    #video-wrap { position: relative; width: 640px; height: 480px; }
+    video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+    #webcam { object-fit: cover; }
+    button { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+    #instructions { margin-top: 12px; padding: 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; max-width: 640px; }
+    #instructions h3 { margin: 0 0 12px 0; color: #495057; font-size: 16px; }
+    #instructions p { margin: 0 0 8px 0; color: #6c757d; font-size: 14px; line-height: 1.4; }
+    #instructions strong { color: #212529; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="left">
+    
+    <div id="video-wrap">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas id="output_canvas" width="640" height="480"></canvas>
+    </div>
+    <div id="controls">
+      <button id="webcamButton">Enable Webcam</button>
+    </div>
+    <div id="instructions">
+      <h3>Controls:</h3>
+      <p><strong>✊ Move + Rotate:</strong> Make a fist (curl all fingers) and move your hand to move the model. The model rotates around its Y-axis based on your wrist.</p>
+      <p><strong>🤏 Scale (resize):</strong> Pinch your thumb and index finger together, then move your hand closer or further from the camera.</p>
+      <p><strong>🖐️ Stop:</strong> Open your palm to stop all movement and rotation.</p>
+
+    </div>
+  </div>
+  <div id="three-container"></div>
+  
+  <div id="mode" style="
+    position:fixed; right:12px; top:12px; z-index:10;
+    padding:6px 10px; border-radius:999px; background:#eee; font:600 13px system-ui;
+    box-shadow:0 6px 24px rgba(0,0,0,.12); transition:background .2s, color .2s;
+  ">Idle</div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
