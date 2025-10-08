@@ -8,7 +8,7 @@
 - [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Aron/index.html)
 - [Bjarni](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Bjarni/index.html)
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Emil/index.html)
-- [Hörður]()
+- [Hörður](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Hordur/index.html)
 - [Ingimar](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Ingimar/index.html)
 - [Kiara](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Kiara/index.html)
 - [Knútur](https://gunnarthorunnarson.github.io/FORR3FV05EU/handapat/H25/Knutur/index.html)
