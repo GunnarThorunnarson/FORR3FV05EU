@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AR Placement</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #scene-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 2;
+      touch-action: none;
+    }
+
+    #bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #ar-button-container {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 28px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #place-button {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      min-width: 96px;
+      padding: 0 16px;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      cursor: pointer;
+      transition: opacity 180ms ease, transform 180ms ease;
+      opacity: 0;
+      pointer-events: none;
+      touch-action: manipulation;
+    }
+
+    #place-button[hidden] {
+      display: none;
+    }
+
+    #place-button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    #scale-up,
+    #scale-down {
+      position: absolute;
+      right: 16px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      cursor: pointer;
+      transition: opacity 180ms ease, transform 180ms ease;
+      opacity: 0;
+      pointer-events: none;
+      touch-action: manipulation;
+    }
+
+    #scale-up {
+      bottom: 84px;
+    }
+
+    #scale-down {
+      bottom: 16px;
+    }
+
+    #scale-up[hidden],
+    #scale-down[hidden] {
+      display: none;
+    }
+
+    #loading-screen {
+      position: absolute;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-wrap {
+      width: 120px;
+      height: 120px;
+      position: relative;
+    }
+
+    .loader-c {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 10px solid rgba(255, 255, 255, 0.12);
+      border-top-color: #9370DB;
+      border-right-color: transparent;
+      animation: spin 1.4s linear infinite;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.6));
+    }
+
+    .loader-inner {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      border-radius: 50%;
+      border: 6px solid rgba(255, 255, 255, 0.04);
+    }
+
+
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loading-progress {
+      margin-top: 16px;
+      color: #ddd;
+      font-size: 14px;
+      letter-spacing: 0.6px;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 600px) {
+      #place-button {
+        left: 12px;
+        bottom: 12px;
+        height: 48px;
+        min-width: 80px;
+        font-size: 14px;
+      }
+
+      .loader-wrap {
+        width: 90px;
+        height: 90px;
+      }
+
+      .loader-c {
+        border-width: 8px;
+      }
+    }
+
+    #xr-ui-root {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      display: block;
+    }
+
+
+    #xr-ui-root button {
+      pointer-events: auto;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div id="container">
+    <img id="bg-img" src="/public/models/IMG_8846.jpg" alt="background image">
+    <div id="xr-ui-root" aria-hidden="true">
+      <button id="place-button" aria-label="Place object" hidden>Place</button>
+      <button id="scale-down" aria-label="Scale down" hidden>-</button>
+      <button id="scale-up" aria-label="Scale up" hidden>+</button>
+    </div>
+    <div id="ar-button-container" aria-hidden="true"></div>
+    <div id="scene-container"></div>
+    <section id="loading-screen" aria-hidden="false">
+      <div class="loader-wrap" role="status" aria-live="polite" aria-label="Loading model">
+        <div class="loader-c" aria-hidden="true"></div>
+        <div class="loader-inner" aria-hidden="true"></div>
+      </div>
+      <div id="loading-progress" aria-hidden="true">Loading</div>
+    </section>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>

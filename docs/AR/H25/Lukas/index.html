@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+        <script type="importmap">
+        {
+            "imports": {
+               "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+               "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+            }
+        }
+     </script> 
+</head>
+<body>
+
+
+     <img src="./2025-09-16-19-10-04-937.jpg" style="width: 33%;">
+
+     <div id="placeHolder">
+        <section id="loadingScreen" style="width: 100%; height: 100%; opacity: 0; position: absolute; top: 0px; left: 0px; background-color: blue;">
+
+        </section>
+
+        <input type="range" min="0.1" max="5" value="1" id="slider">
+
+        <button id="placeButton" style="position: absolute;width: 150px;height: 40px;">Place Model</button>
+     </div>
+
+</section>
+
+    <script type="module">
+        
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { ARButton } from 'three/addons/webxr/ARButton.js';
+    import { animate, utils  } from '../anime.esm.min.js';
+
+    let pringlesAR;
+
+    const button = document.getElementById("placeButton");
+    button.style.top = `${window.innerHeight * 0.75}px`
+    button.style.left = `${(window.innerWidth * 0.50)-button.clientWidth*0.5}px`
+    button.style.display = 'none'
+
+    const placeHolder = document.getElementById("placeHolder");
+    const loadingScreen = document.getElementById('loadingScreen');
+
+    const slider = document.getElementById('slider');
+
+    slider.style.position = 'absolute'
+    slider.style.top = `${window.innerHeight * 0.85}px`
+    slider.style.left = `${(window.innerWidth * 0.50)-slider.clientWidth*0.5}px`
+    slider.style.display = "none"
+
+    slider.oninput = () => {
+        pringlesAR.scale.set(slider.value,slider.value,slider.value)
+    }
+
+    // Scene 
+    const scene = new THREE.Scene();
+
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(3, 1, 0);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true}); // kannski bætt við: ,alpha: true
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.xr.enabled = true;
+
+        const loadingManager = new THREE.LoadingManager(()=> {
+            loadingScreen.style.opacity = 0
+        });
+        loadingManager.onStart = (url,itemsLoaded,itemsTotal) => {
+            loadingScreen.style.opacity = 1
+
+        }
+
+
+    let buttonAR = ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay', 'dom-overlay-for-handled-ar' ], domOverlay: {root: placeHolder} } );
+    buttonAR.style.background = "#202cc9"
+
+    document.body.appendChild(buttonAR);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff,1)
+    scene.add(ambientLight)
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(0.5, 1, 0);
+
+    dirLight.castShadow = true
+    scene.add(dirLight);
+
+    //const texture = textureLoader.load("") // þarf að bæta við AR model
+
+    // Load GLTF model
+
+    const loader = new GLTFLoader( loadingManager );
+
+    // kannski bætt við listi til að stækka og minnka
+    
+    function onSelect() {
+
+        if ( reticle.visible && !pringlesAR ) {
+
+            loader.load(
+                "./49f0ae67a41e410cacdf0b975fa6f21d/3DModel.gltf",
+                (gltf) => {
+                    pringlesAR = gltf.scene
+
+                    reticle.matrix.decompose( pringlesAR.position, pringlesAR.quaternion, pringlesAR.scale );
+
+                    scene.add(pringlesAR);
+
+                }
+            )
+        }
+
+    }
+
+    button.addEventListener('click', ()=> {
+        onSelect()
+    })
+
+    let controller1 = renderer.xr.getController( 0 );
+    scene.add( controller1 );
+
+    let reticle = new THREE.Mesh(
+        new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
+        new THREE.MeshBasicMaterial()
+    );
+    reticle.matrixAutoUpdate = false;
+    reticle.visible = false;
+    scene.add( reticle );
+
+    // Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    let hitTestSourceRequested = false
+    let hitTestSource = null
+
+
+    renderer.setAnimationLoop((timestamp,frame) => {
+            controls.update();
+            
+            // PHONE DOESNT WORK TRY DOING SOME SHIT TO FIX IT, AFTER THAT TEST THE KFC STUDENT'S WAY ON USING HIT TEST THEN THREE.JS WAY BUT MAYBE THE OTHER WAY AROUND
+
+			if ( frame ) {
+
+					const referenceSpace = renderer.xr.getReferenceSpace();
+					const session = renderer.xr.getSession();
+
+					if ( hitTestSourceRequested === false ) {
+
+						session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+
+							session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+
+								hitTestSource = source;
+
+							} );
+
+						} );
+
+                        // eventListener virkar ekki fyrir fyrsta nema aðra skipti
+
+                        if (button.style.display == 'none'){
+                            button.style.display = "block"
+                            slider.style.display = 'block'
+
+
+                        }
+                   
+
+                        
+                        
+						session.addEventListener( 'end', function () {
+
+                            button.style.display = "none"
+                            slider.style.display = 'none'
+
+
+                            camera.position.set(3, 1, 0);
+
+							hitTestSourceRequested = false;
+							hitTestSource = null;
+
+						} );
+
+						hitTestSourceRequested = true;
+
+					}
+
+					if ( hitTestSource ) {
+
+						const hitTestResults = frame.getHitTestResults( hitTestSource );
+
+						if ( hitTestResults.length ) {
+
+							const hit = hitTestResults[ 0 ];
+
+							reticle.visible = true;
+							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
+
+						} else {
+
+							reticle.visible = false;
+
+						}
+
+					}
+
+				}
+
+				renderer.render( scene, camera );
+    });
+        
+
+
+    </script>
+    
+</body>
+</html>

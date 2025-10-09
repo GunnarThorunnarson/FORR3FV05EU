@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verkefni 4 HP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+  html, body {
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000
+  }
+  canvas { 
+    touch-action: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: none; /* Start hidden, will be shown when entering AR */
+  }
+  #overlayRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    touch-action: none;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* Fullscreen loader */
+  #loader {
+    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.55); z-index: 10; backdrop-filter: blur(2px);
+    font-family: system-ui, sans-serif;
+  }
+  .card {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(20,20,20,.85); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px; padding: 14px 16px; color: #fff; min-width: 220px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  .spinner {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.25); border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .label { font-size: 14px; opacity: .9; }
+  .progress { font-variant-numeric: tabular-nums; font-weight: 600; }
+  /* subtle progress bar */
+  .bar { width: 100%; height: 4px; border-radius: 999px; background: rgba(255,255,255,.15); overflow: hidden; }
+  .bar > i { display:block; height:100%; width:0%; background:#fff; opacity:.9; transition: width .15s linear; }
+  
+  /* Start screen with Oshawott image */
+  #startScreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 5;
+    font-family: system-ui, sans-serif;
+    color: white;
+    text-align: center;
+  }
+  
+  #startScreen img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+  }
+  
+  #startScreen h1 {
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  
+  #startScreen p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0 0 30px 0;
+    max-width: 300px;
+  }
+
+  /* AR UI Button Styles */
+  #placeButton {
+    width: 64px;
+    height: 64px;
+    border: none;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 30% 30%, #ffffff 0%, #e9e9e9 60%, #d6d6d6 100%);
+    box-shadow: 0 8px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.8);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+    transition: transform .08s ease, box-shadow .12s ease, opacity .2s ease;
+  }
+
+  #placeButton:active {
+    transform: scale(0.96);
+    box-shadow: 0 6px 16px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.6);
+  }
+
+  #placeButton:focus-visible {
+    box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.45), 0 8px 20px rgba(0,0,0,.25);
+  }
+
+  /* Disabled state when reticle not visible */
+  #placeButton[disabled] {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  #exitButton {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255,255,255,.95);
+    color: #111;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 44px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  #exitButton:active {
+    transform: scale(0.96);
+  }
+</style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+<div id="overlayRoot">
+  <!-- Start screen with Oshawott -->
+  <div id="startScreen">
+    <img src="./public/images/oshawott.jpg" alt="Oshawott">
+    <h1>Pokémon AR</h1>
+    <p>Experience Oshawott in augmented reality</p>
+  </div>
+  
+  <!-- Loading overlay -->
+  <div id="loader">
+    <div class="card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <div class="label">Loading model… <b id="pct">0%</b></div>
+        <div class="bar"><i id="bar"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AR UI overlay -->
+  <div id="arUI" style="position: fixed; bottom: 20px; width: 100%; display: none; justify-content: center; z-index: 10;">
+    <button id="placeButton" aria-label="Place"></button>
+    <button id="exitButton" aria-label="Exit AR">✕</button>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

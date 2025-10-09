@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verkefni 4</title>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Alan Sans", sans-serif;
+        font-optical-sizing: auto;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      .title {
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 64px;
+      }
+
+      .flex > img {
+        height: 480px;
+        width: auto;
+      }
+
+      .canvas {
+        height: 480px;
+        width: 600px;
+        position: relative;
+      }
+
+      .loading-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(194, 194, 194, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+      }
+
+      .loading-container.hidden {
+        display: none;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #ec0c31;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 20px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      @media screen and (max-width: 1382px) {
+        .flex {
+          flex-direction: column-reverse;
+          gap: 48px;
+        }
+
+        .flex > img {
+          width: 100%;
+          height: auto;
+          max-width: 600px;
+        }
+
+        .canvas {
+          width: 100%;
+        }
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1 class="title">Fly Play Airbus A321neo</h1>
+
+    <div class="flex">
+      <img src="mynd.jpg" alt="Fly Play Airbus A321neo" />
+      <div class="canvas">
+        <div class="loading-container" id="loadingContainer">
+          <div class="spinner"></div>
+          <div class="loading-text">Loading 3D model...</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { ARButton } from "three/addons/webxr/ARButton.js";
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xc2c2c2);
+
+      const canvasElement = document.querySelector(".canvas");
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+      renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      canvasElement.appendChild(renderer.domElement);
+
+      const camera = new THREE.PerspectiveCamera(
+        65,
+        canvasElement.clientWidth / canvasElement.clientHeight,
+        0.1,
+        150
+      );
+      camera.position.set(0, 3, 4);
+      camera.position.x = 5 * Math.cos(Math.PI);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.minDistance = 3;
+      controls.maxDistance = 15;
+      controls.enablePan = false;
+      controls.enableDamping = true;
+
+      renderer.xr.enabled = true;
+      canvasElement.appendChild(ARButton.createButton(renderer));
+
+      const hemisphereLight = new THREE.HemisphereLight(
+        0xffffff,
+        0x444444,
+        1.75
+      );
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(3, 10, 10);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024 * 2;
+      directionalLight.shadow.mapSize.height = 1024 * 2;
+      scene.add(directionalLight);
+
+      const textureLoader = new THREE.TextureLoader();
+      // PBR textures frá poly haven: https://polyhaven.com/a/concrete_floor_worn_001
+      const groundBase = textureLoader.load(
+        "./floor/concrete_floor_worn_001_diff_4k.jpg"
+      );
+      const groundNormal = textureLoader.load(
+        "./floor/concrete_floor_worn_001_nor_gl_4k.jpg"
+      );
+      const groundRoughness = textureLoader.load(
+        "./floor/concrete_floor_worn_001_rough_4k.jpg"
+      );
+
+      // búa til array til þess að endurtaka kóðann fyrir allar áferðirnar
+      [groundBase, groundNormal, groundRoughness].forEach((tex) => {
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(2, 2);
+      });
+
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(100, 100),
+        new THREE.MeshStandardMaterial({
+          map: groundBase,
+          normalMap: groundNormal,
+          roughnessMap: groundRoughness,
+          metalness: 0.0,
+        })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -1.45;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const loader = new GLTFLoader();
+      const loadingContainer = document.getElementById("loadingContainer");
+
+      loader.load("./model/3DModel.gltf", (gltf) => {
+        const model = gltf.scene;
+        model.position.y = -1.5;
+        model.scale.set(15, 15, 15);
+        model.rotation.y = Math.PI / 1.2;
+        scene.add(model);
+
+        loadingContainer.classList.add("hidden");
+      });
+
+      renderer.setAnimationLoop(() => {
+        controls.update();
+        renderer.render(scene, camera);
+      });
+
+      window.addEventListener("resize", () => {
+        const width = canvasElement.clientWidth;
+        const height = canvasElement.clientHeight;
+
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      });
+    </script>
+  </body>
+</html>

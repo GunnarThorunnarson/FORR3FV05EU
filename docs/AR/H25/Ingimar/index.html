@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>	
+<head>
+  <meta charset="utf-8">
+  <title>Document</title>
+  <style>
+
+
+
+html{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  touch-action: none;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f0f8ff, #dcefff);
+  font-family: Arial, sans-serif;
+}
+
+#myBtn {
+  position: absolute;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 40px 80px;
+  font-size: 40px;
+  font-weight: bold;
+  background-color: rgba(0, 150, 255, 0.8);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  z-index: 999;
+  display: none;
+}
+
+
+#myImg {
+  display: block;
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  margin: 120px auto 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+#loadingScreen {
+  position: absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2em;
+  z-index: 1000;
+  display:none;
+}
+
+
+
+
+  </style>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/",
+        "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js"
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+
+    <button id="myBtn">Spawn in</button>
+    <img id="myImg" src="unnamed.jpg" alt="Hallo image">
+    <div id="loadingScreen">Loading...</div>
+
+
+<script type="module">
+
+import * as THREE from 'three';
+import { ARButton } from 'three/addons/webxr/ARButton.js';
+import { GLTFLoader } from 'GLTFLoader'
+
+
+const width = window.innerWidth, height = window.innerHeight;
+
+// camera
+const camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 20);
+
+// scene
+const scene = new THREE.Scene();
+const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 3);
+light.position.set(0.5, 1, 0.25);
+scene.add(light);
+
+
+
+
+
+
+
+// renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(width, height)
+renderer.xr.enabled = true
+document.body.appendChild(renderer.domElement)
+
+
+
+// AR Button with dom-overlay 
+document.body.appendChild(
+  ARButton.createButton(renderer, {
+    requiredFeatures: ['hit-test', 'dom-overlay'],
+    domOverlay: { root: document.body }
+  })
+)
+
+// image not show in AR
+renderer.xr.addEventListener("sessionstart", () => {
+  document.getElementById("myImg").style.display = "none"
+})
+
+renderer.xr.addEventListener("sessionend", () => {
+  document.getElementById("myImg").style.display = "block"
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+// carialbes fyrir hit test
+let controller
+let reticle
+let hitTestSource = null
+let hitTestSourceRequested = false
+
+
+
+// set up
+controller = renderer.xr.getController(0)
+scene.add(controller)
+
+
+
+
+
+// reticle: hringur sem segir hvar modelid er ad fara ad plaseast
+reticle = new THREE.Mesh(
+  new THREE.RingGeometry(0.1, 0.15, 32).rotateX(-Math.PI/2),
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+)
+reticle.matrixAutoUpdate = false
+reticle.visible = false
+scene.add(reticle)
+
+
+
+
+
+document.getElementById("myBtn").addEventListener("click", () => {
+
+  const loadingScreen = document.getElementById('loadingScreen')
+  loadingScreen.style.display = "flex"
+
+  // thegar model loadast
+  const manager = new THREE.LoadingManager(() => {
+    loadingScreen.style.display = "none"
+  })
+
+  // modelif{}
+  const loader = new GLTFLoader(manager)
+  loader.load('squirlr.glb', (gltf) => {
+    const newModel = gltf.scene
+    lastPlacedModel = newModel
+    // setja trnasfom rett
+    newModel.position.setFromMatrixPosition(reticle.matrix)
+    newModel.rotation.setFromRotationMatrix(reticle.matrix);
+    newModel.scale.set(0.3, 0.3, 0.3)
+// }
+    // Anchors{}
+const session = renderer.xr.getSession();
+if (session.requestAnchor) { // ancors eru ekki i ios: það verða bara ancors ef það virkar
+
+  session.requestAnchor(reticle.matrix, renderer.xr.getReferenceSpace()).then(anchor => {
+
+    anchor.context = newModel
+    scene.add(newModel)
+
+  })
+} else { // ef það eru ekki ancors til eins og i ios þá setur það bar hlutinn niður
+  scene.add(newModel);
+}
+// }
+})
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  loop
+renderer.setAnimationLoop(animate);
+
+function animate(time, frame) {
+  // ef thu ert i ar mode
+  if (frame) {
+    const session = renderer.xr.getSession()
+    const referenceSpace = renderer.xr.getReferenceSpace()
+
+    // gerist bara einusinni
+    // naer in laserin sem er ad fara d testa fyrir slettum svaedum
+    if (!hitTestSourceRequested) {
+      session.requestReferenceSpace('viewer').then((refSpace) => {
+        session.requestHitTestSource({ space: refSpace }).then((source) => {
+          hitTestSource = source
+        })
+      })
+      // ef no more ar
+      session.addEventListener('end', () => {
+        hitTestSourceRequested = false
+        hitTestSource = null
+      })
+      hitTestSourceRequested = true
+    }
+
+    // gerist altaf
+    if (hitTestSource) {
+      const hitTestResults = frame.getHitTestResults(hitTestSource)
+      if (hitTestResults.length > 0) {//hitti that slettan stad?
+        const hit = hitTestResults[0]
+        const pose = hit.getPose(referenceSpace)//naer i stadin
+
+        reticle.visible = true
+        reticle.matrix.fromArray(pose.transform.matrix)
+
+        document.getElementById("myBtn").style.display = "block"//laetur button vera visible
+      } else {
+        reticle.visible = false
+
+        document.getElementById("myBtn").style.display = "none"
+      }
+    }
+  }
+
+  renderer.render(scene, camera)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// scale stuff sem eg nadi fra verkefni 2
+
+let lastPlacedModel = null
+
+const ongoingTouches = new Map()
+let initialScale
+let currentScale = 1
+
+document.addEventListener('pointerdown', (e) => {
+  const touch = { pageX: e.pageX, pageY: e.pageY }
+  ongoingTouches.set(e.pointerId, touch)
+
+  if (ongoingTouches.size === 2 && lastPlacedModel) {
+    const touches = Array.from(ongoingTouches.values())
+    const dx = touches[0].pageX - touches[1].pageX
+    const dy = touches[0].pageY - touches[1].pageY
+    initialScale = Math.hypot(dx, dy)
+    currentScale = lastPlacedModel.scale.x
+  }
+})
+
+document.addEventListener('pointermove', (e) => {
+  if (!lastPlacedModel) return
+
+  const touch = { pageX: e.pageX, pageY: e.pageY }
+  ongoingTouches.set(e.pointerId, touch)
+
+  if (ongoingTouches.size === 2 && initialScale) {
+    const touches = Array.from(ongoingTouches.values())
+    const dx = touches[0].pageX - touches[1].pageX
+    const dy = touches[0].pageY - touches[1].pageY
+    const distance = Math.hypot(dx, dy)
+
+    const scaleFactor = distance / initialScale
+    const newScale = currentScale * scaleFactor
+
+    lastPlacedModel.scale.set(newScale, newScale, newScale)
+  }
+})
+
+document.addEventListener('pointerup', (e) => {
+  ongoingTouches.delete(e.pointerId)
+
+  if (ongoingTouches.size < 2) {
+    initialScale = undefined
+  }
+})
+
+
+</script>
+</body>
+</html>

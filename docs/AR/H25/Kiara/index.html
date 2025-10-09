@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>AR Dragonfly Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <img id="photo" src="dragonfly.png" alt="Dragonfly Photo">
+    <button id="ar-button">View in AR (WebXR)</button>
+    <a id="ios-ar-button" rel="ar" href="models/model.usdz">View in AR (iOS)<br><span style="display:block;font-size:16px;color:#007bff;">Click me to see the object in AR</span></a>
+    <div id="loading">Loading 3D Model...</div>
+    <div id="error-message"></div>
+    <div id="scale-controls">
+        <button id="place-button">Place Object</button>
+        <button id="scale-up">+</button>
+        <button id="scale-down">-</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        const arButton = document.getElementById('ar-button');
+        const iosArButton = document.getElementById('ios-ar-button');
+        const photo = document.getElementById('photo');
+        const loadingDiv = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+        const scaleControls = document.getElementById('scale-controls');
+        const placeButton = document.getElementById('place-button');
+        const scaleUp = document.getElementById('scale-up');
+        const scaleDown = document.getElementById('scale-down');
+
+        let scene, camera, renderer, reticle, model, hitTestSource, hitTestSourceRequested = false;
+        let currentScale = 1;
+        let isPlaced = false;
+        let controller;
+
+        async function init() {
+            // Detect platform
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isIOS) {
+                iosArButton.style.display = 'inline-block';
+                arButton.style.display = 'none';
+            } else {
+                arButton.style.display = 'inline-block';
+                iosArButton.style.display = 'none';
+            }
+
+            // WebXR setup for non-iOS
+            if (!isIOS) {
+                if (!navigator.xr) {
+                    arButton.disabled = true;
+                    arButton.textContent = 'AR Not Supported';
+                    showError('WebXR not available. Try Chrome on Android.');
+                    return;
+                }
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.xr.enabled = true;
+                document.body.appendChild(renderer.domElement);
+
+                const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+                scene.add(light);
+
+                reticle = new THREE.Mesh(
+                    new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+                    new THREE.MeshBasicMaterial({ color: 0xffffff })
+                );
+                reticle.matrixAutoUpdate = false;
+                reticle.visible = false;
+                scene.add(reticle);
+
+                controller = renderer.xr.getController(0);
+                controller.addEventListener('select', onSelect);
+                scene.add(controller);
+
+                arButton.addEventListener('click', startAR);
+                scaleUp.addEventListener('click', () => scaleModel(0.1));
+                scaleDown.addEventListener('click', () => scaleModel(-0.1));
+                placeButton.addEventListener('click', placeObject);
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                renderer.setAnimationLoop(render);
+
+                try {
+                    const isSupported = await navigator.xr.isSessionSupported('immersive-ar');
+                    if (!isSupported) {
+                        arButton.disabled = true;
+                        arButton.textContent = 'AR Not Supported';
+                        showError('Immersive AR not supported. Try Chrome on Android.');
+                    }
+                } catch (error) {
+                    console.error('AR support check failed:', error);
+                    showError('Error checking AR support. Try another device.');
+                }
+            }
+        }
+
+        async function startAR() {
+            try {
+                const session = await navigator.xr.requestSession('immersive-ar', {
+                    requiredFeatures: ['hit-test'],
+                    optionalFeatures: ['dom-overlay'],
+                    domOverlay: { root: document.body }
+                });
+                renderer.xr.setSession(session);
+                const referenceSpace = await session.requestReferenceSpace('viewer');
+                hitTestSource = await session.requestHitTestSource({ space: referenceSpace });
+                hitTestSourceRequested = true;
+
+                photo.style.display = 'none';
+                arButton.style.display = 'none';
+                iosArButton.style.display = 'none';
+                renderer.domElement.style.display = 'block';
+                scaleControls.style.display = 'flex';
+                placeButton.style.display = 'block';
+
+                loadModel();
+            } catch (error) {
+                console.error('AR session failed:', error);
+                showError('Failed to start AR. Ensure camera permissions and try again.');
+            }
+        }
+
+        function loadModel() {
+            loadingDiv.style.display = 'flex';
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                'models/model.glb',
+                (gltf) => {
+                    model = gltf.scene;
+                    model.visible = false;
+                    scene.add(model);
+                    loadingDiv.style.display = 'none';
+                },
+                (xhr) => {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                (error) => {
+                    console.error('Model loading error:', error);
+                    loadingDiv.style.display = 'none';
+                    showError('Failed to load GLB model. Check models/model.glb.');
+                }
+            );
+        }
+
+        function onSelect() {
+            if (reticle.visible && model && !isPlaced) {
+                placeObject();
+            }
+        }
+
+        function placeObject() {
+            if (reticle.visible && model) {
+                model.position.setFromMatrixPosition(reticle.matrix);
+                model.scale.set(currentScale, currentScale, currentScale);
+                model.visible = true;
+                isPlaced = true;
+                reticle.visible = false;
+                placeButton.style.display = 'none';
+            }
+        }
+
+        function scaleModel(delta) {
+            if (model) {
+                currentScale = Math.max(0.1, currentScale + delta);
+                model.scale.set(currentScale, currentScale, currentScale);
+            }
+        }
+
+        function render(timestamp, frame) {
+            if (frame && hitTestSourceRequested) {
+                const hitTestResults = frame.getHitTestResults(hitTestSource);
+                if (hitTestResults.length > 0) {
+                    const hit = hitTestResults[0];
+                    reticle.visible = !isPlaced;
+                    reticle.matrix.fromArray(hit.getPose(renderer.xr.getReferenceSpace()).transform.matrix);
+                } else {
+                    reticle.visible = false;
+                }
+            }
+            renderer.render(scene, camera);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

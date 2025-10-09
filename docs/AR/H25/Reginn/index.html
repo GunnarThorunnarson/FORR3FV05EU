@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D AR Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        #viewer-container {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .ar-button-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .scale-buttons-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        button {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .ar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            display: none;
+        }
+        
+        .hit-test {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hit-test:after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        
+        .close-ar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 101;
+        }
+    </style>
+</head>
+<body>
+    <div id="viewer-container">
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Loading 3D model...</p>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="ar-button-row">
+            <button id="ar-btn">View in AR</button>
+        </div>
+        <div class="scale-buttons-row">
+            <button id="enlarge">+</button>
+            <button id="shrink">-</button>
+        </div>
+    </div>
+
+    <div class="ar-overlay" id="ar-overlay">
+        <div class="close-ar" id="close-ar">X</div>
+        <div class="hit-test" id="hit-test"></div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js",
+                "OrbitControls": "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js",
+                "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js"
+            }
+        }
+    </script>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'OrbitControls';
+        import { GLTFLoader } from 'GLTFLoader';
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x222222);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        const container = document.getElementById('viewer-container');
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        renderer.setSize(containerWidth, containerHeight);
+        renderer.xr.enabled = true;
+        container.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 10, 5);
+        scene.add(directionalLight);
+        
+        let model = null;
+        let currentScale = 1;
+        const url = 'terrimodel/3DModel.gltf';
+        
+        const loading = document.getElementById('loading');
+        const arBtn = document.getElementById('ar-btn');
+        const enlargeBtn = document.getElementById('enlarge');
+        const shrinkBtn = document.getElementById('shrink');
+        const arOverlay = document.getElementById('ar-overlay');
+        const closeAr = document.getElementById('close-ar');
+        const hitTest = document.getElementById('hit-test');
+        
+        const loader = new GLTFLoader();
+        loader.load(url, function(gltf) {
+            model = gltf.scene;
+            model.scale.set(0.5, 0.5, 0.5);
+            scene.add(model);
+            camera.position.z = 5;
+            loading.style.display = 'none';
+            arBtn.disabled = false;
+            enlargeBtn.disabled = false;
+            shrinkBtn.disabled = false;
+        }, undefined, function(error) {
+            console.error('Error loading model:', error);
+            loading.innerHTML = '<p>Error loading model</p>';
+        });
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!renderer.xr.isPresenting) {
+                controls.update();
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            camera.aspect = containerWidth / containerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(containerWidth, containerHeight);
+        });
+        
+        enlargeBtn.addEventListener('click', () => {
+            if (model) {
+                currentScale *= 1.2;
+                model.scale.setScalar(currentScale);
+            }
+        });
+        
+        shrinkBtn.addEventListener('click', () => {
+            if (model) {
+                currentScale /= 1.2;
+                model.scale.setScalar(currentScale);
+            }
+        });
+        
+        let hitTestSource = null;
+        let refSpace = null;
+        let arSession = null;
+        
+        arBtn.addEventListener('click', async () => {
+            if (!navigator.xr) {
+                alert('WebXR not supported by your browser');
+                return;
+            }
+            
+            try {
+                const sessionInit = { 
+                    requiredFeatures: ['hit-test'],
+                    optionalFeatures: ['dom-overlay', 'local-floor', 'bounded-floor']
+                };
+                
+                arSession = await navigator.xr.requestSession('immersive-ar', sessionInit);
+                
+                await renderer.xr.setSession(arSession);
+                
+                let referenceSpaceTypes = ['local-floor', 'local', 'viewer'];
+                refSpace = null;
+                
+                for (const spaceType of referenceSpaceTypes) {
+                    try {
+                        refSpace = await arSession.requestReferenceSpace(spaceType);
+                        console.log('Using reference space:', spaceType);
+                        break;
+                    } catch (e) {
+                        console.log('Reference space not supported:', spaceType);
+                    }
+                }
+                
+                if (!refSpace) {
+                    throw new Error('No supported reference space found');
+                }
+                
+                const viewerSpace = await arSession.requestReferenceSpace('viewer');
+                hitTestSource = await arSession.requestHitTestSource({ space: viewerSpace });
+                
+                arOverlay.style.display = 'block';
+                
+                arSession.addEventListener('end', () => {
+                    arOverlay.style.display = 'none';
+                    hitTest.style.display = 'none';
+                    arSession = null;
+                    renderer.setAnimationLoop(null);
+                });
+                
+                let placed = false;
+                
+                renderer.setAnimationLoop((time, frame) => {
+                    if (frame && hitTestSource && !placed) {
+                        const hitTestResults = frame.getHitTestResults(hitTestSource);
+                        if (hitTestResults.length > 0) {
+                            hitTest.style.display = 'flex';
+                        } else {
+                            hitTest.style.display = 'none';
+                        }
+                    }
+                    
+                    renderer.render(scene, camera);
+                });
+                
+                arSession.addEventListener('select', () => {
+                    if (placed) return;
+                    
+                    const frame = renderer.xr.getFrame();
+                    if (frame && hitTestSource) {
+                        const hitTestResults = frame.getHitTestResults(hitTestSource);
+                        if (hitTestResults.length > 0) {
+                            const hit = hitTestResults[0];
+                            const pose = hit.getPose(refSpace);
+                            if (pose) {
+                                model.matrix.fromArray(pose.transform.matrix);
+                                placed = true;
+                                hitTest.style.display = 'none';
+                            }
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('AR failed:', error);
+                alert('AR not available: ' + error.message);
+            }
+        });
+        
+        closeAr.addEventListener('click', () => {
+            if (arSession) {
+                arSession.end();
+            }
+        });
+        
+        arBtn.disabled = true;
+        enlargeBtn.disabled = true;
+        shrinkBtn.disabled = true;
+    </script>
+</body>
+</html>
