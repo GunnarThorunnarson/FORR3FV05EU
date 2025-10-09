@@ -1,0 +1,25 @@
+:root, body {
+    background-color: black !important;
+}
+.center {
+    text-align: center;
+    border-top: 1px white solid;
+    padding-top: 1em;
+}
+.midja {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+.snuning {
+    background-color: black ;
+    color: white;
+    border-color: white;
+    
+}
+.snuning:hover {
+    background-color: rgb(41, 41, 41) !important;
+    color: white;
+    border-color: white !important;
+}

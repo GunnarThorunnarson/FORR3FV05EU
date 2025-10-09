@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>	
+<head>
+	<meta charset="utf-8">
+	<title>document</title>
+	<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    touch-action: none;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 90%;
+    max-width: 1200px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.viewer {
+    flex: 1;
+    min-width: 300px;
+    min-height: 400px; /* ensures it's always visible */
+    background: #222;
+}
+
+.info {
+    flex: 1;
+    min-width: 200px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+/* mobile */
+@media (max-width: 70em) {
+    .container {
+        flex-direction: column;
+    }
+    .viewer, .info {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+
+	</style>
+    
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "https://unpkg.com/three/build/three.module.js",
+				"GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js",
+				"OrbitControls": "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js"
+			}
+		}
+	</script>    
+</head>
+
+
+
+
+
+<body>
+<div class="container">
+	<div class="viewer" id="viewer"></div>
+	<div class="info">
+		<h1>3D Model</h1>
+		<p>Þetta er 3D model sem ég bjó til í Blender 4.0 <br> Þú getur skoðað það í allar áttir og breit litunum á hverjum einsta bút af Modelinu</p>
+        <button id="btnColor">Breyta lit</button>
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+<script type="module">
+	import { animate, utils, createDraggable, createSpring , svg, stagger } from './anime.esm.min.js';
+	import * as THREE from 'three';
+	import { OrbitControls } from 'OrbitControls'
+	import { GLTFLoader } from 'GLTFLoader'
+
+	// setja up viewer 
+	// sem er stadurin sem vid sjaum modelid
+	const viewer = document.getElementById("viewer")
+	let width = viewer.clientWidth
+	let height = viewer.clientHeight
+	// To display we need three things: scene, camera and renderer.
+
+
+	// camera
+	const camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 30)
+	camera.position.set(4, 4, 8)
+
+	// scene
+	const scene = new THREE.Scene();
+
+
+
+    
+
+	// Golfid {}
+	// golf texture
+	const textureLoader = new THREE.TextureLoader()
+	const floorTexture = textureLoader.load("texture.webp")
+	floorTexture.wrapS = THREE.RepeatWrapping
+	floorTexture.wrapT = THREE.RepeatWrapping
+	floorTexture.repeat.set(10, 10)
+
+	
+	const planemsh = new THREE.PlaneGeometry(50, 50)
+	const planeMaterial = new THREE.MeshStandardMaterial({ map: floorTexture })
+	const plane = new THREE.Mesh(planemsh, planeMaterial)
+
+	// lata plane transform vera rett
+	plane.rotation.x = -Math.PI / 2
+	plane.position.y = -0.5
+	plane.receiveShadow = true
+	scene.add(plane)
+	// }
+
+
+
+
+
+
+	// lighting{}
+	// ljos 1
+	const ambientLight = new THREE.AmbientLight(0xffffff, 0.4)
+	scene.add(ambientLight)
+
+	// ljos2 sol
+	const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
+	directionalLight.position.set(2, 2, 2)
+	directionalLight.castShadow = true
+	scene.add(directionalLight)
+	// }
+
+
+
+
+
+	// renderer
+	const renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.setSize(width, height);
+	renderer.shadowMap.enabled = true;
+	viewer.appendChild(renderer.domElement);
+
+
+
+
+
+	// camera orbit control {
+	const controls = new OrbitControls(camera, renderer.domElement)
+	controls.enableDamping = true 
+	controls.dampingFactor = 0.05
+	controls.enableZoom = true
+	controls.enablePan = false
+	// }
+
+
+
+
+
+
+
+
+
+	// my model{
+	let model
+	const loader = new GLTFLoader()
+	loader.load('untitled712345.glb', (gltf) => {
+		// basick setings
+		model = gltf.scene
+		model.position.set(0, 0.5, 0)
+		model.scale.set(0, 0, 0)
+		model.castShadow = true
+		model.receiveShadow = true
+
+		// setja hvert einasta mesh sem gratt{
+		model.traverse((child) => {
+			if (child.isMesh) {
+				child.material = new THREE.MeshStandardMaterial({ color: "lightgrey" });
+			}
+		})
+		// }
+
+		scene.add(model)
+
+		// model animations{
+		// entrance
+		animate(model.scale, {
+			x: 1,
+			y: 1,
+			z: 1,
+			duration: 1000,
+		})
+		// spinn
+		animate(model.rotation,{
+			y: model.rotation.y + Math.PI * 2,
+			duration: 10000,
+			easing: 'linear',
+			loop: true
+    })
+	// }
+	})
+	// }
+
+// leatur rendera altaf
+renderer.setAnimationLoop(() => {
+    controls.update()
+    renderer.render(scene, camera);
+})
+
+
+
+
+	// til ad resisea viewerin thegar við resizeum
+	window.addEventListener('resize', () => {
+		width = viewer.clientWidth
+		height = viewer.clientHeight
+		camera.aspect = width / height
+		camera.updateProjectionMatrix()
+		renderer.setSize(width, height)
+	})
+
+
+
+
+    // thear vid itum a takkan 
+	// tha setur that random lit a hvert einasta mesh
+document.getElementById("btnColor").addEventListener("click", () => {
+    if (model) {
+        model.traverse((child) => {
+            if (child.isMesh) {
+                child.material.color.setHex(Math.random() * 0xffffff)
+            }
+        })
+    }
+})
+
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Vinyl player Pioneer
+* source:	https://sketchfab.com/3d-models/vinyl-player-pioneer-47464eb76e604e688eae007fe8a7fa62
+* author:	ugarychev (https://sketchfab.com/ugarychev)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Vinyl player Pioneer" (https://sketchfab.com/3d-models/vinyl-player-pioneer-47464eb76e604e688eae007fe8a7fa62) by ugarychev (https://sketchfab.com/ugarychev) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

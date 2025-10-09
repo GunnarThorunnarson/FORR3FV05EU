@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Damaged Helmet</title>
+  <style>
+    body { 
+      margin: 0; 
+      font-family: sans-serif; 
+      background: #111; 
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #viewer-container {
+      width: 100%;
+      height: 70vh;
+    }
+    #description {
+      padding: 10px;
+      text-align: center;
+      max-width: 600px;
+    }
+    #controls {
+      margin: 1rem;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button {
+      background: #444;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #666;
+    }
+    @media (max-width: 768px) {
+      #viewer-container {
+        height: 50vh;
+      }
+    }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js",
+        "OrbitControls": "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js",
+        "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js"
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+
+<body>
+  <div id="viewer-container"></div>
+  <div id="description">
+    <h2>Damaged Helmet</h2>
+    <p>It may be damaged but still enough to protect your noggin. You can rotate from any every, zoom in, and even customise its colours.</p>
+  </div>
+  <div id="controls">
+    <button id="colorBtn">Change Color</button>
+    <button id="rotateBtn">Toggle Rotate</button>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'OrbitControls';
+    import { GLTFLoader } from 'GLTFLoader';
+
+    const container = document.getElementById('viewer-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x222222);
+
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+    camera.position.set(2, 2, 4);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enablePan = false;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7.5);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    const textureLoader = new THREE.TextureLoader();
+    const groundTexture = textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/checker.png');
+    groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+    groundTexture.repeat.set(5, 5);
+
+    const groundMaterial = new THREE.MeshStandardMaterial({ map: groundTexture });
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), groundMaterial);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const loader = new GLTFLoader();
+    let model;
+    loader.load('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf', (gltf) => {
+      model = gltf.scene;
+      model.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      model.position.y = 3;
+      model.scale.set(3, 3, 3);
+      scene.add(model);
+
+      model.scale.set(0.01, 0.01, 0.01);
+      anime({
+        targets: model.scale,
+        x: 3, y: 3, z: 3,
+        easing: 'easeOutElastic(1, .8)',
+        duration: 2000
+      });
+    });
+
+    let autoRotate = true;
+    document.getElementById('rotateBtn').addEventListener('click', () => {
+      autoRotate = !autoRotate;
+    });
+
+    document.getElementById('colorBtn').addEventListener('click', () => {
+      if (model) {
+        model.traverse((child) => {
+          if (child.isMesh && child.material) {
+            child.material.color.set(Math.random() * 0xffffff);
+          }
+        });
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (autoRotate && model) {
+        model.rotation.y += 0.005;
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+  </script>
+</body>
+</html>

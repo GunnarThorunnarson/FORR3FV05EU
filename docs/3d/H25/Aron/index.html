@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+               "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+               "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.154.0/examples/jsm/controls/OrbitControls.js",
+               "three/examples/jsm/loaders/GLTFLoader.js": "https://unpkg.com/three@0.154.0/examples/jsm/loaders/GLTFLoader.js"
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <div id="app-container">
+      <header>
+        <h1>3D Model Viewer</h1>
+        <p class="description">Interactive 3D nail model with textured ground plane</p>
+      </header>
+      
+      <div id="canvas-container">
+        <!-- Three.js will insert canvas here -->
+      </div>
+      
+      <div id="controls-container">
+        <div id="instructions">
+          <p>Use mouse or touch to rotate view. Pinch or scroll to zoom.</p>
+          <p class="mobile-only">Tilt your device to see different angles.</p>
+        </div>
+        
+        <div id="buttons">
+          <button id="pauseBtn" class="control-btn">Rotation: ON</button>
+          <button id="resetBtn" class="control-btn">Reset View</button>
+          <button id="textureBtn" class="control-btn">Use Original Texture</button>
+        </div>
+      </div>
+      
+    </div>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

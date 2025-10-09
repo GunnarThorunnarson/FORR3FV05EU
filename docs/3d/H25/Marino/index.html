@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verkefni 3</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+      }
+
+      body {
+        font-family: "Parkinsans", sans-serif;
+        font-optical-sizing: auto;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .hero {
+        width: 90vw;
+        height: 90vh;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .hero > .text {
+        width: 50%;
+        display: flex;
+        gap: 24px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: justify;
+      }
+
+      .hero > .text p {
+        max-width: 548px;
+      }
+
+      .hero .colors {
+        display: flex;
+        gap: 12px;
+      }
+
+      .hero .colors > div {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid #00000033;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .hero .colors > div:hover {
+        transform: scale(1.1);
+      }
+
+      .hero .colors > .white {
+        background-color: #ffffff;
+      }
+
+      .hero .colors > .red {
+        background-color: #ff5e5e;
+      }
+
+      .hero .colors > .green {
+        background-color: #5eff5e;
+      }
+
+      .hero .colors > .blue {
+        background-color: #5e5eff;
+      }
+
+      .hero > .canvas {
+        width: 50%;
+        height: 100%;
+      }
+
+      .hero > .canvas canvas {
+        border-radius: 16px;
+      }
+
+      @media screen and (max-width: 1024px) {
+        .hero {
+          flex-direction: column;
+        }
+
+        .hero > .text,
+        .hero > .canvas {
+          width: 100%;
+          height: 50vh;
+        }
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="hero">
+      <div class="text">
+        <h1>Kaffibolli</h1>
+        <p>
+          Fallegur og hagnýtur bolli sem hentar fullkomlega fyrir morgunkaffið
+          þitt eða heita kakóið á köldum dögum. Hann er úr endingargóðu efni og
+          hefur einfalt, nútímalegt útlit sem passar við hvaða eldhús sem er.
+          Stærðin er þægileg til að halda á og heldur drykknum heitum lengur.
+        </p>
+        <ul class="eiginleikar">
+          <li>Má fara í uppþvottavél og örbylgjuofn</li>
+          <li>Léttur <strong>og</strong> stöðugur á borði</li>
+          <li>Hitaeinangrun dregur úr bruna á fingrum</li>
+          <li>Umhverfisvæn framleiðsla</li>
+        </ul>
+        <div class="colors">
+          <div class="white"></div>
+          <div class="red"></div>
+          <div class="green"></div>
+          <div class="blue"></div>
+        </div>
+      </div>
+      <div class="canvas"></div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xc2c2c2);
+
+      const canvasElement = document.querySelector(".canvas");
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      canvasElement.appendChild(renderer.domElement);
+
+      const camera = new THREE.PerspectiveCamera(
+        65,
+        canvasElement.clientWidth / canvasElement.clientHeight,
+        0.1,
+        150
+      );
+      camera.position.set(5, 3.5, 5);
+      camera.position.x = 5 * Math.cos(Math.PI);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.minDistance = 3;
+      controls.maxDistance = 15;
+      controls.enablePan = false;
+      controls.enableDamping = true;
+
+      const hemisphereLight = new THREE.HemisphereLight(
+        0xffffff,
+        0x444444,
+        1.75
+      );
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(3, 10, 10);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024 * 2;
+      directionalLight.shadow.mapSize.height = 1024 * 2;
+      scene.add(directionalLight);
+
+      const textureLoader = new THREE.TextureLoader();
+      // PBR textures frá poly haven: https://polyhaven.com/a/wood_table_worn
+      const tableBaseColor = textureLoader.load(
+        "./assets/wood_table_worn_diff_4k.jpg"
+      );
+      const tableNormal = textureLoader.load(
+        "./assets/wood_table_worn_nor_gl_4k.jpg"
+      );
+      const tableRoughness = textureLoader.load(
+        "./assets/wood_table_worn_rough_4k.jpg"
+      );
+
+      // búa til array til þess að endurtaka kóðann fyrir allar áferðirnar
+      [tableBaseColor, tableNormal, tableRoughness].forEach((tex) => {
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(2, 2);
+      });
+
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(100, 100),
+        new THREE.MeshStandardMaterial({
+          map: tableBaseColor,
+          normalMap: tableNormal,
+          roughnessMap: tableRoughness,
+          metalness: 0.0,
+        })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -1.45;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      let mugMesh;
+
+      const loader = new GLTFLoader();
+      loader.load("./assets/model/coffee_mug.gltf", (gltf) => {
+        const model = gltf.scene;
+
+        mugMesh = model.getObjectByName("mug");
+        if (mugMesh) {
+          mugMesh.material = mugMesh.material.clone();
+          mugMesh.material.color.set("#fff");
+          mugMesh.castShadow = true;
+          mugMesh.receiveShadow = true;
+        }
+
+        scene.add(model);
+      });
+
+      const colors = document.querySelectorAll(".colors > div");
+      // tengja nöfn við hex
+      const colorMap = {
+        white: "#ffffff",
+        red: "#ff5e5e",
+        green: "#5eff5e",
+        blue: "#5e5eff",
+      };
+
+      colors.forEach((selector) => {
+        selector.addEventListener("click", () => {
+          if (mugMesh) {
+            // leitar að class sem er í mappinu
+            const colorClass = Array.from(selector.classList).find(
+              (className) => colorMap[className]
+            );
+            if (colorClass && colorMap[colorClass]) {
+              mugMesh.material.color.set(colorMap[colorClass]);
+            }
+          }
+        });
+      });
+
+      renderer.setAnimationLoop(() => {
+        controls.update();
+        renderer.render(scene, camera);
+      });
+
+      window.addEventListener("resize", () => {
+        const width = canvasElement.clientWidth;
+        const height = canvasElement.clientHeight;
+
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      });
+    </script>
+  </body>
+</html>

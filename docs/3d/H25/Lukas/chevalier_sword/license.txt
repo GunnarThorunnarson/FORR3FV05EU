@@ -1,0 +1,11 @@
+Model Information:
+* title:	Chevalier Sword
+* source:	https://sketchfab.com/3d-models/chevalier-sword-b2662f2666a844e8a1bd0e7c4a7672d8
+* author:	rubenve (https://sketchfab.com/rubenve)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Chevalier Sword" (https://sketchfab.com/3d-models/chevalier-sword-b2662f2666a844e8a1bd0e7c4a7672d8) by rubenve (https://sketchfab.com/rubenve) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

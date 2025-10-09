@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Website with glTF Model</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <div id="container">
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Loading 3D model and assets...</p>
+        </div>
+        
+        <div id="canvas-container"></div>
+        
+        <div id="ui-overlay">
+            <header>
+                <h1>3D Shiba</h1>
+            </header>
+            
+            <div id="content">
+                <h2>Interactive 3D Environment</h2>
+                <p>Drag to rotate the view, scroll to zoom, and use the buttons below to trigger animations.</p>
+                <button class="btn" id="rotate-btn">Rotate Model</button>
+                <button class="btn" id="color-btn">Change Colors</button>
+                <button class="btn reset-btn" id="reset-btn">Reset View</button>
+            </div>
+            
+        </div>
+        
+        <div id="instructions">
+            <p>← Drag to rotate<br>↑ Scroll to zoom<br>→ Right drag to pan</p>
+        </div>
+    </div>
+
+    <!-- load Three.js and other libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/objects/Sky.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+    <script>
+        // wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeJS();
+            document.getElementById('rotate-btn').addEventListener('click', triggerRotation);
+            document.getElementById('color-btn').addEventListener('click', changeColors);
+            document.getElementById('reset-btn').addEventListener('click', resetView);
+        });
+
+        // three.js variables
+        let scene, camera, renderer, controls;
+        let model, mixer, clock;
+
+        function loadModel() {
+            const loader = new THREE.GLTFLoader();
+            loader.load('assets/model/scene.gltf', function(gltf) {
+                model = gltf.scene;
+                scene.add(model);
+
+                // if the model has animations
+                if (gltf.animations && gltf.animations.length) {
+                    mixer = new THREE.AnimationMixer(model);
+                    gltf.animations.forEach((clip) => {
+                        mixer.clipAction(clip).play();
+                    });
+                }
+                model.traverse(child => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+
+                // center the model
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.sub(center);
+
+                // hide loading screen after model is loaded
+                const loadingDiv = document.getElementById('loading');
+                loadingDiv.style.opacity = '0';
+                setTimeout(() => {
+                    loadingDiv.style.display = 'none';
+                }, 500);
+            }, undefined, function(error) {
+                console.error(error);
+            });
+        }
+        
+        function initThreeJS() {
+            let sky, sun;
+
+            // create clock for animations
+            clock = new THREE.Clock();
+
+            // create scene
+            scene = new THREE.Scene();
+            
+            // create sky
+            sky = new THREE.Sky();
+            sky.scale.setScalar(1000);
+            scene.add(sky);
+
+            // add sunlight
+            sun = new THREE.Vector3();
+            
+            // configure sky(from three.js)
+            const skyUniforms = sky.material.uniforms;
+            skyUniforms['turbidity'].value = 10;
+            skyUniforms['rayleigh'].value = 3;
+            skyUniforms['mieCoefficient'].value = 0.005;
+            skyUniforms['mieDirectionalG'].value = 0.7;
+            
+            // set sun position using elevation and azimuth (in degrees)
+            // set sun position using elevation and azimuth (in degrees)
+            const elevation = 2; // 0 = horizon, 90 = zenith
+            const azimuth = 180;  // 0 = north, 180 = south
+
+            const phi = THREE.MathUtils.degToRad(90 - elevation);
+            const theta = THREE.MathUtils.degToRad(azimuth);
+
+            sun.x = Math.sin(phi) * Math.cos(theta);
+            sun.y = Math.cos(phi);
+            sun.z = Math.sin(phi) * Math.sin(theta);
+            sky.material.uniforms['sunPosition'].value.copy(sun);
+
+
+            // create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000000);
+            camera.position.set(0, 0, 5);
+
+            // create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 0.5;
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // add renderer to the DOM
+            const container = document.getElementById('canvas-container');
+            container.appendChild(renderer.domElement);
+
+            // add orbit controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 2;
+            controls.maxDistance = 500;
+
+            // add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(2, 5, 2);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            scene.add(directionalLight);
+
+            // load model
+            loadModel();
+
+            // add some decorative elements
+            addDecorations();
+
+            // handle window resize
+            window.addEventListener('resize', onWindowResize);
+
+            // start animation loop
+            animate();
+        }
+        
+        function addDecorations() {
+
+            // floating particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = 100;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x4cc9f0
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // textured ground (terrain)
+            const textureLoader = new THREE.TextureLoader();
+            const colorMap = textureLoader.load('assets/model/textures/Grass005_4K-JPG_Color.jpg');
+            const normalMap = textureLoader.load('assets/model/textures/Grass005_4K-JPG_NormalGL.jpg');
+            const aoMap = textureLoader.load('assets/model/textures/Grass005_4K-JPG_AmbientOcclusion.jpg');
+            const roughnessMap = textureLoader.load('assets/model/textures/Grass005_4K-JPG_Roughness.jpg');
+            const displacementMap = textureLoader.load('assets/model/textures/Grass005_4K-JPG_Displacement.jpg');
+
+            // repeat textures for tiling
+            [colorMap, normalMap, aoMap, roughnessMap, displacementMap].forEach(tex => {
+                tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+                tex.repeat.set(4, 4);
+            });
+
+            // plane geometry with more segments for displacement
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(10, 10, 128, 128),
+                new THREE.MeshStandardMaterial({
+                    map: colorMap,
+                    normalMap: normalMap,
+                    aoMap: aoMap,
+                    roughnessMap: roughnessMap,
+                    displacementMap: displacementMap,
+                    displacementScale: 0.2,
+                    roughness: 1,
+                    metalness: 0.1
+                })
+            );
+            // for AO to work, set uv2
+            ground.geometry.setAttribute('uv2', new THREE.BufferAttribute(ground.geometry.attributes.uv.array, 2));
+
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -1.5;
+            ground.receiveShadow = true;
+            scene.add(ground);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            
+            if (mixer) {
+                mixer.update(delta);
+            }
+            
+            // only rotate if model is loaded
+            if (model) {
+                model.rotation.y += 0.005;
+            }
+        
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function triggerRotation() {
+            if (!model) return;
+            anime({
+                targets: model.rotation,
+                y: model.rotation.y + Math.PI * 2,
+                duration: 2000,
+                easing: 'easeInOutQuad'
+            });
+            anime({
+                targets: '#rotate-btn',
+                scale: [1, 1.1, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+        }
+        
+        function changeColors() {
+            if (!model) return;
+            const randomColor = new THREE.Color(Math.random(), Math.random(), Math.random());
+            model.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    anime({
+                        targets: child.material.color,
+                        r: randomColor.r,
+                        g: randomColor.g,
+                        b: randomColor.b,
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
+                    });
+                }
+            });
+            anime({
+                targets: '#color-btn',
+                scale: [1, 1.1, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+        }
+        function resetView() {
+            anime({
+                targets: camera.position,
+                x: 0,
+                y: 0,
+                z: 5,
+                duration: 1000,
+                easing: 'easeInOutQuad'
+            });
+            controls.target.set(0, 0, 0);
+            anime({
+                targets: '#reset-btn',
+                scale: [1, 1.1, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+        }
+    </script>
+</body>
+</html>

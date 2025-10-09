@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blue Cube (Mouse Drag Only)</title>
+  <style>
+    html,body { height:100%; margin:0; background:#0e0e0e; color:#eee; font-family: system-ui, sans-serif; }
+    #app { width:100vw; height:100vh; overflow:hidden; position:relative; }
+    .toolbar {
+      position: fixed; left: 12px; top: 12px; z-index: 10;
+      display: flex; gap: 8px; align-items: center;
+      background: rgba(0,0,0,.5); backdrop-filter: blur(6px);
+      padding: 8px 10px; border-radius: 10px;
+    }
+    button { border:0; padding:8px 12px; border-radius:8px; cursor:pointer }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div class="toolbar">
+    <button id="resetBtn">Reset</button>
+    <button id="moveBtn">Move: Off</button>
+    <button id="colorBtn">Change Cube</button>
+    <input id="colorInput" type="color" value="#0000ff" style="display:none" />
+  </div>
+  <!-- Three.js -->
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+  <script>
+    
+    // ---------- Three.js scene ----------
+    const container = document.getElementById('app');
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.max(1, window.devicePixelRatio || 1));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x0e0e0e, 1);
+    // Enable soft shadows
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Prevent browser panning/zooming on touch
+    renderer.domElement.style.touchAction = 'none';
+    container.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
+    const target = new THREE.Vector3(0,0,0);
+    camera.position.set(3, 2, 4);
+    camera.lookAt(target);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const dir = new THREE.DirectionalLight(0xffffff, 1.0);
+    // Move light behind the cube so shadows fall toward camera (bottom of platform)
+    dir.position.set(-5, 10, -7);
+    dir.castShadow = true;
+    dir.shadow.mapSize.set(2048, 2048);
+    dir.shadow.bias = -0.00015;
+    dir.shadow.normalBias = 0.02;
+    // Shadow camera tuned to cover cube + platform
+    dir.shadow.camera.near = 1;
+    dir.shadow.camera.far = 30;
+    dir.shadow.camera.left = -8;
+    dir.shadow.camera.right = 8;
+    dir.shadow.camera.top = 8;
+    dir.shadow.camera.bottom = -8;
+    // Aim light at platform center
+    dir.target.position.set(0, -2, 0);
+    scene.add(dir.target);
+    scene.add(dir);
+
+    // ---------- Cube ----------
+    const cube = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, 1.5, 1.5),
+      new THREE.MeshStandardMaterial({ color: 0x0000ff, roughness: 0.45, metalness: 0.05 })
+    );
+    cube.castShadow = true;
+    cube.receiveShadow = false;
+    scene.add(cube);
+
+    // Grey platform under the cube
+    const platform = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.2, 3.2, 0.2, 64),
+      new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.85, metalness: 0.0 })
+    );
+    platform.position.set(0, -2.0, 0); // even lower and wider
+    platform.receiveShadow = true;
+    scene.add(platform);
+    const grid = new THREE.GridHelper(10, 10, 0x333333, 0x222222);
+    grid.position.y = -2;
+    scene.add(grid);
+    // ---------- Mouse-only interactions ----------
+    const worldY = new THREE.Vector3(0,1,0);
+    const localX = new THREE.Vector3(1,0,0);
+    // Drag state and raycasting (decide if dragging cube or orbiting camera)
+    let dragging = false;
+    let dragMode = 'none'; // 'cube' | 'orbit' | 'none'
+    let lastX = 0, lastY = 0;
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    // Initialize spherical orbit from current camera
+    const initOffset = new THREE.Vector3().subVectors(camera.position, target);
+    const initSph = new THREE.Spherical().setFromVector3(initOffset);
+    let orbitRadius = initSph.radius;
+    let orbitTheta = initSph.theta;
+    let orbitPhi = initSph.phi;
+    function pointerToNDC(clientX, clientY){
+      const rect = renderer.domElement.getBoundingClientRect();
+      ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    }
+    function rotationSpeedBase() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const minDim = Math.min(renderer.domElement.clientWidth, renderer.domElement.clientHeight);
+      return 0.003 * (minDim / 360) * dpr;
+    }
+    renderer.domElement.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left button only
+      dragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      // Decide mode: cube drag if pointer hits cube, else orbit
+      pointerToNDC(e.clientX, e.clientY);
+      raycaster.setFromCamera(ndc, camera);
+      const hit = moveEnabled ? raycaster.intersectObject(cube, true) : [];
+      if (hit && hit.length && moveEnabled) { dragMode = 'cube'; }
+      else { dragMode = 'orbit'; }
+    });
+    renderer.domElement.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      const s = rotationSpeedBase();
+      if (dragMode === 'cube' && moveEnabled) {
+        cube.rotateOnWorldAxis(worldY, dx * s);
+        cube.rotateOnAxis(localX, dy * s);
+      } else if (dragMode === 'orbit') {
+        orbitTheta -= dx * s * 2.0;
+        orbitPhi   -= dy * s * 2.0;
+        const EPS = 0.05;
+        orbitPhi = Math.max(EPS, Math.min(Math.PI - EPS, orbitPhi));
+        const sinPhi = Math.sin(orbitPhi), cosPhi = Math.cos(orbitPhi);
+        const cosTheta = Math.cos(orbitTheta), sinTheta = Math.sin(orbitTheta);
+        camera.position.set(
+          target.x + orbitRadius * sinPhi * cosTheta,
+          target.y + orbitRadius * cosPhi,
+          target.z + orbitRadius * sinPhi * sinTheta
+        );
+        camera.lookAt(target);
+      }
+    });
+    // Touch support (single-finger behaves like mouse)
+    renderer.domElement.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      dragging = true; dragMode = 'none';
+      lastX = t.clientX; lastY = t.clientY;
+      pointerToNDC(t.clientX, t.clientY);
+      raycaster.setFromCamera(ndc, camera);
+      const hit = moveEnabled ? raycaster.intersectObject(cube, true) : [];
+      if (hit && hit.length && moveEnabled) { dragMode = 'cube'; }
+      else { dragMode = 'orbit'; }
+      e.preventDefault();
+    }, { passive: false });
+    renderer.domElement.addEventListener('touchmove', (e) => {
+      if (!dragging || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const dx = t.clientX - lastX; const dy = t.clientY - lastY;
+      lastX = t.clientX; lastY = t.clientY;
+      const s = rotationSpeedBase();
+      if (dragMode === 'cube' && moveEnabled) {
+        cube.rotateOnWorldAxis(worldY, dx * s);
+        cube.rotateOnAxis(localX, dy * s);
+      } else if (dragMode === 'orbit') {
+        orbitTheta -= dx * s * 2.0;
+        orbitPhi   -= dy * s * 2.0;
+        const EPS = 0.05;
+        orbitPhi = Math.max(EPS, Math.min(Math.PI - EPS, orbitPhi));
+        const sinPhi = Math.sin(orbitPhi), cosPhi = Math.cos(orbitPhi);
+        const cosTheta = Math.cos(orbitTheta), sinTheta = Math.sin(orbitTheta);
+        camera.position.set(
+          target.x + orbitRadius * sinPhi * cosTheta,
+          target.y + orbitRadius * cosPhi,
+          target.z + orbitRadius * sinPhi * sinTheta
+        );
+        camera.lookAt(target);
+      }
+      e.preventDefault();
+    }, { passive: false });
+    function endMouse() { dragging = false; }
+    window.addEventListener('mouseup', endMouse);
+    window.addEventListener('mouseleave', endMouse);
+    window.addEventListener('touchend', endMouse);
+    window.addEventListener('touchcancel', endMouse);
+    // ---------- Reset ----------
+    function reset(){
+      cube.quaternion.set(0,0,0,1);
+      camera.position.set(3, 2, 4);
+      camera.lookAt(target);
+    }
+    document.getElementById('resetBtn').addEventListener('click', reset);
+    // ---------- Move toggle (enable/disable cube interaction) ----------
+    let moveEnabled = false;
+    const moveBtn = document.getElementById('moveBtn');
+    function updateMoveBtn(){ moveBtn.textContent = `Move: ${moveEnabled ? 'On' : 'Off'}`; }
+    moveBtn.addEventListener('click', () => { moveEnabled = !moveEnabled; updateMoveBtn(); });
+    updateMoveBtn();
+
+    // ---------- Color picker for cube ----------
+    const colorBtn = document.getElementById('colorBtn');
+    const colorInput = document.getElementById('colorInput');
+    function colorToHex(color) { return `#${color.getHexString()}`; }
+    colorBtn.addEventListener('click', () => {
+      // preset to current cube color then open native color picker
+      colorInput.value = colorToHex(cube.material.color);
+      colorInput.click();
+    });
+    colorInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (val) { cube.material.color.set(val); }
+    });
+    // ---------- Resize & Render ----------
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth, h = container.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
+    // ---------- Animate ----------
+    let lastT = undefined;
+    const spinPeriodSec = 4; // full 360 every 4 seconds
+    const spinSpeed = (Math.PI * 2) / spinPeriodSec; // rad/sec
+    (function animate(t){
+      requestAnimationFrame(animate);
+      const now = (t || 0) * 0.001;
+      const dt = lastT === undefined ? 0 : Math.min(0.05, now - lastT);
+      lastT = now;
+
+      // Auto-spin cube when Move is Off
+      if (!moveEnabled) {
+        cube.rotation.y += spinSpeed * dt;
+      }
+
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>

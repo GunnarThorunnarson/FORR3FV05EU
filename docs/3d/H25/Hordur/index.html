@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verkefni 3 HP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#f5f6f8; --ink:#111; --muted:#6b7280; --card:#fff; --ring:#e5e7eb; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    main { max-width: 980px; margin: 24px auto 40px; padding: 0 12px; }
+
+    /* simple viewer card */
+    .viewer {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--card);
+      border: 1px solid var(--ring);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      position: relative;
+      overflow: hidden;
+    }
+    /* canvas fills container */
+    #viewer canvas { width: 100%; height: 100%; display: block; }
+
+    /* single button overlay */
+    .fsBtn {
+      position: absolute; right: 10px; bottom: 10px;
+      padding: 8px 10px; border-radius: 8px; border: 1px solid var(--ring);
+      background: rgba(255,255,255,.9); cursor: pointer; font-weight: 600;
+    }
+
+    /* info below viewer */
+    .info { margin-top: 14px; }
+    .info h1 { margin: 0 0 2px 0; font-size: 20px; line-height: 1.2; }
+    .info .sub { margin: 0; color: var(--muted); text-transform: none; }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main>
+    <div class="viewer" id="viewer">
+      <!-- badge removed per request -->
+      <button class="fsBtn" id="fsBtn" type="button">Toggle</button>
+    </div>
+
+    <section class="info">
+      <h1>The Mach 6</h1>
+      <p class="sub">An upgrade to the Mach 5 from the film Speed Racer(2008) directed by the Wachowski sisters in 3D.</p>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
