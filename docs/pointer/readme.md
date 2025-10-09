@@ -11,5 +11,3 @@
 - [Lukas](https://gunnarthorunnarson.github.io/FORR3FV05EU/pointer/H25/Lukas/index.html)
 - [Marijonas](https://gunnarthorunnarson.github.io/FORR3FV05EU/pointer/H25/Marijonas/index.html)
 - [Marino](https://gunnarthorunnarson.github.io/FORR3FV05EU/pointer/H25/Marino/index.html)
-- [Reginn](https://gunnarthorunnarson.github.io/FORR3FV05EU/pointer/H25/Reginn/index.html)
-
