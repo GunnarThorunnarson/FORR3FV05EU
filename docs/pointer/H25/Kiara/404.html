@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 Síða</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  
+  <!-- Container for the injected sprite.svg -->
+  <div id="svg-container svg"></div>
+
+  <script>
+    // Wait for DOM to be ready
+    document.addEventListener("DOMContentLoaded", function () {
+      // Load and inject sprite.svg
+      fetch("sprite.svg")
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById("svg-container svg").innerHTML = data;
+
+          // Now that the SVG is injected, run animations
+          const timeline = anime.timeline({
+            autoplay: true,
+            loop: true,
+            direction: 'alternate',
+            duration: 4000
+          });
+
+          // Stars animation 
+          timeline.add({
+            targets: '#stars > *',
+            opacity: [0.3, 0.8],
+            scale: [0.8, 1.2],
+            duration: 900,
+            delay: anime.stagger(90, { from: 'center' }),
+            easing: 'easeInOutSine'
+          });
+
+          // Leaf animation
+          anime({
+            targets: '#leaf',
+            transformOrigin: '60% 90%',
+            rotate: [
+              { value: '-1deg', duration: 600, easing: 'easeInOutSine' },
+              { value: '1deg', duration: 900, easing: 'easeInOutSine' },
+              { value: '0deg', duration: 600, easing: 'easeInOutSine' }
+            ],
+            loop: true,
+            autoplay: true,
+            easing: 'easeInOutSine'
+          });
+
+          // Marshmallow logic
+          const marshmallows = [
+            document.getElementById("marshmallow1"),
+            document.getElementById("brown"),
+            document.getElementById("black")
+          ];
+
+          const yummText = document.getElementById("yumm");
+          const oopsText = document.getElementById("oops");
+          let current = 0;
+
+          marshmallows.forEach((m, i) => {
+            if (i !== 0) m.style.display = "none";
+          });
+          oopsText.style.display = "none";
+          yummText.style.display = "inline";
+
+          marshmallows.forEach(marshmallow => {
+            marshmallow.addEventListener("click", () => {
+              marshmallows[current].style.display = "none";
+              current = (current + 1) % marshmallows.length;
+              marshmallows[current].style.display = "inline";
+
+              if (marshmallows[current].id === "black") {
+                yummText.style.display = "none";
+                oopsText.style.display = "inline";
+              } else {
+                yummText.style.display = "inline";
+                oopsText.style.display = "none";
+              }
+            });
+          });
+
+          // 404 text sliding
+          anime.set('#text404', {
+            translateX: 0,
+            translateY: 500,
+            opacity: 1,
+            scale: 1.5
+          });
+
+          anime({
+            targets: '#text404',
+            translateX: [
+              { value: -1800, duration: 0 },
+              { value: 1800, duration: 6000 },
+              { value: -1800, duration: 0 }
+            ],
+            easing: 'linear',
+            loop: true,
+            duration: 9000
+          });
+
+          // Logo sway
+          anime.set('#logo', {
+            translateX: 690,
+            translateY: 1250,
+            opacity: 1
+          });
+
+          anime({
+            targets: '#logo',
+            rotate: [
+              { value: -5, duration: 1000 },
+              { value: 5, duration: 1000 }
+            ],
+            easing: 'easeInOutSine',
+            direction: 'alternate',
+            loop: true
+          });
+
+        });
+    });
+  </script>
+
+</body>
+</html>

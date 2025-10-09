@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        html{
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            touch-action: none;
+            overflow: hidden;
+        }
+
+
+        rect {
+            fill: cornflowerblue;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+        #containerConetainer {
+    background-color: lightgrey;
+    border: 4px solid black;
+}
+    #instructions {
+        position: absolute;
+        top: 10px;       /* distance from top */
+        left: 10px;      /* distance from left */
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 8px 12px;
+        border: 1px solid black;
+        border-radius: 4px;
+        font-family: sans-serif;
+        font-size: 14px;
+        z-index: 10;     /* make sure it’s on top of SVG */
+    }
+
+    </style>
+</head>
+<body>
+
+    
+<div id="instructions">
+    Hold on the box for 0.3 seconds to unlock it, then drag it. <br>
+    Use two fingers to pinch and scale the box.
+</div>
+
+    <svg id="containerConetainer" width="100%" height="100%" viewBox="0 0 100 100">
+
+        <rect id="box" x="10" y="10" width="20" height="20" fill="cornflowerblue"></rect>
+        <g id="circleContainer">
+        </g>
+        <text id="boxText" x="20" y="20" text-anchor="middle" dominant-baseline="middle" fill="black" font-size="5">0</text>
+        
+    </svg>
+
+
+
+
+
+
+    <script type="module">
+        
+        import { animate, utils, createDraggable, createSpring , svg, stagger } from './anime.esm.min.js';
+
+        const ongoingTouches = new Map()
+        const circles = new Map()
+        let initialScale
+        let currentScale = 1
+        let initialX, initialY
+        let holdTimer
+        let isUnlocked = false
+        let boxStartX, boxStartY
+        let countdown = 3
+        let previustuch_Shise
+
+
+        
+
+
+        // 1
+        // pointer up
+        document.addEventListener('pointerdown', (e) => {
+
+            // always
+            // baetir vid fingri i lisftan {
+            const touch = {
+                pageX: e.pageX,
+                pageY: e.pageY
+            }
+            ongoingTouches.set(e.pointerId, touch)
+            // }
+
+
+
+
+
+            // skritið dot vi etta vildi ekki virka{
+            const container = document.getElementById("circleContainer")
+            const svg = document.getElementById("containerConetainer")
+            const pt = svg.createSVGPoint()
+            pt.x = e.clientX
+            pt.y = e.clientY
+            const svgP = pt.matrixTransform(svg.getScreenCTM().inverse())
+            // }
+
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle")
+            circle.setAttribute("r", "10")
+            circle.setAttribute("fill", "cyan")
+
+            circle.style.transform = "translate(" + svgP.x + "px," + svgP.y + "px)"
+
+            container.appendChild(circle)
+            circles.set(e.pointerId, circle)
+
+
+
+
+
+
+
+            
+            // 1.1
+            // Single touch
+            if (ongoingTouches.size == 1) {
+
+                // fyrir pointer up animation
+                previustuch_Shise = 1
+
+                initialX = e.clientX
+                initialY = e.clientY
+                boxStartX = parseFloat(box.getAttribute("x"))
+                boxStartY = parseFloat(box.getAttribute("y"))
+
+                //halda inn timer til að hreifa box{
+                countdown = 3
+                document.getElementById('boxText').textContent = countdown
+
+                holdTimer = setInterval(() => {
+                    countdown = countdown - 1
+                    document.getElementById("boxText").textContent = countdown
+
+                    if (countdown == 0) {
+                        clearInterval(holdTimer)
+                        isUnlocked = true
+                        document.getElementById("boxText").textContent = "🔓"
+
+                        animate('#box', {
+                            scale: [
+                                { to: currentScale * 1.25, ease: 'inOut(3)', duration: 200 },
+                                { to: currentScale * 1, ease: createSpring({ stiffness: 300 }) }
+                            ]
+                        })
+                    }
+                }, 350)
+                // }
+            }
+
+
+
+
+
+            // 1.2
+            // Multi-touch
+            else if (ongoingTouches.size == 2) {
+                previustuch_Shise = 2
+                clearTimeout(holdTimer)
+                holdTimer = null
+                isUnlocked = false
+
+                if (initialScale == undefined) {
+
+                    // staerfrade rugl{
+                    const touches = Array.from(ongoingTouches.values())
+                    const dx = touches[0].pageX - touches[1].pageX
+                    const dy = touches[0].pageY - touches[1].pageY
+                    //}
+                    //fyrir 3.2
+                    initialScale = Math.hypot(dx, dy)
+
+                }
+            }
+        })
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // 2
+        // pointer up
+        document.addEventListener('pointerup', (e) => {
+            circles.get(e.pointerId).remove()
+            circles.delete(e.pointerId)
+
+            const touch = ongoingTouches.get(e.pointerId)
+
+            ongoingTouches.delete(e.pointerId)
+
+            currentScale = (new DOMMatrix(box.style.transform)).a
+            
+            // clear evverything{
+            initialScale = undefined
+            clearTimeout(holdTimer)
+            holdTimer = null
+            isUnlocked = false
+            // }
+
+            // only animation
+            if (previustuch_Shise == 1) {
+
+                animate('#box', {
+                    scale: [
+                        { to: currentScale * 0.4, ease: 'inOut(3)', duration: 400 },
+                        { to: currentScale * 1, ease: "out(1)", duration: 50 }
+                    ]
+                })
+            }
+        })
+
+        
+
+
+
+
+
+
+
+
+        // 3
+        // pointer Move
+        document.addEventListener('pointermove', (e) => {
+            // Always
+            const touch = ongoingTouches.get(e.pointerId)
+
+
+
+            // update location{
+            const newTouch = {
+                pageX: e.pageX,
+                pageY: e.pageY
+            }
+            ongoingTouches.set(e.pointerId, newTouch)
+            // }
+
+            // 3.1
+            // Single touch drag
+            if (isUnlocked == true) {
+                const svg = document.querySelector("svg")
+                const svgRect = svg.getBoundingClientRect()
+                const scaleX = 100 / svgRect.width
+                const scaleY = 100 / svgRect.height
+
+                const deltaX = (e.clientX - initialX) * scaleX
+                const deltaY = (e.clientY - initialY) * scaleY
+
+                box.setAttribute("x", boxStartX + deltaX)
+                box.setAttribute("y", boxStartY + deltaY)
+
+                const boxWidth = parseFloat(box.getAttribute("width"))
+                const boxHeight = parseFloat(box.getAttribute("height"))
+
+                boxText.setAttribute("x", boxStartX + deltaX + boxWidth / 2)
+                boxText.setAttribute("y", boxStartY + deltaY + boxHeight / 2)
+            }
+
+            // 3.2
+            // Multi-touch scale
+            if (ongoingTouches.size == 2 && initialScale) {
+                //  staerfradei rugl{
+                const touches = Array.from(ongoingTouches.values())
+                const dx = touches[0].pageX - touches[1].pageX
+                const dy = touches[0].pageY - touches[1].pageY
+                const distance = Math.hypot(dx, dy)
+                // }
+                
+                // sets scale
+                const scaleFactor = distance / initialScale
+                box.style.transform = "scale(" + currentScale * scaleFactor + ")"
+
+                document.getElementById('boxText').textContent = box.style.transform
+                
+            }
+
+
+        // always
+        const circle = circles.get(e.pointerId)
+        if (!circle) return
+        const svg = document.getElementById("containerConetainer")
+
+        // skritið dot vi etta vildi ekki virka{
+        const pt = svg.createSVGPoint()
+        pt.x = e.clientX
+        pt.y = e.clientY
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse())
+        // }
+        circle.style.transform = "translate(" + svgP.x + "px," + svgP.y + "px)"
+        })
+
+
+        
+
+    </script>
+
+
+
+</body>
+</html>

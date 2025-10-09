@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verkefni 2 - Single-touch</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      svg {
+        touch-action: none;
+      }
+
+      #inner {
+        cursor: pointer;
+        transition: r 0.2s, fill 0.2s;
+      }
+
+      #inner:hover {
+        r: 45;
+      }
+
+      #outer {
+        transition: opacity 0.2s, stroke 0.2s;
+      }
+
+      #color-info {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="color-info">Litur: #000</div>
+    <svg viewBox="0 0 105 105" width="100" height="100" id="circle">
+      <circle cx="52.5" cy="52.5" r="50" fill="black" id="inner" />
+      <circle
+        cx="52.5"
+        cy="52.5"
+        r="50"
+        fill="none"
+        stroke="black"
+        stroke-width="5"
+        opacity="0"
+        id="outer"
+      />
+    </svg>
+
+    <script>
+      const circle = document.getElementById("circle");
+      const innerCircle = document.getElementById("inner");
+      const outerCircle = document.getElementById("outer");
+      const colorInfo = document.getElementById("color-info");
+
+      function updateColors(x, y) {
+        const colorValue = Math.floor((x / window.innerWidth) * 255);
+        const brightness = Math.floor(
+          ((window.innerHeight - y) / window.innerHeight) * 255
+        );
+
+        const mainColor = `rgb(${colorValue}, ${brightness}, ${brightness})`;
+
+        innerCircle.setAttribute("fill", mainColor);
+        outerCircle.setAttribute("stroke", mainColor);
+
+        colorInfo.textContent = `Litur: ${mainColor}`;
+      }
+
+      circle.onpointerdown = function (event) {
+        circle.setPointerCapture(event.pointerId);
+
+        let pointerDownTime = Date.now();
+        let canDrag = false;
+        const holdDuration = 200; // tími sem þarf að líða áður en hægt er að draga
+
+        const checkDuration = () => {
+          if (Date.now() - pointerDownTime >= holdDuration) {
+            canDrag = true;
+            document.body.style.cursor = "grabbing";
+            innerCircle.setAttribute("r", "40");
+            outerCircle.style.opacity = "1";
+          }
+        };
+
+        // setja timer til að athuga hvort haldið hafi verið niðri nógu lengi
+        const holdTimer = setTimeout(checkDuration, holdDuration);
+
+        circle.onpointermove = function (pointerEvent) {
+          if (canDrag) {
+            const x = pointerEvent.pageX;
+            const y = pointerEvent.pageY;
+
+            circle.style.position = "absolute";
+            circle.style.left = x - 50 + "px";
+            circle.style.top = y - 50 + "px";
+
+            updateColors(x, y);
+          }
+        };
+
+        circle.onpointerup = function () {
+          clearTimeout(holdTimer);
+          canDrag = false;
+          innerCircle.setAttribute("r", "50");
+          outerCircle.style.opacity = "0";
+
+          document.body.style.cursor = "default";
+
+          circle.onpointermove = null;
+          circle.onpointerup = null;
+        };
+      };
+    </script>
+  </body>
+</html>

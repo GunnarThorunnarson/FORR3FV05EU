@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Clap Gesture</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Double Clap Gesture</h1>
+        <p class="subtitle">Clap your thumb and middle finger twice to open 404 page</p>
+        
+        <!-- Main area where the gesture happens -->
+        <div class="demo-area">
+            <div class="gesture-pad" id="gesturePad">
+                <!-- visual dots for claps -->
+                <div class="clap-indicator">
+                    <div class="clap-dot" id="clap1"></div>
+                    <div class="clap-dot" id="clap2"></div>
+                </div>
+                <p class="status-text" id="statusText">Touch the screen with your thumb and middle finger</p>
+            </div>
+            
+            <!-- Instructions for user -->
+            <div class="instruction-card">
+                <h2>How to Use</h2>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <p class="step-text">Place your thumb and middle finger on the touch area</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <p class="step-text">Bring your fingers together until they almost touch (a "clap")</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <p class="step-text">Repeat this clapping motion a second time</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <p class="step-text">Your 404 page will open automatically</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- success popup -->
+    <div class="success-message" id="successMessage">
+        <div class="success-content">
+            <h2>Gesture Recognized!</h2>
+            <p>The double clap gesture was successfully detected. Your 404 page would now open.</p>
+            <button class="button" id="resetButton">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements from the page
+            const gesturePad = document.getElementById('gesturePad');
+            const statusText = document.getElementById('statusText');
+            const successMessage = document.getElementById('successMessage');
+            const resetButton = document.getElementById('resetButton');
+            const clap1 = document.getElementById('clap1');
+            const clap2 = document.getElementById('clap2');
+            
+            // State variables
+            let activeTouches = {};     // store current fingers on screen
+            let clapCount = 0;          // how many claps detected
+            let lastClapTime = 0;       // timestamp of last clap
+            let clapTimeout;            // timer to reset claps if too slow
+            let isClapping = false;     // true while fingers are close
+            let minDistance = Infinity; // track closest distance between fingers
+            let lastClapDetectionTime = 0; // prevent duplicate detections
+
+            // Create a dot for each touch point
+            function createTouchPoint(id, x, y) {
+                const touchPoint = document.createElement('div');
+                touchPoint.className = 'touch-point';
+                touchPoint.id = 'touch-' + id;
+                // center the dot (50px circle, offset by 25px)
+                touchPoint.style.left = (x - 25) + 'px';
+                touchPoint.style.top = (y - 25) + 'px';
+                gesturePad.appendChild(touchPoint);
+                
+                // animate in
+                setTimeout(() => {
+                    touchPoint.style.opacity = '1';
+                    touchPoint.style.transform = 'scale(1)';
+                }, 10);
+                
+                return touchPoint;
+            }
+            
+            // Remove a dot when finger lifts
+            function removeTouchPoint(id) {
+                const touchPoint = document.getElementById('touch-' + id);
+                if (touchPoint) {
+                    touchPoint.style.opacity = '0';
+                    touchPoint.style.transform = 'scale(0)';
+                    setTimeout(() => {
+                        if (touchPoint.parentNode) {
+                            touchPoint.parentNode.removeChild(touchPoint);
+                        }
+                    }, 300);
+                }
+            }
+            
+            // Calculate distance between 2 fingers
+            function calculateDistance(x1, y1, x2, y2) {
+                return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            }
+            
+            // Check if a clap gesture happened
+            function checkForClap(touches) {
+                if (Object.keys(touches).length === 2) {
+                    const touchArray = Object.values(touches);
+                    const dist = calculateDistance(
+                        touchArray[0].clientX, touchArray[0].clientY, 
+                        touchArray[1].clientX, touchArray[1].clientY
+                    );
+                    
+                    // record smallest distance seen
+                    minDistance = Math.min(minDistance, dist);
+
+                    const currentTime = new Date().getTime();
+                
+                    // prevent too many detections (cooldown 900ms)
+                    if (currentTime - lastClapDetectionTime < 900) {
+                        return;
+                    }
+                    
+                    // Detect clap if fingers get very close
+                    if (dist < 120 && !isClapping && minDistance < 100) {
+                        isClapping = true;
+                        lastClapDetectionTime = currentTime;
+                        
+                        // If second clap happens quickly enough -> success
+                        if (currentTime - lastClapTime < 1000 && clapCount === 1) {
+                            clapCount++;
+                            clap2.classList.add('active');
+                            statusText.textContent = "Double clap detected! 🎉";
+                            
+                            // success screen + redirect
+                            clearTimeout(clapTimeout);
+                            successMessage.classList.add('visible');
+                            setTimeout(function() {
+                                window.location.href = "404.html";
+                            }, 1500);
+                        } 
+                        else {
+                            // first clap
+                            clapCount = 1;
+                            clap1.classList.add('active');
+                            statusText.textContent = "Perfect! Now clap again quickly";
+                            lastClapTime = currentTime;
+                            
+                            // reset clapping state shortly
+                            setTimeout(() => {
+                                isClapping = false;
+                            }, 300);
+                            
+                            // reset everything if no 2nd clap
+                            clearTimeout(clapTimeout);
+                            clapTimeout = setTimeout(() => {
+                                clapCount = 0;
+                                clap1.classList.remove('active');
+                                isClapping = false;
+                                minDistance = Infinity;
+                                statusText.textContent = "Touch with thumb and middle finger";
+                            }, 1000);
+                        }
+                    } else if (dist > 150) {
+                        // if fingers move far apart, reset clap state
+                        isClapping = false;
+                    }
+                }
+            }
+            
+            // ---- Touch start ----
+            gesturePad.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                minDistance = Infinity;
+                
+                // add new touches to activeTouches
+                for (let touch of e.changedTouches) {
+                    const rect = gesturePad.getBoundingClientRect();
+                    const adjustedX = touch.clientX - rect.left;
+                    const adjustedY = touch.clientY - rect.top;
+                    
+                    const touchPoint = createTouchPoint(touch.identifier, adjustedX, adjustedY);
+                    activeTouches[touch.identifier] = {
+                        element: touchPoint,
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        adjustedX: adjustedX,
+                        adjustedY: adjustedY
+                    };
+                }
+                
+                if (Object.keys(activeTouches).length === 2) {
+                    statusText.textContent = "Great! Now bring your fingers together";
+                } else if (Object.keys(activeTouches).length > 2) {
+                    statusText.textContent = "Use only two fingers (thumb and middle finger)";
+                }
+            });
+
+            // ---- Touch move ----
+            gesturePad.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                
+                // update finger positions
+                for (let touch of e.changedTouches) {
+                    if (activeTouches[touch.identifier]) {
+                        const rect = gesturePad.getBoundingClientRect();
+                        const adjustedX = touch.clientX - rect.left;
+                        const adjustedY = touch.clientY - rect.top;
+                        
+                        const touchPoint = activeTouches[touch.identifier].element;
+                        touchPoint.style.left = (adjustedX - 25) + 'px';
+                        touchPoint.style.top = (adjustedY - 25) + 'px';
+                        activeTouches[touch.identifier].clientX = touch.clientX;
+                        activeTouches[touch.identifier].clientY = touch.clientY;
+                        activeTouches[touch.identifier].adjustedX = adjustedX;
+                        activeTouches[touch.identifier].adjustedY = adjustedY;
+                    }
+                }
+                
+                checkForClap(activeTouches);
+            });
+            
+            // ---- Touch end ----
+            gesturePad.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                
+                // remove ended touches
+                for (let touch of e.changedTouches) {
+                    removeTouchPoint(touch.identifier);
+                    delete activeTouches[touch.identifier];
+                }
+                
+                // if fewer than 2 fingers left, reset
+                if (Object.keys(activeTouches).length < 2) {
+                    statusText.textContent = "Touch the screen with your thumb and middle finger";
+                    clapCount = 0;
+                    clap1.classList.remove('active');
+                    clap2.classList.remove('active');
+                    isClapping = false;
+                    minDistance = Infinity;
+                }
+            });
+            
+            // ---- Touch cancel (system interruption) ----
+            gesturePad.addEventListener('touchcancel', function(e) {
+                e.preventDefault();
+                
+                for (let touch of e.changedTouches) {
+                    removeTouchPoint(touch.identifier);
+                    delete activeTouches[touch.identifier];
+                }
+                
+                if (Object.keys(activeTouches).length < 2) {
+                    statusText.textContent = "Touch the screen with your thumb and middle finger";
+                    clapCount = 0;
+                    clap1.classList.remove('active');
+                    clap2.classList.remove('active');
+                    isClapping = false;
+                    minDistance = Infinity;
+                }
+            });
+            
+            // ---- Reset button ----
+            resetButton.addEventListener('click', function() {
+                successMessage.classList.remove('visible');
+                clapCount = 0;
+                clap1.classList.remove('active');
+                clap2.classList.remove('active');
+                statusText.textContent = "Touch the screen with your thumb and middle finger";
+                isClapping = false;
+                minDistance = Infinity;
+                
+                // remove leftover touch dots
+                for (let id in activeTouches) {
+                    removeTouchPoint(id);
+                }
+                activeTouches = {};
+            });
+            
+            // Default instructions
+            statusText.textContent = "Touch the screen with your thumb and middle finger";
+        });
+    </script>
+</body>
+</html>

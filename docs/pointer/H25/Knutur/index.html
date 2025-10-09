@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Pointer Events – Long Press + Pan • 2f Zoom • 3f Rotate</title>
+  <style>
+    :root{
+      --bg:#0f1115; --fg:#e6e9ef; --muted:#94a3b8; --card:#151922;
+      --ring:#60a5fa; --ok:#22c55e; --warn:#f59e0b;
+      --tx:0px; --ty:0px; --scale:1; --rot:0deg; --press-ms:700ms;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Inter,Segoe UI,Roboto,sans-serif}
+    .stage{
+      position:relative; width:100vw; height:100vh; overflow:hidden;
+      touch-action:none; /* we handle pan/zoom/rotate with Pointer Events */
+    }
+
+    /* ==== Draggable/Scalable/Rotatable SVG Token ==== */
+    .token{
+      position:absolute; left:50%; top:50%;
+      transform:
+        translate(-50%,-50%)
+        translate(var(--tx),var(--ty))
+        rotate(var(--rot))
+        scale(var(--scale));
+      width:150px; height:150px; border-radius:20px;
+      display:grid; place-items:center; user-select:none; -webkit-user-select:none;
+      filter:drop-shadow(0 10px 34px rgba(0,0,0,.5));
+      will-change:transform, box-shadow;
+      transition: transform .12s ease, box-shadow .2s ease;
+    }
+    .token svg{display:block;width:100%;height:100%}
+
+    /* Long-press progress ring */
+    .press-ring{position:absolute; inset:-8px; pointer-events:none; width:calc(100% + 16px); height:calc(100% + 16px)}
+    .ring{
+      fill:none; stroke:var(--ring); stroke-width:8; opacity:0;
+      stroke-dasharray:628; stroke-dashoffset:628; stroke-linecap:round;
+      transform:rotate(-90deg); transform-origin:50% 50%;
+      filter:drop-shadow(0 0 8px rgba(96,165,250,.6));
+    }
+    .token.is-pressing .ring{ opacity:1; animation:ring-fill var(--press-ms) linear forwards }
+    @keyframes ring-fill{ to{ stroke-dashoffset:0 } }
+
+    .token.is-armed{
+      box-shadow:0 0 0 6px rgba(96,165,250,.15), 0 18px 44px rgba(0,0,0,.55);
+      animation:armed-pulse 900ms ease-in-out infinite alternate;
+    }
+    @keyframes armed-pulse{
+      from{ transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(calc(var(--scale) * 1.00)); }
+      to{   transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(calc(var(--scale) * 1.03)); }
+    }
+
+    .token.drop{ animation:drop-bounce 380ms cubic-bezier(.2,1.1,.2,1) }
+    @keyframes drop-bounce{
+      0%{   transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(calc(var(--scale) * 1.02)); }
+      60%{  transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(calc(var(--scale) * .98)); }
+      100%{ transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(var(--scale)); }
+    }
+
+    /* Visual cues for multi-touch modes */
+    .token.is-scaling{ box-shadow:0 0 0 8px rgba(34,197,94,.16), 0 18px 44px rgba(0,0,0,.55) }
+    .token.is-rotating{ box-shadow:0 0 0 8px rgba(245,158,11,.16), 0 18px 44px rgba(0,0,0,.55) }
+
+    /* HUD (instructions) */
+    .hud{
+      position:absolute; left:12px; bottom:12px; z-index:10;
+      display:flex; gap:10px; align-items:center; padding:10px 12px;
+      background:color-mix(in oklab, var(--card) 92%, transparent);
+      border:1px solid rgba(148,163,184,.15); border-radius:12px; backdrop-filter: blur(6px);
+      color:var(--muted); font-size:14px;
+    }
+    .hud b{ color:var(--fg) }
+    .hud svg{ width:42px; height:42px; opacity:.95 }
+
+    .hint{
+      position:absolute; right:12px; top:12px; z-index:10;
+      padding:8px 10px; border-radius:10px; background:var(--card);
+      border:1px solid rgba(148,163,184,.15); color:var(--muted); font-size:13px;
+      display:flex; align-items:center; gap:8px;
+    }
+
+    .noselect{ user-select:none; -webkit-user-select:none }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage" aria-label="Sýnisíða – Pointer Events">
+    <!-- Token -->
+    <div class="token" id="token">
+      <!-- Long-press progress ring -->
+      <svg class="press-ring" viewBox="0 0 160 160" aria-hidden="true">
+        <circle cx="80" cy="80" r="80" fill="none" opacity="0"></circle>
+        <circle class="ring" cx="80" cy="80" r="100"></circle>
+      </svg>
+
+      <!-- SVG art -->
+      <svg viewBox="0 0 120 120" role="img" aria-label="Tákn" class="noselect">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#60a5fa"/>
+            <stop offset="1" stop-color="#7c3aed"/>
+          </linearGradient>
+        </defs>
+        <rect x="10" y="10" width="100" height="100" rx="22" fill="url(#g)"/>
+        <g opacity=".9">
+          <circle cx="45" cy="55" r="10" fill="#0b1020"/>
+          <circle cx="75" cy="55" r="10" fill="#0b1020"/>
+          <rect x="38" y="78" width="44" height="12" rx="6" fill="#0b1020"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- HUD -->
+    <div class="hud noselect" aria-live="polite">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="22" cy="42" r="8" fill="#93c5fd" />
+        <circle cx="42" cy="22" r="8" fill="#34d399" />
+        <circle cx="14" cy="18" r="6" fill="#f59e0b" />
+        <path d="M18 20 L8 10 M46 44 L56 54" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div><b>1 fingur:</b> Halda inni (long press) → pan yfir skjá. Sleppa = helst á staðnum.</div>
+        <div><b>2 fingur:</b> Klemma/dreifa til að <b>stækka/minnka</b> (zoom á táknið).</div>
+        <div><b>3 fingur:</b> <b>Snúa</b> tákninu (snúningur í kringum miðju).</div>
+      </div>
+    </div>
+
+    <div class="hint noselect">👉 1f long press → pan • 2f pinch → zoom • 3f → rotate</div>
+  </main>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const token = document.getElementById('token');
+
+    let tx = 0, ty = 0;          
+    let scale = 1;               
+    let rotDeg = 0;              
+
+    const MIN_SCALE = 0.6, MAX_SCALE = 2.6;
+
+    const pointers = new Map();  // id -> {x,y,type}
+    const LONG_MS = 700;
+    const DRIFT_CANCEL = 28;
+
+    let pressTimer = null;
+    let armed = false;      // long-press completed
+    let dragging = false;   // currently panning
+    let anchor = {x:0, y:0};
+
+    // Multi-touch modes
+    let mode = 'none';      // 'none' | 'pinch' | 'tri-rotate'
+    // Pinch
+    let pinchStartDist = 0;
+    let pinchStartScale = 1;
+    // Three-finger rotate
+    let triStartAngle = 0;  // radians average angle at start
+    let triStartRotDeg = 0; // starting rotDeg
+
+    // Utils
+    function setTransform(){
+      token.style.setProperty('--tx', `${tx}px`);
+      token.style.setProperty('--ty', `${ty}px`);
+      token.style.setProperty('--scale', scale.toFixed(3));
+      token.style.setProperty('--rot', `${rotDeg}deg`);
+    }
+    setTransform();
+
+    function rect(el){ return el.getBoundingClientRect(); }
+    function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+    function pointInToken(clientX, clientY){
+      const r = rect(token);
+      return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    }
+    function stagePos(e){
+      const r = rect(stage);
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    // ======== Long press → arm pan (single pointer) ========
+    function startLongPress(e){
+      if (pressTimer) clearTimeout(pressTimer);
+      token.classList.remove('drop');
+      token.classList.add('is-pressing');
+
+      pressTimer = setTimeout(()=>{
+        pressTimer = null;
+        armed = true;
+        token.classList.add('is-armed');
+        // compute anchor inside token for smooth pan
+        const tr = rect(token);
+        anchor.x = e.clientX - tr.left;
+        anchor.y = e.clientY - tr.top;
+        dragging = true;
+        token.setPointerCapture(e.pointerId);
+      }, LONG_MS);
+    }
+    function cancelLongPress(){
+      if (pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
+      token.classList.remove('is-pressing');
+    }
+    function endDragFeedback(){
+      if (dragging){
+        dragging = false;
+        token.classList.remove('is-pressing','is-armed');
+        token.classList.add('drop'); // little bounce
+      }
+      armed = false;
+      cancelLongPress();
+    }
+
+    // ======== Pinch (2 fingers) ========
+    function enterPinch(){
+      mode = 'pinch';
+      token.classList.add('is-scaling');
+      const ids = touchIds();
+      if (ids.length >= 2){
+        pinchStartDist = distBetween(pointers.get(ids[0]), pointers.get(ids[1]));
+        pinchStartScale = scale;
+      }
+      // cancel any single-touch path
+      armed = false; dragging = false;
+      token.classList.remove('is-pressing','is-armed');
+    }
+    function updatePinch(){
+      const ids = touchIds();
+      if (ids.length < 2) return;
+      const d = distBetween(pointers.get(ids[0]), pointers.get(ids[1]));
+      if (pinchStartDist > 0){
+        const factor = d / pinchStartDist; // spread out -> factor > 1 (enlarge)
+        scale = clamp(pinchStartScale * factor, MIN_SCALE, MAX_SCALE);
+        setTransform();
+      }
+    }
+    function exitPinch(){
+      mode = 'none';
+      token.classList.remove('is-scaling');
+      pinchStartDist = 0;
+    }
+
+    // ======== Tri-rotate (3 fingers) ========
+    function enterTriRotate(){
+      mode = 'tri-rotate';
+      token.classList.add('is-rotating');
+      triStartAngle = averageAngle(); // radians
+      triStartRotDeg = rotDeg;
+      // cancel any single-touch path
+      armed = false; dragging = false;
+      token.classList.remove('is-pressing','is-armed');
+    }
+    function updateTriRotate(){
+      const ang = averageAngle();
+      if (ang == null || triStartAngle == null) return;
+      const delta = angleDelta(ang, triStartAngle); // radians in [-π,π]
+      rotDeg = triStartRotDeg + (delta * 180/Math.PI);
+      setTransform();
+    }
+    function exitTriRotate(){
+      mode = 'none';
+      token.classList.remove('is-rotating');
+      triStartAngle = null;
+    }
+
+    // --- 3f helpers: centroid + averaged angle (robust to wrap) ---
+    function touches(){ return [...pointers.values()].filter(p => p.type === 'touch'); }
+    function touchIds(){ return [...pointers.entries()].filter(([_,p])=>p.type==='touch').map(([id])=>id); }
+    function centroid(){
+      const ts = touches();
+      if (ts.length === 0) return null;
+      const c = ts.reduce((a,p)=>({x:a.x+p.x, y:a.y+p.y}), {x:0,y:0});
+      return { x:c.x/ts.length, y:c.y/ts.length };
+    }
+    function averageAngle(){
+      const ts = touches();
+      if (ts.length < 3) return null;
+      const c = centroid();
+      let sx = 0, sy = 0;
+      for (const p of ts){
+        const vx = p.x - c.x, vy = p.y - c.y;
+        if (vx === 0 && vy === 0) continue;
+        const len = Math.hypot(vx, vy);
+        sx += vx/len; sy += vy/len;
+      }
+      return Math.atan2(sy, sx); // radians
+    }
+    function angleDelta(a, b){
+      let d = a - b;
+      while (d >  Math.PI) d -= 2*Math.PI;
+      while (d < -Math.PI) d += 2*Math.PI;
+      return d;
+    }
+    function distBetween(a,b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+
+    // ======== Pointer handlers ========
+    function onPointerDown(e){
+      pointers.set(e.pointerId, { x:e.clientX, y:e.clientY, type:e.pointerType });
+      // SINGLE: only arm long-press if down on token
+      if (pointers.size === 1){
+        if (pointInToken(e.clientX, e.clientY)) startLongPress(e);
+      }
+
+      const tCount = touches().length;
+      if (tCount === 2 && mode !== 'pinch') enterPinch();
+      if (tCount === 3 && mode !== 'tri-rotate') enterTriRotate();
+    }
+
+    function onPointerMove(e){
+      if (!pointers.has(e.pointerId)) return;
+      pointers.get(e.pointerId).x = e.clientX;
+      pointers.get(e.pointerId).y = e.clientY;
+
+      const tCount = touches().length;
+
+      // Cancel long-press if finger drifts far before arming
+      if (pointers.size === 1 && pressTimer){
+        const p = pointers.get(e.pointerId);
+        const r = rect(token);
+        const cx = clamp(p.x, r.left - 24, r.right + 24);
+        const cy = clamp(p.y, r.top  - 24, r.bottom+ 24);
+        const drift = Math.hypot(p.x - cx, p.y - cy);
+        if (drift > DRIFT_CANCEL) cancelLongPress();
+      }
+
+      // Active modes
+      if (mode === 'pinch' && tCount >= 2){ updatePinch(); return; }
+      if (mode === 'tri-rotate' && tCount >= 3){ updateTriRotate(); return; }
+
+      // Single-touch pan (after long-press)
+      if (dragging && armed && pointers.size === 1){
+        const s = rect(stage), tr = rect(token);
+        const nx = e.clientX - s.left - anchor.x;
+        const ny = e.clientY - s.top  - anchor.y;
+        const maxX = (s.width - tr.width)/2;
+        const maxY = (s.height - tr.height)/2;
+        tx = clamp(nx - (s.width/2 - tr.width/2), -maxX, maxX);
+        ty = clamp(ny - (s.height/2 - tr.height/2), -maxY, maxY);
+        setTransform();
+      }
+    }
+
+    function onPointerUpOrCancel(e){
+      pointers.delete(e.pointerId);
+
+      // End single drag feedback, keep position
+      if (pointers.size === 0) endDragFeedback();
+
+      // Mode transitions based on remaining touches
+      const tCount = touches().length;
+      if (mode === 'pinch' && tCount < 2)   exitPinch();
+      if (mode === 'tri-rotate' && tCount < 3) exitTriRotate();
+
+      // If we dropped from 3→2 touches, continue in pinch
+      if (tCount === 2 && mode === 'none') enterPinch();
+    }
+
+    stage.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove, {passive:false});
+    window.addEventListener('pointerup', onPointerUpOrCancel);
+    window.addEventListener('pointercancel', onPointerUpOrCancel);
+
+    // ======== Keyboard helpers (demo/UX) ========
+    window.addEventListener('keydown', (e)=>{
+      if (e.key.toLowerCase() === 'r'){ // reset position/scale/rotation
+        tx = 0; ty = 0; scale = 1; rotDeg = 0; setTransform();
+        token.classList.remove('drop','is-pressing','is-armed','is-scaling','is-rotating');
+      }
+    });
+  </script>
+</body>
+</html>

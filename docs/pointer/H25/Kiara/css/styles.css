@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+  background: #0A123B;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  color: white;
+}
+
+.svg-container svg {
+  width: 100%;
+  height: auto;   /* keeps aspect ratio */
+  display: block;
+}
+
+  #logo {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+  }

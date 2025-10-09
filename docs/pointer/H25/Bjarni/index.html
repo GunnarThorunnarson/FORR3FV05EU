@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Verkefni 2 – Multi-touch </title>
+  <style>
+    html, body { margin: 0; height: 100%; background:#111; color:#eee; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    #svæði { position: relative; width:100%; height:100%; touch-action: none; display:grid; place-items:center; }
+
+    /* UI (sýnidæmi) */
+    .ui {
+      position:absolute; top:12px; left:12px; display:flex; align-items:center; gap:8px;
+      padding:6px 8px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; font-size:13px;
+    }
+    .ui svg { width:36px; height:36px; display:block; }
+
+    /* fingurpunktar */
+    .punktur {
+      position:absolute; width:26px; height:26px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #88aaff, #2244cc);
+      border: 2px solid #ffffff88; transform: translate(-50%,-50%); pointer-events:none; opacity:0;
+      transition: opacity 120ms ease;
+    }
+    .punktur.sýnilegur { opacity:1; }
+
+    /* Tilbúið ástand (eftir long-press) – smá glampi á punktum */
+    .tilbuin .punktur { box-shadow:0 0 14px rgba(110,180,255,0.75); }
+
+    /* Success (check) sem blikkar stutt */
+    #success {
+      position:absolute; width:120px; height:120px; display:none; pointer-events:none;
+    }
+    #success.sýnilegt { display:block; animation: pop 220ms ease; }
+    @keyframes pop { from { transform: scale(0.9); opacity:0.0; } to { transform: scale(1); opacity:1; } }
+  </style>
+</head>
+<body>
+  <div id="svæði" aria-label="Multi-touch svæði">
+
+    <!-- UI leiðbeiningar  -->
+<div id="leidbeiningar">
+  <img src="https://img.icons8.com/ios-filled/100/two-fingers.png" alt="Tveir fingur" />
+  <p>
+    1. Settu tvo fingur á skjáinn.<br>
+    2. Haltu niðri í örstutta stund.<br>
+    3. Spreiddu fingurna í sundur.<br>
+    <br>(Spread)
+
+  </p>
+</div>
+<style>
+#leidbeiningar {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed red;
+  border-radius: 1rem;
+  max-width: 250px;
+  margin: 1rem auto;
+}
+#leidbeiningar img {
+  width: 80px;
+  margin-bottom: 0.5rem;
+  animation: pulse 2s infinite;
+
+
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+
+    <!-- Success check kvikun -->
+    <svg id="success" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="44" fill="#1e2b1f" stroke="#7ad59c" stroke-width="4"/>
+      <path d="M28 52 L44 66 L72 36" fill="none" stroke="#7ad59c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <!-- Fingurpunktar -->
+    <div id="p1" class="punktur"></div>
+    <div id="p2" class="punktur"></div>
+  </div>
+
+  <script>
+    (function () {
+      var svæði = document.getElementById('svæði');
+      var p1 = document.getElementById('p1');
+      var p2 = document.getElementById('p2');
+      var success = document.getElementById('success');
+
+      var LONG_MS = 300;       // long-press áður en má meta gesture
+      var SPREAD_PX = 80;      // hversu mikið þarf að spreiða
+
+      var id1 = null, id2 = null;        // pointerId fyrir tvo fingur
+      var t1x=0,t1y=0,t2x=0,t2y=0;       // núverandi staða
+      var s1x=0,s1y=0,s2x=0,s2y=0;       // staða við „tilbúið“
+      var startDist = 0;
+      var longTimer = null;
+      var virkt = false;                 // erum í multi-touch?
+      var tilbuin = false;               // má meta spread?
+
+      function pos(e){
+        var r = svæði.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      }
+      function dist(x1,y1,x2,y2){ var dx=x2-x1, dy=y2-y1; return Math.sqrt(dx*dx+dy*dy); }
+
+      function sýna(){
+        if (id1!==null){ p1.style.left=t1x+'px'; p1.style.top=t1y+'px'; p1.classList.add('sýnilegur'); }
+        if (id2!==null){ p2.style.left=t2x+'px'; p2.style.top=t2y+'px'; p2.classList.add('sýnilegur'); }
+      }
+      function fela(){ p1.classList.remove('sýnilegur'); p2.classList.remove('sýnilegur'); }
+
+      function reset(){
+        clearTimeout(longTimer);
+        svæði.classList.remove('tilbuin');
+        virkt=false; tilbuin=false;
+        id1=null; id2=null; fela();
+      }
+
+      svæði.addEventListener('pointerdown', function(e){
+        // bara tvo pointera samtímis
+        if (id1!==null && id2!==null) return;
+
+        try { svæði.setPointerCapture(e.pointerId); } catch(_) {}
+
+        var p = pos(e);
+        if (id1===null){
+          id1 = e.pointerId; t1x=p.x; t1y=p.y; sýna(); return;
+        }
+        if (id2===null && e.pointerId!==id1){
+          id2 = e.pointerId; t2x=p.x; t2y=p.y; sýna();
+
+          // Bæði niðri -> bíða 300ms (long-press)
+          virkt = true;
+          clearTimeout(longTimer);
+          longTimer = setTimeout(function(){
+            if (id1!==null && id2!==null){
+              tilbuin = true;
+              svæði.classList.add('tilbuin'); // glampi á punktum
+              s1x=t1x; s1y=t1y; s2x=t2x; s2y=t2y;
+              startDist = dist(s1x,s1y,s2x,s2y);
+            }
+          }, LONG_MS);
+        }
+      });
+
+      svæði.addEventListener('pointermove', function(e){
+        if (!virkt) return;
+        var p = pos(e);
+        if (e.pointerId===id1){ t1x=p.x; t1y=p.y; }
+        if (e.pointerId===id2){ t2x=p.x; t2y=p.y; }
+        sýna();
+
+        if (tilbuin && id1!==null && id2!==null){
+          var d = dist(t1x,t1y,t2x,t2y);
+          if (d - startDist >= SPREAD_PX){
+            
+            // Einfalt 'success' 
+            success.classList.add('sýnilegt');
+            setTimeout(function(){ success.classList.remove('sýnilegt'); }, 350);
+            reset();
+          }
+        }
+      });
+
+      function end(e){
+        if (e.pointerId===id1) id1=null;
+        if (e.pointerId===id2) id2=null;
+        if (id1===null || id2===null) reset();
+      }
+      svæði.addEventListener('pointerup', end);
+      svæði.addEventListener('pointercancel', end);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiTouch</title>
+    <style>
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+        .texti {
+          text-anchor: middle;
+          dominant-baseline: middle;
+          user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="svaedi" width="1000" height="600"> 
+      <text x="500" y="100" class="texti" fill="black" font-size="1em" opacity="0.5">settu 2 fingur á skjánum of svipe til að spawna bolta</text>
+    </svg>
+    <script src="./anime.esm.min.js" type="module"></script>
+    <script type="module">
+    import {animate} from "./anime.esm.min.js";
+
+    //sækir í html svg hlutina
+    const svg = document.querySelector(".svaedi");
+    const texti = document.querySelector(".texti")
+
+    //allt tengd snertinga
+    let touches = new Set();
+    let startPoints = {};
+    let currentPoints = {};
+
+    //dict fyrir trail sem eltir puta
+    let fingerPaths = {};
+    let fingerTrails = {}; 
+
+    //gerir svæði innan skjáinn
+    svg.setAttribute("width", window.innerWidth - 20);
+    svg.setAttribute("height", window.innerHeight - 20);
+    
+    //settir textann í miðjuna
+    texti.setAttribute("x", window.innerWidth/2)
+    texti.setAttribute("y", window.innerHeight/2)
+
+    //fall sem gerir bolta
+    function spawnbolti(x, y) {
+
+      //gerir bolta element og settir í svg
+      const bolti = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      bolti.setAttribute("cx", x);
+      bolti.setAttribute("cy", y);
+      bolti.setAttribute("r", 15);
+      bolti.setAttribute("fill", "red");
+      svg.appendChild(bolti);
+
+      // animatar boltana að detta niður á jörðinna
+      animate(bolti, {
+        cy: window.innerHeight - 30,
+        duration: 2000,
+        easing: "easeOutBounce"
+      });
+
+      // eftir 3 sec
+      setTimeout(() => {
+
+        //láta boltana disappeara
+        animate(bolti, {
+          opacity: 0,
+          duration: 500,
+          //og svo eyða
+          complete: () => bolti.remove()
+        });
+      }, 3000);
+    }
+
+    //þegar skjárinn er snertur
+  svg.addEventListener("pointerdown", e => {
+    //bæta við id á pointer í set
+    touches.add(e.pointerId);
+    //taka til mininið x og y fingur
+    startPoints[e.pointerId] = { x: e.clientX, y: e.clientY };
+    currentPoints[e.pointerId] = { x: e.clientX, y: e.clientY };
+    fingerTrails[e.pointerId] = [{ x: e.clientX, y: e.clientY }];
+    // gerir path sem munn elta fingur og setir það í svg
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("stroke", "grey");
+    path.setAttribute("stroke-width", 8);
+    path.setAttribute("fill", "none");
+    path.setAttribute("opacity", 0.5);
+    svg.appendChild(path);
+
+    //setur path í dict
+    fingerPaths[e.pointerId] = path;
+  });
+
+  //þegar ingur hreyfist
+  svg.addEventListener("pointermove", e => {
+    //ef það er ekki í touches set þá er eitthvað skrýtið í gangi og ekkert geist
+    if (!touches.has(e.pointerId)) return;
+
+    //hvað fingurinn er núna
+    currentPoints[e.pointerId] = { x: e.clientX, y: e.clientY };
+
+    // bættir við nýt trail við fingur 
+    if (fingerTrails[e.pointerId]) {
+      //setur staðsetningu á fingur
+      fingerTrails[e.pointerId].push({ x: e.clientX, y: e.clientY });
+      // ef það er lengra en 30 þá er eytt aftasta
+      if (fingerTrails[e.pointerId].length > 30) fingerTrails[e.pointerId].shift();
+    }
+
+    // finnur öll fingur
+    for (const id of Object.keys(fingerPaths)) {
+      //teiknar pathið fyrir aftan fingur með x y frá if setninguna fyrir aftan
+      const trail = fingerTrails[id];
+      if (trail && fingerPaths[id]) {
+        let d = `M${trail[0].x},${trail[0].y}`;
+        for (let i = 1; i < trail.length; i++) {
+          d += ` L${trail[i].x},${trail[i].y}`;
+        }
+        fingerPaths[id].setAttribute("d", d);
+      }
+    }
+
+    // ef það eru 2 fingur að snerta vefsíðuna
+    if (touches.size === 2) {
+      //minnkar opacity á textan
+      texti.setAttribute("opacity", 0.1)
+
+      //sækir í id á snertingana
+      const ids = Array.from(touches);
+
+      //reiknar hversu langt fingur er búin að fara
+      const dx1 = currentPoints[ids[0]].x - startPoints[ids[0]].x;
+      const dx2 = currentPoints[ids[1]].x - startPoints[ids[1]].x;
+
+      //ef fingurnar eru búin að fara meira en 20 pixla hægri eða vinstri, 
+      if (Math.abs(dx1) > 20 && Math.abs(dx2) > 20) { 
+        //þá er reiknað meðaltal á millifingur og sett bolta þar
+        const avgX = (currentPoints[ids[0]].x + currentPoints[ids[1]].x) / 2;
+        const avgY = (currentPoints[ids[0]].y + currentPoints[ids[1]].y) / 2;
+        spawnbolti(avgX, avgY);
+        
+        //ný starting points
+        startPoints[ids[0]] = {
+          x: currentPoints[ids[0]].x,
+          y: currentPoints[ids[0]].y
+        };
+        startPoints[ids[1]] = {
+          x: currentPoints[ids[1]].x,
+          y: currentPoints[ids[1]].y
+        };
+      }
+    }
+    else{
+      //annar settir opacity aftur þannig að tutorial sést
+      texti.setAttribute("opacity", 0.5)
+    }
+  });
+
+
+
+  // ef fingur fara af 
+  svg.addEventListener("pointerup", e => {
+    // sýna aftur tutorial textan
+    texti.setAttribute("opacity", 0.5)
+
+    // eyða pointerid í set
+    touches.delete(e.pointerId);
+    // eyða bara allt tengd fingurinn
+    delete currentPoints[e.pointerId];
+    delete startPoints[e.pointerId];
+    delete fingerTrails[e.pointerId];
+    if (fingerPaths[e.pointerId]) {
+      fingerPaths[e.pointerId].remove();
+      delete fingerPaths[e.pointerId];
+    }
+  });
+    </script>
+</body>
+</html>

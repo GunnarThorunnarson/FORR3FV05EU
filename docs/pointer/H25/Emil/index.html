@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>document</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-y: auto;
+      touch-action: pan-y;
+      user-select: none;
+      background-color: rgb(100, 100, 100);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #touch-region,
+    #touch-region canvas,
+    svg {
+      touch-action: none;
+    }
+
+    #touch-region {
+      width: 100%;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+      margin-bottom: 20px;
+    }
+
+    #touch-region canvas {
+      width: 100%;
+      height: 300px;
+      border: 5px solid yellow;
+      box-sizing: border-box;
+      touch-action: none;
+    }
+
+    svg {
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      background: transparent;
+    }
+
+    circle {
+      cursor: grab;
+      transition: fill 0.2s, opacity 0.2s;
+    }
+
+    circle.dragging {
+      cursor: grabbing;
+      opacity: 0.7;
+    }
+
+    #ui {
+      background: white;
+    }
+
+    body,
+    #touch-region,
+    svg,
+    circle {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    video {
+      width: 80%;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+  <div id="touch-region">
+    <svg id="arrow-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+      <g id="arrow-icon" transform="translate(160, 25) rotate(90)">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L10,3.5 z" fill="orange" />
+          </marker>
+        </defs>
+        <line x1="10" y1="25" x2="90" y2="25" stroke="orange" stroke-width="2" marker-end="url(#arrowhead)" />
+      </g>
+      <g id="arrow-icon" transform="translate(200, 25) rotate(90)">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L10,3.5 z" fill="orange" />
+          </marker>
+        </defs>
+        <line x1="10" y1="25" x2="90" y2="25" stroke="orange" stroke-width="2" marker-end="url(#arrowhead)" />
+      </g>
+
+      <g id="arrow-icon" transform="translate(200, 200) rotate(270)">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L10,3.5 z" fill="orange" />
+          </marker>
+        </defs>
+        <line x1="10" y1="25" x2="90" y2="25" stroke="orange" stroke-width="2" marker-end="url(#arrowhead)" />
+      </g>
+      <g id="arrow-icon" transform="translate(250, 200) rotate(270)">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L10,3.5 z" fill="orange" />
+          </marker>
+        </defs>
+        <line x1="10" y1="25" x2="90" y2="25" stroke="orange" stroke-width="2" marker-end="url(#arrowhead)" />
+      </g>
+      <text x="180" y="270" text-anchor="middle" font-size="24" fill="orange">Drag 2 fingers together up or down</text>
+
+    </svg>
+
+    <canvas id="canvas" style="position: relative; z-index: 1;"></canvas>
+  </div>
+
+  <svg id="ui" width="360" height="350">
+    <g id="arrow-icon" transform="translate(160, 25) ">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L10,3.5 z" fill="black" />
+        </marker>
+      </defs>
+
+      <line x1="10" y1="25" x2="90" y2="25" stroke="black" stroke-width="2" marker-end="url(#arrowhead)" />
+    </g>
+    <g id="arrow-icon" transform="translate(160, 125) ">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L10,3.5 z" fill="black" />
+        </marker>
+      </defs>
+
+      <line x1="10" y1="25" x2="90" y2="25" stroke="black" stroke-width="2" marker-end="url(#arrowhead)" />
+    </g>
+
+    <g id="arrow-icon" transform="translate(75, 50) rotate(90) ">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L10,3.5 z" fill="black" />
+        </marker>
+      </defs>
+
+      <line x1="10" y1="25" x2="90" y2="25" stroke="black" stroke-width="2" marker-end="url(#arrowhead)" />
+    </g>
+    <circle id="end-circle1" cx="300" cy="150" r="30" fill="#ff6347" opacity="0.2" />
+    <circle id="end-circle2" cx="300" cy="50" r="30" fill="#1e90ff" opacity="0.2" />
+    <circle id="end-circle3" cx="50" cy="229" r="30" fill="#ffd700" opacity="0.2" />
+
+    <circle id="circle1" cx="150" cy="150" r="30" fill="#ff6347" />
+    <circle id="circle2" cx="150" cy="50" r="30" fill="#1e90ff" />
+    <circle id="circle3" cx="50" cy="50" r="30" fill="#ffd700" />
+    <text id="circleText" x="180" y="320" text-anchor="middle" font-size="24" fill="black">Drag all circles</text>
+
+  </svg>
+
+  <script>
+    (function () {
+      const touchRegion = document.getElementById('touch-region');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const body = document.body;
+
+      canvas.width = touchRegion.clientWidth;
+      canvas.height = touchRegion.clientHeight;
+
+      const colors = ['red', 'green', 'blue'];
+      const horizontalMax = 120;
+      const xMax = 20;
+
+      let ongoingTouches = new Map();
+      let shade = 100;
+      let twoFinger = false;
+      let prevAvgY = 0;
+      let initialXPositions = [];
+
+      function handleStart(evt) {
+        const bounds = canvas.getBoundingClientRect();
+        if (
+          evt.clientX < bounds.left || evt.clientX > bounds.right ||
+          evt.clientY < bounds.top || evt.clientY > bounds.bottom
+        ) return;
+
+        ongoingTouches.set(evt.pointerId, {
+          pageX: evt.pageX,
+          pageY: evt.pageY,
+          color: colors[ongoingTouches.size % colors.length]
+        });
+
+        if (ongoingTouches.size === 2) {
+          twoFinger = true;
+          let sumY = 0;
+          initialXPositions = [];
+          for (let t of ongoingTouches.values()) {
+            sumY += t.pageY;
+            initialXPositions.push(t.pageX);
+          }
+          prevAvgY = sumY / 2;
+        } else {
+          twoFinger = false;
+        }
+
+        const touch = ongoingTouches.get(evt.pointerId);
+        ctx.beginPath();
+        ctx.arc(touch.pageX, touch.pageY, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = touch.color;
+        ctx.fill();
+      }
+
+      function handleMove(evt) {
+        const touch = ongoingTouches.get(evt.pointerId);
+        if (!touch) return;
+
+        ctx.beginPath();
+        ctx.moveTo(touch.pageX, touch.pageY);
+        ctx.lineTo(evt.pageX, evt.pageY);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = touch.color;
+        ctx.stroke();
+
+        ongoingTouches.set(evt.pointerId, {
+          pageX: evt.pageX,
+          pageY: evt.pageY,
+          color: touch.color
+        });
+
+        if (!twoFinger) return;
+
+        const arr = Array.from(ongoingTouches.values());
+        if (arr.length !== 2) return;
+
+        const [t0, t1] = arr;
+        const horizontalDistance = Math.abs(t0.pageX - t1.pageX);
+        if (horizontalDistance > horizontalMax) return;
+
+        const xDeviation0 = Math.abs(t0.pageX - initialXPositions[0]);
+        const xDeviation1 = Math.abs(t1.pageX - initialXPositions[1]);
+        if (xDeviation0 > xMax || xDeviation1 > xMax) return;
+
+        const avgY = (t0.pageY + t1.pageY) / 2;
+        const dy = avgY - prevAvgY;
+        prevAvgY = avgY;
+
+        shade = Math.min(255, Math.max(0, shade - dy * 2.5));
+        const gray = Math.round(shade);
+        body.style.backgroundColor = `rgb(${gray}, ${gray}, ${gray})`;
+      }
+
+      function handleEnd(evt) {
+        const touch = ongoingTouches.get(evt.pointerId);
+        if (touch) {
+          ctx.lineWidth = 4;
+          ctx.fillStyle = touch.color;
+          ctx.beginPath();
+          ctx.moveTo(touch.pageX, touch.pageY);
+          ctx.lineTo(evt.pageX, evt.pageY);
+          ctx.fillRect(evt.pageX - 4, evt.pageY - 4, 8, 8);
+        }
+
+        ongoingTouches.delete(evt.pointerId);
+
+        if (ongoingTouches.size === 2) {
+          twoFinger = true;
+          let sumY = 0;
+          initialXPositions = [];
+          for (let t of ongoingTouches.values()) {
+            sumY += t.pageY;
+            initialXPositions.push(t.pageX);
+          }
+          prevAvgY = sumY / 2;
+        } else {
+          twoFinger = false;
+        }
+      }
+
+      touchRegion.addEventListener('pointerdown', handleStart, false);
+      touchRegion.addEventListener('pointermove', handleMove, false);
+      touchRegion.addEventListener('pointerup', handleEnd, false);
+      touchRegion.addEventListener('pointercancel', handleEnd, false);
+    })();
+
+    (function () {
+      const svg = document.getElementById('ui');
+
+
+      const circles = {
+        circle1: {
+          el: document.getElementById('circle1'),
+          pointerId: null,
+          start: { cx: 150, cy: 150 },
+          end: { cx: 300, cy: 150 },
+          progress: 0
+        },
+        circle2: {
+          el: document.getElementById('circle2'),
+          pointerId: null,
+          start: { cx: 150, cy: 50 },
+          end: { cx: 300, cy: 50 },
+          progress: 0
+        },
+        circle3: {
+          el: document.getElementById('circle3'),
+          pointerId: null,
+          start: { cx: 50, cy: 50 },
+          end: { cx: 50, cy: 229 },
+          progress: 0
+        }
+      };
+
+      function checkAllComplete() {
+        const allReached = Object.values(circles).every(c => c.progress >= 0.9);
+        const circleText = document.getElementById('circleText');
+
+        if (allReached) {
+          circleText.textContent = "Good job!";
+          Object.entries(circles).forEach(([id, obj]) => {
+            anime({
+              targets: obj.el,
+              cx: obj.end.cx,
+              cy: obj.end.cy,
+              duration: 1000,
+              easing: 'easeOutExpo'
+            });
+          });
+        } else {
+          circleText.textContent = "Try again";
+          Object.entries(circles).forEach(([id, obj]) => {
+            anime({
+              targets: obj.el,
+              cx: obj.start.cx,
+              cy: obj.start.cy,
+              duration: 1000,
+              easing: 'easeOutBounce'
+            });
+          });
+        }
+      }
+
+      Object.entries(circles).forEach(([id, obj]) => {
+        const { el, start, end } = obj;
+
+        el.addEventListener('pointerdown', e => {
+          el.setPointerCapture(e.pointerId);
+          obj.pointerId = e.pointerId;
+          el.classList.add('dragging');
+        });
+
+        el.addEventListener('pointermove', e => {
+          if (e.pointerId !== obj.pointerId) return;
+          const pt = svg.createSVGPoint();
+          pt.x = e.clientX; pt.y = e.clientY;
+          const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+          if (id === 'circle1' || id === 'circle2') {
+            const minX = Math.min(start.cx, end.cx);
+            const maxX = Math.max(start.cx, end.cx);
+            const clampedX = Math.max(minX, Math.min(svgP.x, maxX));
+            el.setAttribute('cx', clampedX);
+          } else if (id === 'circle3') {
+            const minY = Math.min(start.cy, end.cy);
+            const maxY = Math.max(start.cy, end.cy);
+            const clampedY = Math.max(minY, Math.min(svgP.y, maxY));
+            el.setAttribute('cy', clampedY);
+          }
+        });
+
+        el.addEventListener('pointerup', e => {
+          if (e.pointerId !== obj.pointerId) return;
+          el.releasePointerCapture(e.pointerId);
+          obj.pointerId = null;
+          el.classList.remove('dragging');
+
+          const currentX = parseFloat(el.getAttribute('cx'));
+          const currentY = parseFloat(el.getAttribute('cy'));
+
+          let progress;
+          if (id === 'circle1' || id === 'circle2') {
+            const total = end.cx - start.cx;
+            const moved = currentX - start.cx;
+            progress = Math.abs(moved / total);
+          } else {
+            const total = end.cy - start.cy;
+            const moved = currentY - start.cy;
+            progress = Math.abs(moved / total);
+          }
+
+          obj.progress = progress;
+          checkAllComplete();
+        });
+
+        el.addEventListener('pointercancel', e => {
+          if (e.pointerId !== obj.pointerId) return;
+          el.releasePointerCapture(e.pointerId);
+          obj.pointerId = null;
+          el.classList.remove('dragging');
+        });
+      });
+    })();
+  </script>
+
+  <div>
+    <h2>Video exmple</h2>
+  </div>
+  <video controls>
+    <source src="Video.mov" type="video/quicktime">
+  </video>
+</body>
+
+</html>

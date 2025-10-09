@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body id="body1">
+
+    <style>
+        #tree1{
+            touch-action: none;
+        }
+        body{
+            touch-action: none;
+        }
+        .dot {
+            height: 75px;
+            width: 75px;
+            background-color: #1727d3;
+            border-radius: 50%;
+            display: inline-block;
+            animation: alternate 1s ballAnimation infinite;
+        }
+
+        @keyframes ballAnimation{
+            0% {background-color: #0015ff;}
+            100% {background-color: rgb(1, 255, 255);}
+        }
+    </style>
+
+    <svg id="svg1">
+        <g id="tree1" style="transform: translate(150px, 120px); rotate: 0deg; transform-origin: 170px 80px;">
+                <rect x="0" y="0" width="20" height="25" fill="brown"></rect>
+                <polygon class="leaf" points="-40,0 10,-50 60,0 " fill="#46a314"></polygon>
+                <polygon class="leaf" points="-30,-25 10,-80 50,-25 " fill="#46a314"></polygon>
+                <polygon class="leaf" points="-20,-50 10,-110 40,-50 " fill="#46a314"></polygon>
+
+        </g>
+    </svg>
+
+    
+
+    <script>
+
+        const tree = document.getElementById("tree1");
+
+        const svg = document.getElementById("svg1")
+
+        const body = document.getElementById("body1")
+
+        const shakeAnimation = tree.animate([{rotate: "5deg"},{rotate: "-5deg"},{rotate: "0deg"}],{duration: 1000})
+
+        const rotateZAnimation = tree.animate([{rotate: "10deg"},{rotate: "-10deg"},{rotate: "0deg"}],{duration:200})
+
+        svg.style.width = window.innerWidth - 15
+        svg.style.height = window.innerHeight - 15
+
+
+        let timer
+        let timerDurationMS = 1000 
+        let animationPlayed = false
+
+        const ongoingTouches = new Map(); // eins og object en Key get verið alla data types
+
+        const MTongoingTouches = new Map();
+
+        let firstTouch = {
+            beingUsed: false,
+            id: 0,
+            pageX: 0,
+            pageY: 0,
+        }
+
+        let MTfirstTouch = {
+            beingUsed: false,
+            id: 0,
+            pageX: 0,
+            pageY: 0,
+        }
+
+        let MTsecondTouch= {
+            beingUsed: false,
+            id: 0,
+            pageX: 0,
+            pageY: 0,
+        }
+
+
+        tree.addEventListener("pointerdown",(e) => {
+
+            if (ongoingTouches.size == 0){
+                firstTouch = {
+                    beingUsed: true,
+                    id: e.pointerId,
+                    pageX: e.pageX,
+                    pageY: e.pageY,
+                }
+
+                timer = new Date()
+
+                shakeAnimation.play()
+
+            }
+
+            ongoingTouches.set(e.pointerId,e.pointerId)
+
+        })
+
+        tree.addEventListener("pointermove", (e) => {
+
+            let timePassed = new Date()
+
+            if (e.pointerId == firstTouch.id && firstTouch.beingUsed == true && timePassed - timer >= timerDurationMS){
+
+                console.log(e)
+
+                tree.style.translate = `${e.clientX - 165}px ${e.clientY - 85}px`;
+
+                console.log(tree.style.translate)
+
+            }
+
+
+        });
+
+
+        tree.addEventListener("pointerup",(e) => {
+
+            if (firstTouch.id == e.pointerId){
+                firstTouch.beingUsed = false
+            }
+
+            rotateZAnimation.play()
+
+            ongoingTouches.delete(e.pointerId)
+        })
+
+
+        body.addEventListener("pointerdown", (e) => {
+            if (MTongoingTouches.size == 0){
+
+                const circle = document.createElement("div")
+                circle.classList.add("dot")
+
+                MTfirstTouch = {
+                    beingUsed: true,
+                    id: e.pointerId,
+                    pageX: e.pageX,
+                    pageY: e.pageY,
+                    circle: circle
+                }
+
+                MTfirstTouch.circle.style.display = "none"
+
+                document.body.appendChild(MTfirstTouch.circle)
+
+
+            }
+            else if (MTongoingTouches.size == 1){
+
+                const circle = document.createElement("span")
+                circle.classList.add("dot")
+
+                MTsecondTouch = {
+                    beingUsed: true,
+                    id: e.pointerId,
+                    pageX: e.pageX,
+                    pageY: e.pageY,
+                    circle: circle
+                }
+
+                document.body.appendChild(MTsecondTouch.circle)
+
+            }
+            
+            MTongoingTouches.set(e.pointerId,e.pointerId)
+
+        })
+
+        body.addEventListener("pointermove", (e) => {
+
+        if (MTfirstTouch.beingUsed == true && MTsecondTouch.beingUsed == true){
+
+            if (e.pointerId == MTfirstTouch.id){
+                MTfirstTouch.circle.style.translate = `${MTfirstTouch.pageX-45}px ${(MTfirstTouch.pageY)-window.innerHeight-50}px`;
+
+                MTfirstTouch.circle.style.display == "none"?MTfirstTouch.circle.style.display = "inline-block" : ""
+            }
+
+            else if (e.pointerId == MTsecondTouch.id) {
+                MTsecondTouch.circle.style.translate = `${MTsecondTouch.pageX-90}px ${(MTsecondTouch.pageY)-window.innerHeight-50}px`;
+            }
+
+            
+            // use pythagoras to tell the difference and scale
+
+            const C = Math.sqrt(Math.abs(MTsecondTouch.pageX-MTfirstTouch.pageX)+Math.abs(MTsecondTouch.pageY-MTfirstTouch.pageY))
+
+            C == NaN?style.scale = 0.5: tree.style.scale = C/10
+
+            if (MTfirstTouch.id == e.pointerId){
+                MTfirstTouch.pageX = e.pageX
+                MTfirstTouch.pageY = e.pageY
+
+            }
+            else if (MTsecondTouch.id == e.pointerId){
+                MTsecondTouch.pageX = e.pageX
+                MTsecondTouch.pageY = e.pageY
+            }
+
+
+        }
+
+    });
+
+    body.addEventListener("pointerup",(e) => {
+
+                if (MTfirstTouch.id == e.pointerId){
+                    MTfirstTouch.beingUsed = false
+                    MTfirstTouch.circle.remove()
+
+                }
+                else if (MTsecondTouch.id == e.pointerId){
+                    MTsecondTouch.beingUsed = false
+                    MTsecondTouch.circle.remove()
+
+                }
+
+                MTongoingTouches.delete(e.pointerId)
+            })      
+
+    </script>
+    
+</body>
+</html>

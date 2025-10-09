@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>multiTouchVerkefni2HP</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #0b0b0b;
+            color: #eaeaea;
+            font-family: system-ui, sans-serif;
+        }
+        
+        body {
+            touch-action: none; /* clean pointer streams */
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .dot {
+            fill: #1e90ff;
+            opacity: .95;
+            filter: drop-shadow(0 2px 6px rgba(30,144,255,.6));
+        }
+        
+        .ring {
+            fill: none;
+            stroke: #7cff7c;
+            stroke-width: 6;
+            stroke-linecap: round;
+            opacity: 0;
+            transition: stroke .2s ease, stroke-dasharray .2s ease;
+        }
+        
+        .centroid {
+            fill: #7cff7c;
+            opacity: .7;
+        }
+
+        .hint {
+            position: fixed;
+            right: 12px;
+            bottom: 12px;
+            z-index: 10;
+            background: rgba(34,34,34,.9);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 10px 12px;
+            max-width: 46ch;
+            line-height: 1.35;
+            box-shadow: 0 6px 20px rgba(0,0,0,.35);
+            font-size: 14px;
+        }
+        
+        .hint strong {
+            color: #7cff7c;
+        }
+    </style>
+</head>
+<body>
+    <svg id="overlay" aria-hidden="true">
+        <!-- Touch UI elements -->
+        <circle id="p1" class="dot" r="16" cx="-100" cy="-100"/>
+        <circle id="p2" class="dot" r="16" cx="-100" cy="-100"/>
+        <circle id="centroid" class="centroid" r="5" cx="-100" cy="-100"/>
+        <circle id="ring" class="ring" r="60" cx="-100" cy="-100"/>
+    </svg>
+
+    <div class="hint">
+        <strong>Gesture:</strong> Two-finger <em>half turn</em> + confirm<br/>
+        1) Place two fingers and hold ~300 ms (stay steady).<br/>
+        2) Rotate them ~90° around their midpoint.<br/>
+        3) <strong>Spread (pinch-out)</strong> quickly to confirm.<br/>
+        Opens the page on success. Pinch-in to cancell.
+    </div>
+
+    <script>
+        (() => {
+            const overlay = document.getElementById('overlay');
+            const p1El = document.getElementById('p1');
+            const p2El = document.getElementById('p2');
+            const centroidEl = document.getElementById('centroid');
+            const ringEl = document.getElementById('ring');
+
+            // ===== Config (phone-friendly) =====
+            const TARGET_URL         = 'verkefni-1-HP.html'; // change as needed
+            const ARM_MS             = 300;   // steady hold before counting rotation
+            const MOVE_TOL_ARM       = 28;    // tolerant while arming (px)
+            const RATIO_MIN          = 0.55, RATIO_MAX = 1.9; // pinch/expand guard during rotation
+            const MAX_TIME_MS        = 12000; // timeout after arming
+            const HIT_DEG            = 90;    // rotation threshold (degrees)
+            const CONFIRM_WINDOW_MS  = 1200;  // must confirm within this window
+  const CONFIRM_RATIO      = 1.20;  // pinch-out factor to confirm (20% spread)
+
+  // ===== State =====
+  const active = new Map(); // pointerId -> {x,y,sx,sy,time,el}
+  let state = 'idle';       // idle | arming | armed | confirm | recognized
+  let ids = [];
+  let armTimer = null;
+  let startAngle = 0;
+  let lastAngle = 0;
+  let unwrapped = 0;        // signed net rotation since arm
+  let startDist = 1;
+  let startCentroid = {x:0,y:0};
+  let armedAt = 0;
+
+  // Confirm phase
+  let confirmDeadline = 0;
+  let confirmBaseline = 1;
+
+  // ===== Utils =====
+  const now = () => performance.now();
+  const toLocal = e => {
+    const r = overlay.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
+  const angDeg = (a,b) => Math.atan2(b.y - a.y, b.x - a.x) * 180/Math.PI;
+  const unwrapDelta = (curr, prev) => {
+    let d = curr - prev;
+    while (d > 180) d -= 360;
+    while (d < -180) d += 360;
+    return d;
+  };
+  const dist = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
+  const centroid = (A,B) => ({ x: (A.x+B.x)/2, y: (A.y+B.y)/2 });
+
+  // Creates a new SVG circle element for additional touch points
+  function makeDot() {
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('r', 16); c.setAttribute('class','dot');
+    c.setAttribute('cx', -100); c.setAttribute('cy', -100);
+    overlay.appendChild(c);
+    return c;
+  }
+
+  // Resets all gesture state and hides visual elements
+  function reset() {
+    clearTimeout(armTimer); armTimer = null;
+    state = 'idle'; ids = []; startAngle = lastAngle = 0;
+    unwrapped = 0; startDist = 1; armedAt = 0;
+    confirmDeadline = 0; confirmBaseline = 1;
+    startCentroid = {x:-100,y:-100};
+    // Hide visuals
+    p1El.setAttribute('cx', -100); p1El.setAttribute('cy', -100);
+    p2El.setAttribute('cx', -100); p2El.setAttribute('cy', -100);
+    centroidEl.setAttribute('cx', -100); centroidEl.setAttribute('cy', -100);
+    ringEl.style.opacity = 0;
+    ringEl.style.stroke = '#7cff7c';
+    ringEl.style.strokeDasharray = ''; // solid again
+  }
+
+  // Initializes the progress ring at given position and radius
+  function initRing(cx, cy, r) {
+    ringEl.setAttribute('cx', cx);
+    ringEl.setAttribute('cy', cy);
+    ringEl.setAttribute('r', r);
+    const C = 2 * Math.PI * r;
+    ringEl.style.opacity = 1;
+    ringEl.style.strokeDasharray = `${C} ${C}`;
+    ringEl.style.strokeDashoffset = `${C}`;
+  }
+  
+  // Updates the progress ring based on current rotation progress
+  function updateRing(currentDeg, targetDeg = HIT_DEG) {
+    const r = parseFloat(ringEl.getAttribute('r')) || 60;
+    const C = 2 * Math.PI * r;
+    const clamped = Math.max(0, Math.min(1, currentDeg / targetDeg));
+    ringEl.style.strokeDashoffset = `${C * (1 - clamped)}`;
+  }
+
+  // ===== Events =====
+  // Handles pointer down events - tracks new pointers and starts gesture detection
+  function onPointerDown(e){
+    overlay.setPointerCapture(e.pointerId);
+    if (!active.has(e.pointerId)) {
+      const p = toLocal(e);
+      const el = (active.size === 0) ? p1El : (active.size === 1) ? p2El : makeDot();
+      el.setAttribute('cx', p.x); el.setAttribute('cy', p.y);
+      active.set(e.pointerId, { x:p.x, y:p.y, sx:p.x, sy:p.y, time:now(), el });
+    }
+
+    if (state==='idle' && active.size >= 2) {
+      ids = [...active.entries()].sort((a,b)=>a[1].time-b[1].time).slice(0,2).map(([id])=>id);
+      const A = active.get(ids[0]), B = active.get(ids[1]);
+      startCentroid = centroid(A, B);
+      centroidEl.setAttribute('cx', startCentroid.x);
+      centroidEl.setAttribute('cy', startCentroid.y);
+
+      state = 'arming';
+      armTimer = setTimeout(() => {
+        const ok = ids.every(id => {
+          const p = active.get(id);
+          return p && Math.hypot(p.x - p.sx, p.y - p.sy) <= MOVE_TOL_ARM;
+        });
+        if (!ok) { reset(); return; }
+
+        const A = active.get(ids[0]), B = active.get(ids[1]);
+        startAngle = lastAngle = angDeg(A, B);
+        startDist  = dist(A, B);
+        armedAt    = now();
+
+        const r = Math.max(36, Math.min(120, startDist * 0.55));
+        initRing(startCentroid.x, startCentroid.y, r);
+
+        state = 'armed';
+        navigator.vibrate?.(10);
+      }, ARM_MS);
+    }
+
+    e.preventDefault();
+  }
+
+  // Handles pointer movement - tracks rotation and confirm gestures
+  function onPointerMove(e){
+    const entry = active.get(e.pointerId);
+    if (!entry) return;
+    const p = toLocal(e);
+    entry.x = p.x; entry.y = p.y;
+    entry.el.setAttribute('cx', p.x);
+    entry.el.setAttribute('cy', p.y);
+
+    // ----- ROTATION PHASE -----
+    if (state === 'armed') {
+      if (!ids.every(id => active.has(id))) { reset(); return; }
+      if (now() - armedAt > MAX_TIME_MS) { reset(); return; }
+
+      const A = active.get(ids[0]), B = active.get(ids[1]);
+      // Guard: avoid huge pinch/expand while rotating
+      const ratio = dist(A,B) / Math.max(1, startDist);
+      if (ratio < RATIO_MIN || ratio > RATIO_MAX) { return; }
+
+      // Unwrapped net rotation (simple + robust)
+      const angle = angDeg(A, B);
+      let d = unwrapDelta(angle, lastAngle);
+      if (Math.abs(d) < 0.2) d = 0; // noise filter
+      unwrapped += d;
+      lastAngle = angle;
+
+      const c = centroid(A, B);
+      centroidEl.setAttribute('cx', c.x);
+      centroidEl.setAttribute('cy', c.y);
+
+      updateRing(Math.abs(unwrapped), HIT_DEG);
+
+      // Reached threshold -> enter confirm phase
+      if (Math.abs(unwrapped) >= HIT_DEG) {
+        state = 'confirm';
+        confirmDeadline = now() + CONFIRM_WINDOW_MS;
+        confirmBaseline = dist(A, B);
+        ringEl.style.stroke = '#ffd166';     // visual cue (amber)
+        ringEl.style.strokeDasharray = '8 8'; // dashed during confirm
+        return;
+      }
+    }
+
+    // ----- CONFIRM PHASE (pinch-out) -----
+    if (state === 'confirm') {
+      if (!ids.every(id => active.has(id))) { reset(); return; }
+      if (now() > confirmDeadline) { reset(); return; }
+
+      const A = active.get(ids[0]), B = active.get(ids[1]);
+      const c = centroid(A, B);
+      centroidEl.setAttribute('cx', c.x);
+      centroidEl.setAttribute('cy', c.y);
+
+      const ratio = dist(A, B) / Math.max(1, confirmBaseline);
+
+      const pseudoDeg = Math.min(HIT_DEG, (ratio / CONFIRM_RATIO) * HIT_DEG);
+      updateRing(pseudoDeg, HIT_DEG);
+
+      if (ratio >= CONFIRM_RATIO) {
+        state = 'recognized';
+        navigator.vibrate?.([20,60,20]);
+        overlay.animate(
+          [{filter:'none',transform:'none'},
+           {filter:'blur(4px)',transform:'scale(1.04)'}],
+          {duration:450, easing:'cubic-bezier(.2,.7,.2,1)'}
+        );
+        window.location.href = TARGET_URL;
+        return;
+      }
+    }
+
+    e.preventDefault();
+  }
+
+  // Handles pointer up/cancel - cleans up pointer tracking and resets if needed
+  function onPointerUpOrCancel(e){
+    const entry = active.get(e.pointerId);
+    if (entry && entry.el && entry.el !== p1El && entry.el !== p2El) entry.el.remove();
+    if (ids[0] === e.pointerId) { p1El.setAttribute('cx', -100); p1El.setAttribute('cy', -100); }
+    if (ids[1] === e.pointerId) { p2El.setAttribute('cx', -100); p2El.setAttribute('cy', -100); }
+    active.delete(e.pointerId);
+    if (ids.includes(e.pointerId)) reset();
+    e.preventDefault();
+  }
+  
+  // Handles lost pointer capture events
+  function onLostCapture(e){ onPointerUpOrCancel(e); }
+
+  // Updates SVG overlay dimensions when window is resized
+  function resize(){
+    overlay.setAttribute('width', innerWidth);
+    overlay.setAttribute('height', innerHeight);
+  }
+  addEventListener('resize', resize, { passive:true }); resize();
+
+  overlay.addEventListener('pointerdown', onPointerDown);
+  overlay.addEventListener('pointermove', onPointerMove);
+  overlay.addEventListener('pointerup', onPointerUpOrCancel);
+  overlay.addEventListener('pointercancel', onPointerUpOrCancel);
+  overlay.addEventListener('lostpointercapture', onLostCapture);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      for (const [,v] of active) if (v.el && v.el !== p1El && v.el !== p2El) v.el.remove();
+      active.clear(); reset();
+    }
+  });
+})();
+</script>
+</body>
+</html>
