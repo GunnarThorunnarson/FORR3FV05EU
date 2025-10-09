@@ -1,4 +1,8 @@
-### Haust 2025
+<details>
+<summary>Haust 2025</summary>
+  
+<br>
+
 - [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Aron/index.html)
 - [Bjarni](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Bjarni/index.html)
 - [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Emil/index.html)
@@ -9,19 +13,30 @@
 - [Marino](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Marino/index.html)
 - [Reginn](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Reginn/index.html)
 
+</details>
+<details>
+<summary>Vor 2025</summary>
   
-### Vor 2025
+<br>
+
 - [Gabríela: Ballerína stytta](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Gabriela/index.html)
 - [Jón: Vörusíða](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Jon/index.html)
 - [Örn: KFC](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Orn/index.html)
 - [Sindir: bjórglas og tunna](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Sindri/index.html)
-    
-### Vor 2024
+
+</details>
+<details>
+<summary>Vor 2024</summary>
+  
+<br>
+
 - [Hróar: körfubolti (scan)](https://hroihrolfs.github.io/vidmotsforr_2024/) 
 - [Kristján Ómar: epli (scan)](https://kristjanomar.github.io/docs/)
 
+</details>
+
 <!--
-### Haust 2023 
+### Haust 2023 - of gamalt
 - [Valdas: sólblóm](https://valdaska21.github.io/FORR3FV05EU---Verkefni-3---Valdas/)
 - [Héðinn: kúla](https://hedinn1.github.io/forr3v3/ ) og [github](https://github.com/hedinn1/forr3v3)
 - [Kristofer: Bíll](https://kr1stof3r.github.io/Vidmotsforritun/Verkefni3/index.html) og [github](https://github.com/Kr1stof3r/Kr1stof3r.github.io/tree/main/Vidmotsforritun/Verkefni3)
