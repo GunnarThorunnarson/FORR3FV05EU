@@ -1,6 +1,15 @@
 ### Haust 2025
-- væntanlegt
+- [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Aron/index.html)
+- [Bjarni](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Bjarni/index.html)
+- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Emil/index.html)
+- [Hörður](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Hordur/index.html)
+- [Ingimar](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Ingimar/index.html)
+- [Kiara](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Kiara/index.html)
+- [Lukas](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Lukas/index.html)
+- [Marino](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Marino/index.html)
+- [Reginn](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/H25/Reginn/index.html)
 
+  
 ### Vor 2025
 - [Gabríela: Ballerína stytta](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Gabriela/index.html)
 - [Jón: Vörusíða](https://gunnarthorunnarson.github.io/FORR3FV05EU/AR/Jon/index.html)
