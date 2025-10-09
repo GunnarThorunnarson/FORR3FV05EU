@@ -1,5 +1,4 @@
-## Three.js 
-- Nemaverkefni
+## Three.js nemaverkefni
 
 ### Haust 2025
 - [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/3d/H25/Aron/index.html)
