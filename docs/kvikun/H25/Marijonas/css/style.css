@@ -1,0 +1,36 @@
+
+/* litir fyrir allt sem breytist ef dark mode er á */
+:root {background-color: #87ceeb;}
+@media (prefers-color-scheme: dark){
+  :root {background-color: 	#131862;}
+  .liturLoft {fill: 	#131862;}
+  .sjor {fill: #1c0098;}
+  .sol {fill: 	 #8F9AB6; stroke: #575d6b; }
+  .errorTexti {fill:#bbbbbb;}
+  .fjorir {stroke: #bbbbbb;}
+  .cloud, .cloud1, .cloud2 {fill: #87889c;}
+  .steinn {fill: #3a3a3a;}
+}
+/* tskoli logo */
+.st0{fill:#E65300;}
+.st1{fill:#68A2B9;}
+.st2{fill:#00457C;}
+
+/* ég vill ekki að það sé hægt að selecta error textan*/
+.errorTexti {
+  user-select: none;
+}
+
+/* þessi 2 eru bara til þess að skipið sé í miðjuna og líka á minni skjár þá er það ekki að vera of skrítið */
+html, body {
+  margin: 0;
+  height: 100%;
+}
+svg {
+  display: block;
+  width: 100%;
+  height: 100vh; 
+}
+
+
+

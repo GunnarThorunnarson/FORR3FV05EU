@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Verkefni 1 HP</title>
+	<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='135' height='222' viewBox='0 0 135 222'><path fill='%23000' d='M26 2c-1 1-2 3-2 7 0 21 2 46 18 66 10 14 36 39 46 56 11 20 16 33 18 45 1 5 2 7 5 7 2 0 4-2 5-7 1-14 3-32-2-48-7-22-22-43-46-66C47 42 37 25 33 7c0-3 0-4-2-5-2-3-5-2-5 0 M134 34c-1-1-3-2-5 0l-2 5c-3 16-12 31-29 48 5 8 10 16 13 24l9-11c14-18 16-40 15-59l-1-7M55 148c-4 14-3 30-2 43 1 5 3 6 5 6s3-2 4-6a135 135 0 0 1 26-54l-17-20c-7 10-12 21-16 31M43 100C23 81 13 64 9 45c0-2 0-3-2-5s-5-1-6 0l-1 7c0 22 1 46 17 67l33 37c3-10 6-21 12-31l-19-20m46 67l-4-13c-7 8-12 17-16 27 8 14 11 24 13 34 1 4 2 7 5 7 2 0 4-2 5-8 1-14 2-32-3-47'/></svg>">
+    <meta name="x-signature" content="Hörður Pálsson · 2025-08-31 · v1.0">
+    
+    <style>
+/* Font declarations */
+@import url('https://fonts.googleapis.com/css2?family=Besley:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* Project main colors */
+:root{
+  --size: clamp(80px, 15vw, 200px); 
+  --t-dash-width: 0.68;   
+  --t-dash-thick: 0.10;   
+  --t-dash-drop:  0.06;   
+  --gap: clamp(4px, 1vw, 12px);
+  --fg: #000;
+	--color-yellow: #efcf4a;
+	--color-orange: #d95525;
+	--color-red: #cc3b2c;
+	--color-magenta: #9d2c44;
+	--color-purple: #6f364f;
+	--block-h: clamp(300px, 50vh, 500px);
+	--bg: #fff;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow-x: hidden;
+	background: #fff;
+}
+
+.circle-grids {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+    z-index: 1000;
+}
+
+/* Individual 3x3 circle grid */
+.circle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 10px);
+    grid-template-rows: repeat(3, 10px);
+    gap: 10px;
+}
+
+/* Individual circles */
+.circle {
+    width: 10px;
+    height: 10px;
+    background-color: #cc3b2c;
+    border-radius: 50%;
+}
+
+/* TÆKNI text in top left corner */
+.taekni-text {
+	position: fixed;
+	top: 15px;
+	left: 20px;
+	font-family: "Besley", serif;
+	font-optical-sizing: auto;
+	font-weight: 600;
+	font-style: normal;
+	font-size: clamp(16px, 2.5vw, 48px); 
+	color: var(--fg);
+	z-index: 1000;
+	letter-spacing: 0.1em;
+	line-height: 1; 
+	display: flex;
+	align-items: flex-end;
+}
+
+/* T-skóli logo */
+.tskoli-logo-inline {
+	display: inline-flex;
+	align-items: flex-end;
+	margin: 0 0.2em; 
+}
+
+.tskoli-logo-inline svg {
+	height: 1em;
+	width: auto; 
+	vertical-align: baseline;
+}
+
+.tskoli-logo-inline svg path {
+	fill: var(--fg) !important;
+}
+
+/* Copyright symbol */
+.copyright-symbol {
+	font-size: 0.4em;
+	vertical-align: text-bottom; 
+	margin-left: 0.1em;
+}
+
+/* wrap sits ABOVE the colored rects */
+.wrap {
+  position: absolute;       
+  top: calc(-1 * var(--size) - 20px);  
+  left: 0;
+  right: auto;             
+  display: flex;
+  justify-content: flex-start;  
+  align-items: flex-end;
+  gap: 0;                   
+  padding: 0 12px;          
+  z-index: 10;            
+  color: var(--fg);
+}
+
+/* Error text positioned above T-404 */
+.error-text {
+  position: absolute;
+  top: calc(-1 * var(--size) - 50px);  
+  left: 2.5%;              
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(14px, 2.5vw, 28px);  
+  color: var(--fg);
+  z-index: 11;              
+  transform: skew(-5deg);   
+  letter-spacing: 0.05em;   
+  white-space: nowrap;      
+}
+
+/* tighten dash under T */
+.t-block {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  display: grid;
+  place-items: center;
+}
+
+.t-block .t {
+  width: 100%;
+  height: 100%;
+}
+
+.t-block .dash.under {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(var(--size) * var(--t-dash-width));
+  height: calc(var(--size) * var(--t-dash-thick));
+  bottom: calc(var(--size) * var(--t-dash-drop));
+  fill: currentColor;
+}
+
+.digit {
+  width: var(--size);
+  height: var(--size);
+  fill: currentColor;
+  margin: 0;
+  padding: 0;
+  margin-left: -40px;       
+}
+
+.digit:first-child,
+.t-block {
+  margin-left: 0;
+}
+
+/* dash element gets tighter spacing */
+.dash {
+  width: calc(var(--size) * 0.6);  
+  height: var(--size);
+  fill: currentColor;
+  margin: 0;
+  padding: 0;
+  margin-left: -55px;       
+  margin-right: -35px;      
+}
+
+.container {
+	position: fixed;
+	top: 60vh;
+	left: 0;
+	right: 0;
+	transform: translateY(-50%);
+	z-index: 500;
+}
+
+.graphics-group {
+	position: relative;
+	width: 100%;
+	height: var(--block-h);
+}
+
+.multi-color {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	z-index: 0;
+}
+
+#rect {
+    opacity: 0;
+}
+
+.multi-color rect:nth-child(1) { fill: var(--color-yellow); }
+.multi-color rect:nth-child(2) { fill: var(--color-orange); }
+.multi-color rect:nth-child(3) { fill: var(--color-red); }
+.multi-color rect:nth-child(4) { fill: var(--color-magenta); }
+.multi-color rect:nth-child(5) { fill: var(--color-purple); }
+
+.side-shape {
+	position: fixed;
+	top: calc(28vh + var(--block-h) / 2); 
+	right: 0;
+	transform: translateY(0) translateX(100px);
+	height: var(--block-h);
+	width: auto;
+	z-index: 1000;
+	pointer-events: none;
+}
+
+@supports (right: max(0px)) {
+	.side-shape {
+		right: max(-1px, 0px);
+	}
+}
+
+/* VHS logo in bottom left corner */
+.vhs-logo {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.vhs-logo svg {
+    width: 80px;
+    height: auto;
+}
+
+.oops-stack{
+  position: fixed;
+  bottom: 20px;
+  left: 110px;          
+  display: inline-grid;  
+  gap: 8px;
+  width: max-content;  
+  z-index: 1000;
+  color: var(--fg);
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(12px, 1.5vw, 18px);
+  line-height: 1;
+  align-items: stretch; 
+}
+
+.oops-stack .oops-shapes{
+  width: 100%;              
+  height: auto;
+  aspect-ratio: 350 / 12;   
+  display: block;
+}
+
+.oops-stack .oops-shapes path{ fill: currentColor; }
+
+.oops-stack .oops-text{
+  position: static;  
+  left: auto; bottom: auto; z-index: auto;
+  display: inline-block;
+}
+
+/* SVG in bottom right corner */
+.bottom-right-svg {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 120px;
+    height: 120px;
+    z-index: 1000;
+    fill: #000;
+    stroke: none;
+    overflow: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	:root {
+		--block-h: clamp(250px, 45vh, 450px);
+	}
+    
+    .bottom-right-svg {
+        width: 90px;
+        height: 90px;
+        bottom: 15px;
+        right: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+	:root {
+		--block-h: clamp(200px, 40vh, 400px);
+	}
+    
+    .bottom-right-svg {
+        width: 70px;
+        height: 70px;
+        bottom: 10px;
+        right: 10px;
+    }
+}
+    </style>
+</head>
+<body>
+	<!-- SVG sprite with digit symbols -->
+    <svg width="0" height="0" style="position:absolute;visibility:hidden" aria-hidden="true" focusable="false">
+    <!-- 4 -->
+    <symbol id="digit-4" viewBox="0 17.75 26.899999618530273 35.689998626708984">
+        <path d="M26.90 46.04L22.61 46.04L22.61 53.44L15.23 53.44L15.23 46.04L0 46.04L0 40.80L15.65 17.75L22.61 17.75L22.61 40.19L26.90 40.19L26.90 46.04M15.23 40.19L15.23 34.13Q15.23 33.28 15.27 32.10Q15.31 30.93 15.36 29.76Q15.41 28.59 15.47 27.67Q15.53 26.76 15.55 26.39L15.36 26.39Q14.89 27.39 14.38 28.33Q13.87 29.27 13.18 30.30L6.64 40.19L15.23 40.19Z"/>
+    </symbol>
+
+    <!-- 0 -->
+    <symbol id="digit-0" viewBox="0 17.190000534057617 24.950000762939453 36.73999786376953">
+        <path d="M24.95 35.60Q24.95 39.92 24.28 43.31Q23.61 46.70 22.13 49.07Q20.65 51.44 18.26 52.69Q15.87 53.93 12.45 53.93Q8.15 53.93 5.40 51.75Q2.64 49.56 1.32 45.45Q0 41.33 0 35.60Q0 29.81 1.21 25.70Q2.42 21.58 5.15 19.38Q7.89 17.19 12.45 17.19Q16.72 17.19 19.49 19.37Q22.27 21.56 23.61 25.67Q24.95 29.79 24.95 35.60M7.50 35.60Q7.50 39.67 7.95 42.40Q8.40 45.12 9.47 46.48Q10.55 47.85 12.45 47.85Q14.33 47.85 15.42 46.50Q16.50 45.14 16.97 42.42Q17.43 39.70 17.43 35.60Q17.43 31.52 16.97 28.78Q16.50 26.05 15.42 24.67Q14.33 23.29 12.45 23.29Q10.55 23.29 9.47 24.67Q8.40 26.05 7.95 28.78Q7.50 31.52 7.50 35.60Z"/>
+    </symbol>
+
+    <!-- T -->
+    <symbol id="digit-T" viewBox="0 17.75 26.95 35.689998626708984">
+        <path d="M17.26 53.44L9.69 53.44L9.69 24.05L0 24.05L0 17.75L26.95 17.75L26.95 24.05L17.26 24.05L17.26 53.44Z"/>
+    </symbol>
+
+    <!-- em dash -->
+    <symbol id="digit-dash" viewBox="0 0 50 20">
+        <rect x="0" y="0" width="32.5" height="10"/>
+    </symbol>
+    </svg>
+
+<!-- TÆKNI text in top left corner -->
+<div class="taekni-text">
+    TÆKNISKÓLINN 
+    <span class="tskoli-logo-inline">
+        <svg xmlns="http://www.w3.org/2000/svg" width="135" height="222" viewBox="0 0 135 222" version="1">
+            <path fill="#000" d="M26 2c-1 1-2 3-2 7 0 21 2 46 18 66 10 14 36 39 46 56 11 20 16 33 18 45 1 5 2 7 5 7 2 0 4-2 5-7 1-14 3-32-2-48-7-22-22-43-46-66C47 42 37 25 33 7c0-3 0-4-2-5-2-3-5-2-5 0 M134 34c-1-1-3-2-5 0l-2 5c-3 16-12 31-29 48 5 8 10 16 13 24l9-11c14-18 16-40 15-59l-1-7M55 148c-4 14-3 30-2 43 1 5 3 6 5 6s3-2 4-6a135 135 0 0 1 26-54l-17-20c-7 10-12 21-16 31M43 100C23 81 13 64 9 45c0-2 0-3-2-5s-5-1-6 0l-1 7c0 22 1 46 17 67l33 37c3-10 6-21 12-31l-19-20m46 67l-4-13c-7 8-12 17-16 27 8 14 11 24 13 34 1 4 2 7 5 7 2 0 4-2 5-8 1-14 2-32-3-47"/>
+        </svg>
+    </span>
+    <span class="copyright-symbol">©</span>
+</div>
+
+<!-- Circle Animation in top right corner -->
+<div class="circle-grids">
+<div class="circle-grid">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+<div class="circle-grid">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+<div class="circle-grid">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+<div class="circle-grid">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+</div>
+
+<!-- Compose T—404 -->
+	<div class="container">
+		<div class="graphics-group">
+			<svg class="multi-color" viewBox="0 0 100 500" preserveAspectRatio="none" aria-hidden="true">
+				<rect id="rect" x="0" y="0" width="100" height="100"></rect>
+				<rect id="rect" x="0" y="100" width="100" height="100"></rect>
+				<rect id="rect" x="0" y="200" width="100" height="100"></rect>
+				<rect id="rect" x="0" y="300" width="100" height="100"></rect>
+				<rect id="rect" x="0" y="400" width="100" height="100"></rect>
+			</svg>
+			
+			<div class="error-text">Error HTTP Not Found</div>
+			<main class="wrap">
+			  <div class="t-block">
+			    <svg class="digit t"><use href="#digit-T"/></svg>
+			  </div>
+			  <svg class="dash"><use href="#digit-dash"/></svg>
+			  <svg class="digit"><use href="#digit-4"/></svg>
+			  <svg class="digit"><use href="#digit-0"/></svg>
+			  <svg class="digit"><use href="#digit-4"/></svg>
+			</main>
+		</div>
+	</div>
+
+	<svg class="side-shape" viewBox="0 0 6 6" preserveAspectRatio="none" aria-hidden="true">
+		<path d="M6 6 L6 0 C 1 3 1 3 6 6" fill="#000000"/>
+	</svg>
+
+    <div class="vhs-logo">
+        <svg version="1.1" viewBox="0 0 458.62 229.45" xmlns="http://www.w3.org/2000/svg">
+            <path id="vhs" d="m4.0733 225.38h450.47v-221.3h-450.47z" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="8.1467"/>
+            <path id="vhs" d="m122.82 47.875c1.9272-9.427-0.364-21.25-0.937-24.427l26.042 0.107-36.875 157.24c-2.7604 7.2917 0.156 15.26 2.8125 25.677h-43.698l-46.875-183.07 43.437 0.05 32.604 126.67 23.489-102.24"/>
+            <path id="vhs" d="m284.54 206.47v-182.86l-39.792-0.156v113.91c-0.107 2.448-0.05 2.3959-2.6562 2.3959l-36.927 0.05c-2.5-0.05-2.6563-0.156-2.7084-2.448v-113.91h-42.292v122.34l-8.1251 10.99h8.1251v49.688h42.292v-47.5c0.107-1.9792 0.469-2.1876 2.7084-2.1355 0 0 8.75-0.05 14.375-0.05 2.9688 0.05 7.1355-0.833 9.5834-1.7708 3.6978-1.4063 9.8958-4.1667 13.021-5.625 1.1453-0.521 2.6042-0.469 2.6042 1.3014v55.781h39.792"/>
+            <path id="vhs" d="m303.97 190.17c19.167 0 48.177-0.156 60.886-0.156 12.187 0 28.021-5.3126 28.021-25.469 0-11.562-9.1667-20.833-24.167-25.365l-31.979-9.7396c-22.083-6.6666-38.385-22.292-38.385-49.167 0-39.063 38.646-56.51 69.948-56.458 16.719 0.05 42.708-0.05 64.583 0l-6.823 15.938h-46.354c-21.458 0-40.469 8.4896-40.156 30.417 0.208 14.063 6.4584 21.771 26.406 26.979l25.156 7.0312c24.167 6.4584 39.687 24.427 39.687 48.542 0 38.854-36.458 53.542-62.031 53.542h-58.75l-6.0417-16.094"/>
+        </svg>
+    </div>
+
+<div class="oops-stack">
+  <svg class="oops-shapes" xmlns="http://www.w3.org/2000/svg"
+       viewBox="-175 0 350 12" aria-hidden="true">
+    <g transform="translate(-148.4615384615, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(-120.9230769231, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(-93.3846153846, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(-65.8461538462, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(-38.3076923077, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(-10.7692307692, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(16.7692307692, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(44.3076923077, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(71.8461538462, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(99.3846153846, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(126.9230769231, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+    <g transform="translate(154.4615384615, 0)">
+      <path id="path-1" d="M -1 4 L -5 4 L -5 8 L -1 8 L -1 4" fill="#000000"/>
+      <path id="path-2" d="M -3 1 L -7 6 L -3 11 L 1 6 L -3 1" fill="#000000"/>
+    </g>
+  </svg>
+
+  <span class="oops-text">OOPS! LOOKS LIKE YOU RAN INTO SOME TROUBLE.</span>
+</div>
+
+<!-- Bottom-right motion path: black circular track + your shape as the mover -->
+<svg class="bottom-right-svg" xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 420 420" preserveAspectRatio="xMidYMid meet">
+
+  <circle id="orbitBR" cx="210" cy="210" r="140" fill="none" stroke="#000" stroke-width="8"/>
+
+  <g id="mover" style="transform-box: fill-box; transform-origin: center;">
+    <g transform="scale(5.5)">
+      <polygon
+        points="0,-14 4.1,-4.3 13.3,-4.3 6.0,1.6 8.5,11 0,5.2 -8.5,11 -6.0,1.6 -13.3,-4.3 -4.1,-4.3"
+        fill="#000"/>
+    </g>
+  </g>
+</svg>
+
+<script type="module">
+import { animate, svg, stagger, createTimeline } from 'https://cdn.jsdelivr.net/npm/animejs@4.1.3/+esm';
+
+//Colored rects 
+const rectTargets  = document.querySelectorAll('#rect');   
+const rectDuration = 2500;
+const rectStagger  = 500;
+const rectTotal    = rectDuration + (rectTargets.length - 1) * rectStagger;
+
+const rectAnim = animate('#rect', {
+  opacity: 1,
+  duration: rectDuration,
+  easing: 'easeInOutQuad',
+  delay: stagger(rectStagger),
+  translateX: [-100, 0],
+  autoplay: false
+});
+
+// Circle grid wobble thing
+const circlesAnim = animate('.circle', {
+  scale: 2,
+  loop: true,
+  ease: 'inElastic',
+  alternate: true,
+  delay: stagger(120),
+  autoplay: false
+});
+
+//VHS logo stroke draw 
+const vhsAnim = animate(svg.createDrawable('#vhs'), {
+  draw: ['0 0', '0 1', '1 1'],
+  ease: 'inOutQuad',
+  duration: 8000,
+  delay: stagger(100),
+  loop: true,
+  autoplay: false
+});
+
+const $path1Elements = document.querySelectorAll('#path-1');
+const $path2Elements = document.querySelectorAll('#path-2');
+// hide targets
+$path2Elements.forEach(p => (p.style.display = 'none'));
+
+const morphAnims = [];
+$path1Elements.forEach((p1, i) => {
+  const p2 = $path2Elements[i];
+  if (!p2) return;
+  morphAnims.push(
+    animate(p1, {
+      d: svg.morphTo(p2, 6),
+      duration: 4000,
+      easing: 'inOutElastic',
+      alternate: true,
+      loop: true,
+      delay: i * 200,
+      autoplay: false
+    })
+  );
+});
+
+const motion = svg.createMotionPath('#orbitBR');
+const moverAnim = animate('#mover', {
+  ...motion,
+  duration: 5000,
+  ease: 'linear',
+  loop: true,
+  autoplay: false,
+  easing: 'linear'
+});
+
+// ---- Timeline: rects first, then everything else ----
+const tl = createTimeline({ autoplay: true });
+
+tl.sync(rectAnim, 0);
+
+tl.sync(circlesAnim, rectTotal);
+tl.sync(vhsAnim,     rectTotal);
+tl.sync(moverAnim,   rectTotal);
+morphAnims.forEach(a => tl.sync(a, rectTotal));
+
+// --- Interactive: reverse on mousedown, then return ---
+const rects = document.querySelectorAll('.multi-color #rect');
+
+rects.forEach((el) => {
+  el.style.cursor = 'pointer';
+
+  const run = () => {
+    if (el.__busy) return; 
+    el.__busy = true;
+
+    animate(el, {
+      keyframes: [
+        { opacity: 0, translateX: -100, duration: 350, easing: 'easeInOutQuad' },
+        { opacity: 1, translateX: 0,    duration: 350, easing: 'easeInOutQuad' }
+      ],
+      complete() { el.__busy = false; }
+    });
+  };
+
+  el.addEventListener('mousedown', run);
+});
+</script>
+
+</body>
+</html>

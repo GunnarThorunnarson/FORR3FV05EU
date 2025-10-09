@@ -1,0 +1,58 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Beam morph animation
+    anime({
+        targets: '#XMLID_57_',
+        d: [
+            { value: 'M365.477,362.748c-4.489-4.153-52.045-7.407-110.048-7.407c-58.738,0-106.763,3.346-110.201,7.57l72.91-234.523h74.481L365.477,362.748z' },
+            { value: 'M365.477,362.748c-10-10-52.045-7.407-110.048-7.407c-58.738,0-106.763,10-110.201,7.57l72.91-234.523h74.481L365.477,362.748z' },
+            { value: 'M365.477,362.748c-4.489-4.153-52.045-7.407-110.048-7.407c-58.738,0-106.763,3.346-110.201,7.57l72.91-234.523h74.481L365.477,362.748z' }
+        ],
+        duration: 2000,
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine'
+    });
+
+    // Spaceship timeline animation
+    anime.timeline({
+        targets: '#XMLID_6_',
+        loop: true,
+        easing: 'easeInOutSine'
+    })
+    .add({
+        rotate: 3,
+        duration: 1000
+    })
+    .add({
+        translateY: -5,
+        duration: 1000
+    })
+    .add({
+        rotate: 0,
+        duration: 1000
+    })
+    .add({
+        translateY: 0,
+        duration: 1000
+    });
+
+    // 404 numbers animation
+    anime({
+        targets: ['#XMLID_40_', '#XMLID_49_', '#XMLID_52_'],
+        loop: true,
+        translateY: [
+            { value: -10, duration: 1500 },
+            { value: 0, duration: 2000 }
+        ],
+        easing: 'easeInOutSine'
+    })
+
+    anime({
+        target: 'XMLID_67_',
+        loop: true,
+        scale: [
+            { value: 1.05, duration: 1500 },
+            { value: 1, duration: 2000 }
+        ],
+    })
+});

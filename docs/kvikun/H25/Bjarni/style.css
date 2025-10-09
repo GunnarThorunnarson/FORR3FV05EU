@@ -1,0 +1,80 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: linear-gradient(180deg, #7F2D0F 0%, #D8572A 50%, #FFB563 100%);
+}
+
+
+/* Logo-kassi fyrir tskoli.svg... efst til hægri. */
+.tsk-logo{
+  position: absolute;   /* miðast við body { position: relative; }) */
+  top: 2rem;
+  right: 8rem;
+  width: 180px;         
+  max-width: 24vw;      
+  z-index: 10;          
+}
+
+.tsk-logo svg{
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+
+
+svg #backHomeText {    
+  cursor: pointer;     
+  user-select: none;
+}
+
+
+
+
+#tumbleweed{
+  position:absolute;
+  top:0;
+  left:0;
+  width:120px;
+  pointer-events:none;
+  transform-origin:50% 50%;
+  z-index:3;
+  opacity:0;           /* byrja ósýnilegur */
+}
+
+
+
+#tumbleweed img{
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* === overrides added === */
+svg #backHomeText { opacity: 0; cursor: pointer; user-select: none; }
+
+/* Tumbleweed bottom-left */
+#tumbleweed{
+top:0;
+left:0;
+
+  position:absolute;
+  left:0;
+  
+  width:120px;
+  pointer-events:none;
+  transform-origin:50% 50%;
+  z-index:9;
+}
+
+#tumbleweed img{ display:block; width:100%; height:auto; }

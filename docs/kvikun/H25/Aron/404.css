@@ -1,0 +1,110 @@
+#image-svg {
+    width: 10%;
+    height: auto;
+    margin: auto;
+}
+
+/* Base styles */
+body {
+    background-color: #081224;
+    margin: auto;
+    padding: 0 2%;
+    max-width: 100%;
+}
+
+.svg-container {
+    position: relative;
+    width: 100%;    /* Default full width */
+    height: auto;
+    margin: auto;
+}
+
+/* Mobile - extra small screens */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 0 1%;  /* Reduced padding for very small screens */
+    }
+    .svg-container {
+        width: 98%;    /* Almost full width on mobile */
+        max-width: none;  /* Remove max-width constraint */
+    }
+}
+
+/* Mobile first - small screens */
+@media screen and (min-width: 480px) {
+    body {
+        padding: 0 5%;
+    }
+}
+
+/* Tablet and up - progressive padding increase */
+@media screen and (min-width: 768px) {
+    body {
+        padding: 0 10%;
+    }
+    .svg-container {
+        width: 100%;
+    }
+}
+
+/* Desktop */
+@media screen and (min-width: 1024px) {
+    body {
+        padding: 0 15%;
+    }
+}
+
+/* Large screens */
+@media screen and (min-width: 1440px) {
+    body {
+        padding: 0 20%;
+        max-width: 1800px; /* Prevent excessive stretching */
+        margin: 0 auto;
+    }
+    .svg-container {
+        width: 100%;
+        max-width: 1200px;
+    }
+}
+
+#geisli {
+    z-index: 2;
+}
+
+#XMLID_6_ {
+    z-index: 1;
+    transform-origin: 253.08px 111.87px;
+}
+
+.school-logo {
+    position: absolute;
+    width: 30%;      /* Take full width of parent */
+    height: 30%;     /* Take full height of parent */
+    left: 40.5%;    
+    top: 31%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* Remove clamp-based width controls as they work against SVG scaling */
+@media screen and (max-width: 480px) {
+    .svg-container {
+        width: 95%;  /* Control container size instead */
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .svg-container {
+        width: 80%;
+        max-width: 1200px;
+    }
+}
+
+.emoji-spaceship {
+    position: absolute;
+    font-size: 1rem;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}

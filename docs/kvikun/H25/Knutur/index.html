@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>404 — Page Not Found</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<style>
+  :root{
+    --bg:#05060a;
+    --text:#e8f1ff;
+    --accent:#00faff;
+    --accent2:#00ccff;
+  }
+
+  html,body{height:100%}
+  body{
+    margin:0; display:grid; place-items:center; padding:24px;
+    color:var(--text); font-family:ui-sans-serif,system-ui,Roboto,Arial;
+    background:linear-gradient(180deg, #02030a 0%, #05060a 100%);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .particles {
+    position:fixed; inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+  }
+  .particle {
+    position:absolute;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(0,250,255,.8), rgba(0,250,255,0));
+    filter: blur(6px);
+    opacity:0;
+    animation: float 12s linear infinite;
+  }
+  @keyframes float {
+    0%   { transform: translate(0,0) scale(0.6); opacity:0; }
+    10%  { opacity:.8; }
+    50%  { transform: translate(var(--dx),var(--dy)) scale(1); opacity:.6; }
+    90%  { opacity:.8; }
+    100% { transform: translate(0,0) scale(0.6); opacity:0; }
+  }
+
+  .shell{
+    position:relative;
+    z-index:1; /* above particles */
+    max-width:1100px; width:100%;
+    display:grid; grid-template-columns:1.1fr 1fr; gap:28px; align-items:center;
+  }
+  @media (max-width:960px){ .shell{ grid-template-columns:1fr } }
+
+  .headline{
+    margin:0;
+    font-size:clamp(44px,5vw,72px);
+    font-weight:800;
+    background:linear-gradient(270deg,var(--accent),var(--accent2),var(--accent));
+    background-size:600% 600%;
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation: plasmaText 6s ease infinite, glowPulse 2.4s ease-in-out infinite;
+    text-shadow: 0 0 12px rgba(0, 250, 255, .3);
+  }
+  @keyframes plasmaText{
+    0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+  }
+  @keyframes glowPulse{
+    0%,100%{ text-shadow:0 0 10px rgba(0,250,255,.22), 0 0 22px rgba(0,250,255,.16) }
+    50%{ text-shadow:0 0 14px rgba(0,250,255,.35), 0 0 32px rgba(0,250,255,.22) }
+  }
+
+  .viz{
+    background: rgba(255,255,255,.02);
+    border-radius: 18px;
+    padding:8px;
+    display:grid; place-items:center;
+  }
+  .svg-container{
+    position:relative;
+    width:100%;
+    aspect-ratio:200/250;
+    max-width:420px;
+    user-select:none;
+  }
+  svg{ width:100%; height:auto; display:block }
+  #thund{
+    position:absolute; font-size:2rem; line-height:1;
+    filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 16px var(--accent2));
+    animation:flicker .15s infinite;
+  }
+  path{
+    fill:none; stroke:var(--accent); stroke-width:2.5;
+    filter:url(#glow); animation:flicker .15s infinite;
+  }
+  @keyframes flicker{
+    0%{opacity:1;stroke-width:2.4} 50%{opacity:.9;stroke-width:2.7} 100%{opacity:1;stroke-width:2.5}
+  }
+
+  .spark{
+    position:absolute; width:6px; height:6px; border-radius:50%;
+    background: radial-gradient(circle, #e6ffff, #00faff 45%, transparent 70%);
+    pointer-events:none; filter: blur(.3px);
+  }
+
+  .flash{
+    position:fixed; inset:0; pointer-events:none; opacity:0; z-index:9999;
+    --fx:50%; --fy:50%;
+    background: radial-gradient(1200px 1200px at var(--fx) var(--fy),rgba(255,255,255,1) 0%,rgba(255,255,255,.95) 25%,rgba(255,255,255,.8) 45%,rgba(255,255,255,.25) 70%,rgba(255,255,255,0) 100%);
+    mix-blend-mode: screen;
+  }
+  .flash::after{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(closest-side at var(--fx) var(--fy),rgba(255,255,255,.9) 0%,rgba(255,255,255,.6) 20%,rgba(255,255,255,0) 60%);
+    transform:scale(.7); opacity:0;
+  }
+  .flash.show{ animation: flashbang 800ms cubic-bezier(.2,.7,.2,1) forwards }
+  .flash.show::after{ animation: ring 800ms cubic-bezier(.2,.7,.2,1) forwards }
+  @keyframes flashbang{0%{opacity:0;filter:brightness(1)}10%{opacity:1;filter:brightness(1.3)}40%{opacity:.95;filter:brightness(1.5)}100%{opacity:0;filter:brightness(1)}}
+  @keyframes ring{0%{opacity:0;transform:scale(.7)}20%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.6)}}
+</style>
+</head>
+<body>
+
+  <div class="particles" id="particles"></div>
+
+  <main class="shell">
+    <section>
+      <h1 class="headline">404 Page Not Found</h1>
+    </section>
+
+    <aside class="viz">
+      <div class="svg-container" id="stage">
+  <!-- addað einhverju og það teknar línuna af myndinni -->
+        <div id="thund"></div>
+        <svg viewBox="0 0 200 250" aria-hidden="true">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <path id="ff1" d="M30.8,53.4c-1.2,2-1.4,3.7-1.5,7.2c-0.1,21.5,1.4,45.9,17.3,66.3c10.6,13.7,36.9,39.5,46,55.7
+            c11.6,20.7,16.7,33.7,18.9,45.4c0.8,4.5,1.8,6.9,4.4,6.9c2.2,0,4.2-1.8,4.9-7.4c1.6-13.9,2.7-31.8-2.2-47.5
+            c-6.8-21.7-21.4-42.8-46.1-66.4c-20.2-19.3-30.8-36.3-34.2-55c-0.4-2.3-0.5-3.5-1.9-5.2C34.4,50.8,31.6,52.1,30.8,53.4"/>
+          <path id="ff2" d="M163.5,47.6c1.1,1.8,1.3,3.3,1.3,6.4c0.1,19.3-1.3,41.1-15.5,59.5c-9.5,12.3-33.1,35.4-41.3,49.9
+            c-10.4,18.5-15,30.2-17,40.8c-0.8,4-1.6,6.2-4,6.2c-1.9,0-3.8-1.6-4.4-6.6c-1.4-12.5-2.4-28.6,1.9-42.6
+            c6.1-19.5,19.2-38.4,41.3-59.6c18.1-17.3,27.6-32.6,30.6-49.4c0.4-2,0.5-3.1,1.7-4.6C160.2,45.2,162.8,46.4,163.5,47.6"/>
+          <path id="ff3" d="M95.3,138.1c-4.7,7.7-8.3,15.3-10.7,23c-0.8,2.4-1.3,4.9-1.8,7.5c4,5,7.5,9.8,9.8,14c1.1,2,2.1,3.9,3.1,5.7
+            c2.7-6.9,6.6-14.9,12.2-24.9c0.6-1.1,1.3-2.2,2.1-3.4C106.1,152.8,101.2,145.5,95.3,138.1"/>
+          <path id="ff4" d="M55,14.7c-1.2,2-1.4,3.7-1.5,7.2C53.5,43.4,55,67.8,70.9,88.2c10.6,13.7,36.9,39.5,46,55.7
+            c11.6,20.7,16.7,33.7,18.9,45.4c0.8,4.5,1.8,6.9,4.4,6.9c2.2,0,4.2-1.8,4.9-7.4c1.6-13.9,2.7-31.8-2.2-47.5
+            c-6.8-21.7-21.4-42.8-46.1-66.4c-20.2-19.3-30.8-36.3-34.2-55c-0.4-2.3-0.5-3.5-1.9-5.2C58.7,12.1,55.8,13.4,55,14.7"/>
+        </svg>
+      </div>
+    </aside>
+  </main>
+
+  <div class="flash" id="flash"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script>
+  const container = document.getElementById('particles');
+  const colors = [
+    'radial-gradient(circle, rgba(0,250,255,.8), rgba(0,250,255,0))',
+    'radial-gradient(circle, rgba(180,0,255,.8), rgba(180,0,255,0))',
+    'radial-gradient(circle, rgba(255,0,120,.7), rgba(255,0,120,0))'
+  ];
+
+  function spawnParticle(x = null, y = null, burst = false){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*60+40;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+
+    if (x === null || y === null) {
+      // normal background floating
+      p.style.left = Math.random()*100+'%';
+      p.style.top  = Math.random()*100+'%';
+      p.style.setProperty('--dx',(Math.random()*200-100)+'px');
+      p.style.setProperty('--dy',(Math.random()*200-100)+'px');
+    } else {
+      // burst mode: spawn at click coords
+      p.style.left = x+'px';
+      p.style.top  = y+'px';
+      const angle = Math.random() * Math.PI * 2;
+      const dist  = Math.random() * 250 + 50;
+      const dx = Math.cos(angle)*dist;
+      const dy = Math.sin(angle)*dist;
+      p.style.setProperty('--dx', dx+'px');
+      p.style.setProperty('--dy', dy+'px');
+      p.style.animationDuration = (6+Math.random()*4)+'s';
+    }
+
+    container.appendChild(p);
+    setTimeout(()=>p.remove(),12000);
+  }
+
+  setInterval(()=>spawnParticle(), 1200);
+  for(let i=0;i<10;i++) spawnParticle();
+
+
+  document.addEventListener('click', (e)=>{
+    for(let i=0; i<10; i++) {
+      spawnParticle(e.clientX, e.clientY, true);
+    }
+  });
+
+
+
+    const DURATION = 3000;
+    const paths = ['#ff1','#ff2','#ff3','#ff4'];
+    const thund = document.querySelector('#thund');
+    const stage = document.getElementById('stage');
+    const flashEl = document.getElementById('flash');
+    paths.forEach(id=>{
+      const p=document.querySelector(id);
+      const len=p.getTotalLength();
+      p.setAttribute('stroke-dasharray',len);
+      p.setAttribute('stroke-dashoffset',len);
+      anime({ targets:p, strokeDashoffset:[len,0], duration:DURATION, easing:'linear' });
+    });
+    function getThunderCenter(){
+      const tr = thund.getBoundingClientRect();
+      const pr = stage.getBoundingClientRect();
+      return { x: tr.left - pr.left + tr.width/2, y: tr.top - pr.top + tr.height/2 };
+    }
+    function spawnSpark(){
+      const {x,y} = getThunderCenter();
+      const s = document.createElement('div');
+      s.className = 'spark';
+      s.style.left = (x + (Math.random()*12-6))+'px';
+      s.style.top  = (y + (Math.random()*12-6))+'px';
+      stage.appendChild(s);
+      const dx=(Math.random()*18-9), dy=(Math.random()*18-9);
+      s.animate([{transform:'translate(0,0) scale(1)',opacity:1},
+                 {transform:`translate(${dx}px,${dy}px) scale(.4)`,opacity:0}],
+                 {duration:500,easing:'ease-out'}).finished.then(()=>s.remove());
+    }
+    const pathMotion = anime.path(paths[0]);
+    let sparkTimer;
+    anime({
+      targets: thund,
+      translateX: pathMotion('x'),
+      translateY: pathMotion('y'),
+      rotate: pathMotion('angle'),
+      duration: DURATION,
+      easing: 'linear',
+      begin: ()=>{ sparkTimer = setInterval(spawnSpark, 60); },
+      complete: ()=>{ clearInterval(sparkTimer); }
+    });
+    function triggerFlash(e){
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      flashEl.style.setProperty('--fx', x + '%');
+      flashEl.style.setProperty('--fy', y + '%');
+      flashEl.classList.remove('show'); void flashEl.offsetWidth;
+      flashEl.classList.add('show');
+    }
+    stage.addEventListener('click', triggerFlash);
+  </script>
+</body>
+</html>
