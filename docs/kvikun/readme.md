@@ -4,7 +4,6 @@ _nemaverkefni: anime.js + SVG_
 
 - [Aron](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Aron/index.html)
 - [Bjarni](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Bjarni/index.html)
-- [Emil](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Emil/index.html)
 - [Hörður](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Hordur/index.html)
 - [Ingimar](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Ingimar/index.html)
 - [Knutur](https://gunnarthorunnarson.github.io/FORR3FV05EU/kvikun/H25/Knutur/index.html)
