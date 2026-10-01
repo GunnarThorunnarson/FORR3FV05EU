@@ -1,5 +1,8 @@
 ## Lokaverkefni hjá nemendum
 
+### Haust 2025
+Væntanlegt
+
 ### Vor 2025
 
 - [Wizard Fight](https://github.com/Belistov/wizard-fight) _Turn Based RPG milli 2 galdrakarla (PvE). Notast er við Hand tracking til að áhveða hvað blái galdrakarlinn gerir._
