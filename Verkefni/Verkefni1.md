@@ -1,5 +1,5 @@
 ## Verkefni 1
-- 15% af heildareinkunn
+- 20% af heildareinkunn
 - Einstaklingsverkefni
 - [SVG](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/SVG) og [kvikun](https://github.com/GunnarThorunnarson/FORR3FV05EU/wiki/Kvikun)
 
