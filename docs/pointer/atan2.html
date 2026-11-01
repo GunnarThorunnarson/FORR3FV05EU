@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Einfalt Math.atan2 Dæmi</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            /* Kemur í veg fyrir skrun (scrolling) þegar dregið er á snertiskjá */
+            touch-action: none; 
+        }
+        #formula-container {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        #formula {
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-top: 10px;
+            color: #333;
+        }
+        canvas {
+            border: 2px solid #ccc;
+            background-color: #fff;
+            border-radius: 8px;
+            cursor: grab;
+            max-width: 100%;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="formula-container">
+        <span id="formula">Math.atan2(ΔY, ΔX) * (180 / Math.PI) = 0°</span>
+    </div>
+
+    <!-- Einfaldur teikniflötur -->
+    <canvas id="mathCanvas" width="500" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('mathCanvas');
+        const ctx = canvas.getContext('2d');
+        const formulaText = document.getElementById('formula');
+
+        // Byrjunarstaðsetningar fyrir punktana tvo (fingurna)
+        let p1 = { x: 150, y: 250 };
+        let p2 = { x: 350, y: 100 };
+        
+        let activePoint = null; // Geymir hvaða punktur er verið að draga
+        const pointRadius = 15; // Stærð punktanna svo auðvelt sé að snerta þá
+
+        // Hjálparfall til að fá rétt hnit miðað við staðsetningu canvas
+        function getPointerPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            // Skölum hnitin ef canvasinn hefur verið smækkaður af CSS (t.d. í síma)
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        // --- Atburðir til að draga (Mouse & Touch sameinað með Pointer API) ---
+        
+        canvas.addEventListener('pointerdown', (e) => {
+            canvas.setPointerCapture(e.pointerId);
+            const pos = getPointerPos(e);
+            
+            // Athugum hvort smellt var á p1 eða p2
+            const dist1 = Math.hypot(pos.x - p1.x, pos.y - p1.y);
+            const dist2 = Math.hypot(pos.x - p2.x, pos.y - p2.y);
+
+            if (dist1 <= pointRadius + 10) activePoint = p1;
+            else if (dist2 <= pointRadius + 10) activePoint = p2;
+        });
+
+        canvas.addEventListener('pointermove', (e) => {
+            if (!activePoint) return;
+            const pos = getPointerPos(e);
+            activePoint.x = pos.x;
+            activePoint.y = pos.y;
+            draw(); // Endurteiknum skjáinn þegar punktur færist
+        });
+
+        canvas.addEventListener('pointerup', () => activePoint = null);
+        canvas.addEventListener('pointercancel', () => activePoint = null);
+
+        // --- Teiknifall ---
+
+        function draw() {
+            // Hreinsa teikniflötinn
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Reikna mismun
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            
+            // Reikna horn (úr radíönum í gráður)
+            const angleRad = Math.atan2(dy, dx);
+            const angleDeg = angleRad * (180 / Math.PI);
+
+            // 1. Uppfæra textann uppi
+            formulaText.innerText = `Math.atan2(${Math.round(dy)}, ${Math.round(dx)}) * 180/π = ${Math.round(angleDeg)}°`;
+
+            // 2. Teikna þríhyrning
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);     // Byrja í p1
+            ctx.lineTo(p2.x, p1.y);     // Lárétt lína (ΔX)
+            ctx.lineTo(p2.x, p2.y);     // Lóðrétt lína (ΔY)
+            ctx.closePath();            // Langhlið aftur í p1
+            
+            ctx.strokeStyle = "#888";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
+            ctx.fill();
+
+            // 3. Teikna sérstakar lituðu línur fyrir ΔX og ΔY
+            // ΔX (Blá)
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p1.y);
+            ctx.strokeStyle = "blue";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // ΔY (Rauð)
+            ctx.beginPath();
+            ctx.moveTo(p2.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = "red";
+            ctx.stroke();
+
+            // 4. Teikna textamerkingar fyrir ΔX og ΔY
+            ctx.font = "16px sans-serif";
+            
+            // Texti fyrir ΔX
+            ctx.fillStyle = "blue";
+            ctx.textAlign = "center";
+            // Setjum textann aðeins fyrir ofan eða neðan línuna eftir stefnu
+            ctx.fillText(`ΔX = ${Math.round(dx)}`, p1.x + dx/2, p1.y + (dy > 0 ? -10 : 20));
+
+            // Texti fyrir ΔY
+            ctx.fillStyle = "red";
+            ctx.textAlign = "left";
+            // Setjum textann aðeins til hliðar við línuna eftir stefnu
+            ctx.fillText(`ΔY = ${Math.round(dy)}`, p2.x + (dx > 0 ? 10 : -60), p1.y + dy/2);
+
+            // 5. Teikna punktana (Fingurna tvo)
+            ctx.fillStyle = "#10b981"; // Grænn litur
+            
+            // Punktur 1
+            ctx.beginPath();
+            ctx.arc(p1.x, p1.y, pointRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Punktur 2
+            ctx.beginPath();
+            ctx.arc(p2.x, p2.y, pointRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Skrifa "P1" og "P2" inní punktana
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("1", p1.x, p1.y);
+            ctx.fillText("2", p2.x, p2.y);
+        }
+
+        // Teikna fyrstu myndina þegar síðan hleðst
+        draw();
+
+    </script>
+</body>
+</html>
