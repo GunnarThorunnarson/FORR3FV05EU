@@ -10,13 +10,16 @@
             margin: 0 auto;
         }
         rect {
+            /* Þetta er raunverulegur snúningsás ferningsins. 
+            center þýðir að ferningurinn snýst alltaf um sinn eigin miðpunkt — óháð því hvar á skjánum fingurnir eru. 
+            */
             transform-origin: center;
             transition: transform 0.1s;
         }
     </style>
 </head>
 <body>
-<p>notaðu tvo fingur til að snúa ferning á svæðinu, fyrri fingur er origin sá síðar snýr.</p>
+<p>notaðu tvo fingur til að snúa ferning á svæðinu, fyrri fingur er viðmiðið sem hornið er mælt frá.</p>
 <svg id="svaedi" width="400" height="400" style="border:2px solid black">
     <rect id="ferningur" x="100" y="100" width="200" height="200" fill="red"/>
 </svg>
@@ -29,7 +32,7 @@
     svaedi.addEventListener('touchstart', e => {
         // ef tveir fingur eru á skjánum og hornið milli þeirra er ekki skilgreint
         if (e.touches.length === 2 && byrjunarHorn == undefined) {
-           // Reiknar út hornið (gráðurnar) á milli fingra (x,y hnita).
+           // Math.atan2(y, x) reiknar hornið á vigrinum frá fingri 2 til fingurs 1 
            // Math.atan2 skilar horninu í radíönum svo við þurfum að margfalda með (180 / Math.PI) til að fá gráður.
            byrjunarHorn = Math.atan2(e.touches[0].clientY - e.touches[1].clientY, e.touches[0].clientX - e.touches[1].clientX) * (180 / Math.PI);
            console.log(byrjunarHorn);
