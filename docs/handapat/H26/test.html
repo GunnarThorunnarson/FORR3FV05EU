@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaPipe + Three.js AR með skugga og staðsetningu</title>
+    <title>WebXR AR með Hit Test og Reticle</title>
     <style>
         body {
             margin: 0;
@@ -11,187 +11,153 @@
             background: black;
             font-family: sans-serif;
         }
-        #webcam {
+        #ar-button {
             position: absolute;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: 1;
-        }
-        #three-canvas {
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-            z-index: 2;
-        }
-        #ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 3;
-            display: flex;
-            gap: 10px;
-        }
-        .btn, #loading {
-            background: rgba(0,0,0,0.7);
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: #3b82f6;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 30px;
             border: none;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .btn:active { background: rgba(50,50,50,0.9); }
     </style>
 </head>
 <body>
 
-    <div id="loading">Hleður MediaPipe og myndavél...</div>
-    <div id="ui" style="display: none;">
-        <button id="placeBtn" class="btn">Festa / Læsa staðsetningu</button>
-    </div>
-
-    <video id="webcam" autoplay playsinline muted></video>
-    <canvas id="three-canvas"></canvas>
+    <button id="ar-button">Byrja AR</button>
 
     <script type="importmap">
         {
           "imports": {
             "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm"
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
           }
         }
     </script>
 
     <script type="module">
         import * as THREE from 'three';
-        import { HandLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+        import { ARButton } from 'three/addons/webxr/ARButton.js';
 
-        let handLandmarker;
-        let video = document.getElementById('webcam');
-        let cube, plane, scene, camera, renderer;
-        let lastVideoTime = -1;
-        let isLocked = false; // Segir til um hvort teningurinn sé fastur eða fylgi fingri
+        let camera, scene, renderer;
+        let controller;
+        let cube, reticle;
+        let hitTestSource = null;
+        let hitTestSourceRequested = false;
 
-        async function init() {
-            // 1. Stilla Three.js senu og virkja skugga
+        init();
+
+        function init() {
+            const container = document.createElement('div');
+            document.body.appendChild(container);
+
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            renderer = new THREE.WebGLRenderer({ 
-                canvas: document.getElementById('three-canvas'), 
-                alpha: true 
-            });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true; // Virkja skugga
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            // 2. Bæta við lýsingu sem kastar skugga
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+            // Lýsing
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
             dirLight.position.set(5, 10, 5);
             dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 1024;
-            dirLight.shadow.mapSize.height = 1024;
             scene.add(dirLight);
 
-            // 3. Bæta við gólffleti (Plane) til að taka við skugganum
-            const planeGeometry = new THREE.PlaneGeometry(20, 20);
-            const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.4 }); // Ósýnilegt nema skuggar sjáist
-            plane = new THREE.Mesh(planeGeometry, planeMaterial);
-            plane.rotation.x = -Math.PI / 2;
-            plane.position.y = -1.5;
-            plane.receiveShadow = true;
-            scene.add(plane);
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.xr.enabled = true;
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
 
-            // 4. Bæta við teningi sem kastar skugga
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            // Notum MeshStandardMaterial til að ljós og skuggar hafi áhrif á hann
+            // AR Búnaður
+            document.body.appendChild(ARButton.createButton(renderer, { 
+                requiredFeatures: ['hit-test'] 
+            }));
+
+            // Búa til sjónrænan vísi (reticle) sem sýnir hvar yfirborðið finnst
+            reticle = new THREE.Mesh(
+                new THREE.RingGeometry(0.1, 0.15, 32).rotateX(-Math.PI / 2),
+                new THREE.MeshBasicMaterial({ color: 0xffffff })
+            );
+            reticle.matrixAutoUpdate = false;
+            reticle.visible = false;
+            scene.add(reticle);
+
+            // Teningur
+            const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
             const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3 });
             cube = new THREE.Mesh(geometry, material);
             cube.castShadow = true;
+            cube.visible = false;
             scene.add(cube);
-            
-            camera.position.z = 5;
 
-            // 5. Frumstilla MediaPipe
-            const vision = await FilesetResolver.forVisionTasks(
-                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
-            );
-            
-            handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                baseOptions: {
-                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-                    delegate: "GPU"
-                },
-                runningMode: "VIDEO",
-                numHands: 1
-            });
+            // Stýring / Smellur á skjá í AR
+            controller = renderer.xr.getController(0);
+            controller.addEventListener('select', onSelect);
+            scene.add(controller);
 
-            // 6. Ræsa myndavél
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment" } 
-                });
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", () => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('ui').style.display = 'flex';
-                    predictWebcam();
-                });
-            } catch (err) {
-                document.getElementById('loading').innerText = "Villa við myndavél: " + err.message;
-            }
+            window.addEventListener('resize', onWindowResize);
 
-            // Virkja takka til að festa/losa teninginn
-            document.getElementById('placeBtn').addEventListener('click', () => {
-                isLocked = !isLocked;
-                document.getElementById('placeBtn').innerText = isLocked ? "Losa staðsetningu" : "Festa / Læsa staðsetningu";
-            });
+            renderer.setAnimationLoop(render);
         }
 
-        async function predictWebcam() {
-            if (video.currentTime !== lastVideoTime) {
-                lastVideoTime = video.currentTime;
-                
-                if (handLandmarker) {
-                    const results = handLandmarker.detectForVideo(video, performance.now());
+        function onSelect() {
+            // Ef vísirinn er sýnilegur, staðsetjum við teninginn þar sem vísirinn er
+            if (reticle.visible) {
+                cube.position.setFromMatrixPosition(reticle.matrix);
+                cube.visible = true;
+            }
+        }
 
-                    if (results.landmarks && results.landmarks.length > 0 && !isLocked) {
-                        const landmarks = results.landmarks[0];
-                        const indexTip = landmarks[8]; // Vísifingursgómur
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
 
-                        const targetX = (indexTip.x - 0.5) * -6;
-                        const targetY = -(indexTip.y - 0.5) * 6;
-                        const targetZ = -indexTip.z * 5;
+        function render(timestamp, frame) {
+            if (frame) {
+                const referenceSpace = renderer.xr.getReferenceSpace();
+                const session = renderer.xr.getSession();
 
-                        // Færa teninginn mjúklega á eftir fingri ef hann er ekki læstur
-                        cube.position.x = THREE.MathUtils.lerp(cube.position.x, targetX, 0.2);
-                        cube.position.y = THREE.MathUtils.lerp(cube.position.y, targetY, 0.2);
-                        cube.position.z = THREE.MathUtils.lerp(cube.position.z, targetZ, 0.2);
+                if (!hitTestSourceRequested) {
+                    session.requestReferenceSpace('viewer').then((referenceSpace) => {
+                        session.requestHitTestSource({ space: referenceSpace }).then((source) => {
+                            hitTestSource = source;
+                        });
+                    });
+                    session.addEventListener('end', () => {
+                        hitTestSourceRequested = false;
+                        hitTestSource = null;
+                        reticle.visible = false;
+                    });
+                    hitTestSourceRequested = true;
+                }
+
+                if (hitTestSource) {
+                    const hitTestResults = frame.getHitTestSourceResults(hitTestSource);
+                    if (hitTestResults.length > 0) {
+                        const hit = hitTestResults[0];
+                        reticle.visible = true;
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                    } else {
+                        reticle.visible = false;
                     }
                 }
             }
 
-            // Snúa teningi hægt ef hann er læstur á sínum stað
-            if (isLocked) {
-                cube.rotation.y += 0.01;
-            }
-
             renderer.render(scene, camera);
-            requestAnimationFrame(predictWebcam);
         }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        init();
     </script>
 </body>
 </html>
