@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebXR AR með Hit Test og Reticle</title>
+    <title>WebXR AR Hit Test og Teningur</title>
     <style>
         body {
             margin: 0;
@@ -48,7 +48,7 @@
 
         let camera, scene, renderer;
         let controller;
-        let cube, reticle;
+        let cube;
         let hitTestSource = null;
         let hitTestSourceRequested = false;
 
@@ -84,15 +84,6 @@
                 requiredFeatures: ['hit-test'] 
             }));
 
-            // Búa til sjónrænan vísi (reticle) sem sýnir hvar yfirborðið finnst
-            reticle = new THREE.Mesh(
-                new THREE.RingGeometry(0.1, 0.15, 32).rotateX(-Math.PI / 2),
-                new THREE.MeshBasicMaterial({ color: 0xffffff })
-            );
-            reticle.matrixAutoUpdate = false;
-            reticle.visible = false;
-            scene.add(reticle);
-
             // Teningur
             const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
             const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3 });
@@ -112,11 +103,9 @@
         }
 
         function onSelect() {
-            // Ef vísirinn er sýnilegur, staðsetjum við teninginn þar sem vísirinn er
-            if (reticle.visible) {
-                cube.position.setFromMatrixPosition(reticle.matrix);
-                cube.visible = true;
-            }
+            // Þegar notandinn smellir á skjáinn í AR, færum við teninginn á staðinn sem stýringin bendir á
+            cube.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
+            cube.visible = true;
         }
 
         function onWindowResize() {
@@ -127,7 +116,6 @@
 
         function render(timestamp, frame) {
             if (frame) {
-                const referenceSpace = renderer.xr.getReferenceSpace();
                 const session = renderer.xr.getSession();
 
                 if (!hitTestSourceRequested) {
@@ -139,20 +127,8 @@
                     session.addEventListener('end', () => {
                         hitTestSourceRequested = false;
                         hitTestSource = null;
-                        reticle.visible = false;
                     });
                     hitTestSourceRequested = true;
-                }
-
-                if (hitTestSource) {
-                    const hitTestResults = frame.getHitTestSourceResults(hitTestSource);
-                    if (hitTestResults.length > 0) {
-                        const hit = hitTestResults[0];
-                        reticle.visible = true;
-                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                    } else {
-                        reticle.visible = false;
-                    }
                 }
             }
 
