@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaPipe + Three.js AR</title>
+    <title>MediaPipe + Three.js AR með skugga og staðsetningu</title>
     <style>
         body {
             margin: 0;
@@ -11,7 +11,6 @@
             background: black;
             font-family: sans-serif;
         }
-        /* Myndband í bakgrunni */
         #webcam {
             position: absolute;
             width: 100vw;
@@ -19,34 +18,42 @@
             object-fit: cover;
             z-index: 1;
         }
-        /* Three.js striginn ofan á myndbandinu */
         #three-canvas {
             position: absolute;
             width: 100vw;
             height: 100vh;
             z-index: 2;
-            pointer-events: none;
         }
-        #loading {
+        #ui {
             position: absolute;
             top: 20px;
             left: 20px;
-            color: white;
             z-index: 3;
-            background: rgba(0,0,0,0.6);
+            display: flex;
+            gap: 10px;
+        }
+        .btn, #loading {
+            background: rgba(0,0,0,0.7);
+            color: white;
             padding: 10px 20px;
             border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
+        .btn:active { background: rgba(50,50,50,0.9); }
     </style>
 </head>
 <body>
 
     <div id="loading">Hleður MediaPipe og myndavél...</div>
+    <div id="ui" style="display: none;">
+        <button id="placeBtn" class="btn">Festa / Læsa staðsetningu</button>
+    </div>
 
     <video id="webcam" autoplay playsinline muted></video>
     <canvas id="three-canvas"></canvas>
 
-    <!-- Notum Import Maps til að sækja Three.js og MediaPipe beint úr CDN -->
     <script type="importmap">
         {
           "imports": {
@@ -62,11 +69,12 @@
 
         let handLandmarker;
         let video = document.getElementById('webcam');
-        let cube, scene, camera, renderer;
+        let cube, plane, scene, camera, renderer;
         let lastVideoTime = -1;
+        let isLocked = false; // Segir til um hvort teningurinn sé fastur eða fylgi fingri
 
         async function init() {
-            // 1. Stilla Three.js senu
+            // 1. Stilla Three.js senu og virkja skugga
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             
@@ -76,15 +84,40 @@
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true; // Virkja skugga
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            // Bæta við litríkum teningi
+            // 2. Bæta við lýsingu sem kastar skugga
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(5, 10, 5);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            scene.add(dirLight);
+
+            // 3. Bæta við gólffleti (Plane) til að taka við skugganum
+            const planeGeometry = new THREE.PlaneGeometry(20, 20);
+            const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.4 }); // Ósýnilegt nema skuggar sjáist
+            plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.rotation.x = -Math.PI / 2;
+            plane.position.y = -1.5;
+            plane.receiveShadow = true;
+            scene.add(plane);
+
+            // 4. Bæta við teningi sem kastar skugga
             const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshNormalMaterial();
+            // Notum MeshStandardMaterial til að ljós og skuggar hafi áhrif á hann
+            const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3 });
             cube = new THREE.Mesh(geometry, material);
+            cube.castShadow = true;
             scene.add(cube);
+            
             camera.position.z = 5;
 
-            // 2. Frumstilla MediaPipe HandLandmarker
+            // 5. Frumstilla MediaPipe
             const vision = await FilesetResolver.forVisionTasks(
                 "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
             );
@@ -98,7 +131,7 @@
                 numHands: 1
             });
 
-            // 3. Ræsa myndavél (notar afturmyndavél í síma ef hún er til staðar, eða vefmyndavél í tölvu)
+            // 6. Ræsa myndavél
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { facingMode: "environment" } 
@@ -106,14 +139,20 @@
                 video.srcObject = stream;
                 video.addEventListener("loadeddata", () => {
                     document.getElementById('loading').style.display = 'none';
+                    document.getElementById('ui').style.display = 'flex';
                     predictWebcam();
                 });
             } catch (err) {
-                document.getElementById('loading').innerText = "Villa við að opna myndavél: " + err.message;
+                document.getElementById('loading').innerText = "Villa við myndavél: " + err.message;
             }
+
+            // Virkja takka til að festa/losa teninginn
+            document.getElementById('placeBtn').addEventListener('click', () => {
+                isLocked = !isLocked;
+                document.getElementById('placeBtn').innerText = isLocked ? "Losa staðsetningu" : "Festa / Læsa staðsetningu";
+            });
         }
 
-        // 4. Lykkja sem keyrir í hverjum ramma (AnimationFrame)
         async function predictWebcam() {
             if (video.currentTime !== lastVideoTime) {
                 lastVideoTime = video.currentTime;
@@ -121,32 +160,31 @@
                 if (handLandmarker) {
                     const results = handLandmarker.detectForVideo(video, performance.now());
 
-                    if (results.landmarks && results.landmarks.length > 0) {
+                    if (results.landmarks && results.landmarks.length > 0 && !isLocked) {
                         const landmarks = results.landmarks[0];
                         const indexTip = landmarks[8]; // Vísifingursgómur
 
-                        // Umreikna MediaPipe hnit [0, 1] yfir í Three.js hnit
                         const targetX = (indexTip.x - 0.5) * -6;
                         const targetY = -(indexTip.y - 0.5) * 6;
                         const targetZ = -indexTip.z * 5;
 
-                        // Nota LERP til að gera hreyfinguna mjúka og koma í veg fyrir titring
+                        // Færa teninginn mjúklega á eftir fingri ef hann er ekki læstur
                         cube.position.x = THREE.MathUtils.lerp(cube.position.x, targetX, 0.2);
                         cube.position.y = THREE.MathUtils.lerp(cube.position.y, targetY, 0.2);
                         cube.position.z = THREE.MathUtils.lerp(cube.position.z, targetZ, 0.2);
-
-                        // Láta teninginn snúast aðeins þegar hann hreyfist
-                        cube.rotation.x += 0.02;
-                        cube.rotation.y += 0.02;
                     }
                 }
+            }
+
+            // Snúa teningi hægt ef hann er læstur á sínum stað
+            if (isLocked) {
+                cube.rotation.y += 0.01;
             }
 
             renderer.render(scene, camera);
             requestAnimationFrame(predictWebcam);
         }
 
-        // Látum strigann fylgja stærð skjásins ef glugganum er breytt
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
