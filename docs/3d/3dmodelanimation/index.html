@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Animated GLTF Model</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    #controls {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 1;
+      font-family: sans-serif;
+      color: #fff;
+    }
+    #controls button {
+      font-size: 14px;
+      padding: 6px 12px;
+      margin-right: 6px;
+      cursor: pointer;
+    }
+    #controls p {
+      margin: 6px 0 0;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  </style>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.187.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.187.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <div id="controls">
+    <button id="stopBtn">Stop</button>
+    <button id="playBtn">Play</button>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // Scene 
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x202025);
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 3, 10);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Lights
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7.5);
+    scene.add(dirLight);
+
+    // Loader
+    const loader = new GLTFLoader();
+    let gltf = await loader.loadAsync(
+        "./RobotExpressive.glb",
+        (xhr) => console.log(`Model ${Math.round((xhr.loaded / xhr.total) * 100)}% loaded`),
+        (error) => console.error("Model load error:", error)
+    );
+
+    // Animation System
+    let mixer;
+    let danceAction;
+    if (gltf) {
+      const model = gltf.scene;
+      scene.add(model);
+
+      const clips = gltf.animations;
+      console.log(clips)
+      // Look up the "Dance" clip by name among the model's embedded animations.
+      const clip = THREE.AnimationClip.findByName(clips, 'Dance');
+
+      // The mixer plays clips on a specific model
+      mixer = new THREE.AnimationMixer(model);
+      // clipAction wraps the clip in a controllable AnimationAction
+      danceAction = mixer.clipAction(clip);
+      danceAction.play();
+    }
+
+    // Press "S" to stop the Dance animation, "P" to play it again.
+    document.getElementById('stopBtn').addEventListener('click', () => danceAction?.stop());
+    document.getElementById('playBtn').addEventListener('click', () => danceAction?.play());
+
+    // Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Timer tracks frame delta time; connecting it to the document avoids a large time jump when the tab regains visibility.
+    const timer = new THREE.Timer();
+    timer.connect(document);
+    
+    // Update loop
+    function update(time) {
+      timer.update(time);
+      // Advance the animation mixer by the elapsed time since the last frame.
+      mixer.update(timer.getDelta());
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    renderer.setAnimationLoop(update);
+
+  </script>
+</body>
+</html>
