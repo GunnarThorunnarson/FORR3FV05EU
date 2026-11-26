@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hand Yaw Math: MediaPipe to Three.js</title>
+
+  <!-- Google Fonts: Inter for UI & JetBrains Mono for code/math readouts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            surface: {
+              950: '#070b14',
+              900: '#0c1220',
+              800: '#131c31',
+              700: '#1c2842',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Three.js r128 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* Custom range slider styling for dark developer aesthetic */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 9999px;
+      background: #1e293b;
+      border: 1px solid #334155;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: #38bdf8;
+      border: 2px solid #0f172a;
+      margin-top: -7px;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      background: #7dd3fc;
+    }
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 9999px;
+      background: #1e293b;
+      border: 1px solid #334155;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: #38bdf8;
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Subtle math variable typography */
+    .math-var {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-style: italic;
+    }
+
+    /* Prevent horizontal overflow on small screens */
+    html, body {
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+
+<body class="bg-surface-950 text-slate-200 font-sans antialiased selection:bg-sky-500/30 selection:text-sky-200">
+  <!-- Subtle ambient radial glow background -->
+  <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[420px] bg-sky-500/10 blur-[120px] rounded-full"></div>
+    <div class="absolute top-1/2 -right-40 w-[500px] h-[500px] bg-indigo-500/10 blur-[130px] rounded-full"></div>
+  </div>
+
+  <!-- Main Page Container -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="space-y-4 border-b border-slate-800/80 pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+        MEDIAPIPE HAND LANDMARKER → THREE.JS
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+        Hand Yaw Math: <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-400">X–Z Plane Projection</span>
+      </h1>
+      <p class="text-slate-400 text-base sm:text-lg max-w-3xl leading-relaxed">
+        Calculate smooth left-to-right hand rotation (<strong class="text-slate-200 font-semibold">yaw</strong> around the vertical Y-axis) by ignoring vertical height and projecting two rigid palm knuckles onto the top-down <strong class="text-slate-200 font-semibold">X–Z plane</strong>.
+      </p>
+    </header>
+
+    <!-- ==================== SECTION 1: THE GEOMETRY ==================== -->
+    <section class="space-y-6" aria-labelledby="geometry-heading">
+      <div class="flex items-center gap-3">
+        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 font-mono font-bold text-sm">01</span>
+        <h2 id="geometry-heading" class="text-2xl font-bold text-white tracking-tight">The Geometry (Top-Down View)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Left Explanation Card -->
+        <div class="lg:col-span-7 bg-surface-900/90 border border-slate-800 rounded-2xl p-6 space-y-5 shadow-xl">
+          <div class="space-y-3">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              Why Anchor to Knuckles Instead of Fingertips?
+            </h3>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Fingertips curl, spread, and flex independently—measuring rotation from them introduces massive noise whenever you move your fingers. Instead, anchor to the two outer knuckles that span the rigid width of your palm:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-surface-800/80 border border-emerald-500/25">
+                <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-300 font-mono font-bold flex items-center justify-center border border-emerald-500/40">5</span>
+                <div>
+                  <div class="text-sm font-semibold text-white">Index Finger MCP</div>
+                  <div class="text-xs text-slate-400 font-mono">worldLandmarks[5]</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-surface-800/80 border border-amber-500/25">
+                <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-amber-500/20 text-amber-300 font-mono font-bold flex items-center justify-center border border-amber-500/40">17</span>
+                <div>
+                  <div class="text-sm font-semibold text-white">Pinky MCP</div>
+                  <div class="text-xs text-slate-400 font-mono">worldLandmarks[17]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formatted Math Equations -->
+          <div class="space-y-3 pt-2">
+            <div class="text-xs font-mono uppercase tracking-wider text-slate-400">Top-Down Right Triangle Equations</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="bg-surface-950/90 border border-slate-800 rounded-xl p-4 text-center">
+                <div class="text-xs text-sky-400 font-mono mb-1">Horizontal Leg</div>
+                <div class="text-lg sm:text-xl text-white tracking-wide">
+                  <span class="math-var">Δx</span> = <span class="math-var">x</span><sub class="text-xs text-amber-300">17</sub> − <span class="math-var">x</span><sub class="text-xs text-emerald-300">5</sub>
+                </div>
+              </div>
+              <div class="bg-surface-950/90 border border-slate-800 rounded-xl p-4 text-center">
+                <div class="text-xs text-rose-400 font-mono mb-1">Depth Leg</div>
+                <div class="text-lg sm:text-xl text-white tracking-wide">
+                  <span class="math-var">Δz</span> = <span class="math-var">z</span><sub class="text-xs text-amber-300">17</sub> − <span class="math-var">z</span><sub class="text-xs text-emerald-300">5</sub>
+                </div>
+              </div>
+              <div class="bg-surface-950/90 border border-indigo-500/30 rounded-xl p-4 text-center">
+                <div class="text-xs text-indigo-300 font-mono mb-1">Yaw Angle</div>
+                <div class="text-lg sm:text-xl text-white tracking-wide">
+                  <span class="math-var">θ</span> = <span class="font-mono text-sm sm:text-base text-indigo-300">atan2</span>(<span class="math-var">Δz</span>, <span class="math-var">Δx</span>)
+                </div>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              When your palm faces straight at the camera, both knuckles sit at the same depth (<span class="font-mono text-slate-200">Δz = 0</span>). Twisting your wrist pushes one knuckle closer and the other farther away, turning the palm width into the hypotenuse of a right triangle solved by <span class="font-mono text-indigo-300">atan2(Δz, Δx)</span>.
+            </p>
+          </div>
+
+          <!-- worldLandmarks Callout -->
+          <div class="flex gap-3 p-4 rounded-xl bg-sky-500/10 border border-sky-500/25">
+            <svg class="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="text-xs sm:text-sm text-sky-100/90 leading-relaxed">
+              <strong class="text-sky-300 font-semibold">Use <code class="font-mono bg-sky-950/80 px-1.5 py-0.5 rounded text-sky-200">worldLandmarks</code>, not <code class="font-mono bg-sky-950/80 px-1.5 py-0.5 rounded text-sky-200">landmarks</code>:</strong>
+              MediaPipe's <code class="font-mono text-sky-200">worldLandmarks</code> are measured in real-world meters centered at the palm's geometric origin. This eliminates webcam perspective distortion and keeps <span class="math-var">Δx</span> and <span class="math-var">Δz</span> on an exact 1:1 physical scale.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual Reference Card: Hand Landmark SVG -->
+        <div class="lg:col-span-5 bg-surface-900/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Rigid Palm Span Reference</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">Palm Facing Camera</span>
+          </div>
+
+          <!-- Stylized Hand Skeleton SVG emphasizing rigid 5 <-> 17 baseline -->
+          <div class="flex-1 flex items-center justify-center py-2">
+            <svg viewBox="0 0 260 270" class="w-full max-w-[260px] h-auto" role="img" aria-label="Hand skeleton diagram highlighting Index MCP landmark 5 and Pinky MCP landmark 17">
+              <!-- Subtle palm polygon -->
+              <polygon points="128,235 80,142 115,134 148,138 178,150" fill="rgba(56, 189, 248, 0.08)" stroke="rgba(148, 163, 184, 0.25)" stroke-width="1.5" stroke-linejoin="round" />
+
+              <!-- Flexible fingers (muted dashed/thin lines) -->
+              <g stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none">
+                <!-- Thumb -->
+                <polyline points="128,235 76,205 46,174 28,150" />
+                <!-- Index -->
+                <polyline points="80,142 74,98 70,64 67,38" />
+                <!-- Middle -->
+                <polyline points="115,134 114,84 113,48 112,20" />
+                <!-- Ring -->
+                <polyline points="148,138 152,92 155,58 157,34" />
+                <!-- Pinky -->
+                <polyline points="178,150 188,112 195,84 201,62" />
+              </g>
+
+              <!-- Fingertip dots (muted) -->
+              <g fill="#64748b">
+                <circle cx="28" cy="150" r="4" />
+                <circle cx="67" cy="38" r="4" />
+                <circle cx="112" cy="20" r="4" />
+                <circle cx="157" cy="34" r="4" />
+                <circle cx="201" cy="62" r="4" />
+              </g>
+
+              <!-- Wrist landmark 0 -->
+              <circle cx="128" cy="235" r="5" fill="#94a3b8" />
+              <text x="128" y="254" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="JetBrains Mono, monospace">0 (Wrist)</text>
+
+              <!-- Rigid knuckle span line (5 to 17) -->
+              <line x1="80" y1="142" x2="178" y2="150" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+              <text x="129" y="168" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="JetBrains Mono, monospace" font-weight="600">Rigid Palm Vector</text>
+
+              <!-- Landmark 5 (Index MCP) -->
+              <circle cx="80" cy="142" r="10" fill="rgba(16, 185, 129, 0.25)" />
+              <circle cx="80" cy="142" r="6" fill="#10b981" stroke="#0f172a" stroke-width="2" />
+              <text x="64" y="138" text-anchor="end" fill="#6ee7b7" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700">5</text>
+              <text x="64" y="152" text-anchor="end" fill="#94a3b8" font-size="10" font-family="Inter, sans-serif">Index MCP</text>
+
+              <!-- Landmark 17 (Pinky MCP) -->
+              <circle cx="178" cy="150" r="10" fill="rgba(245, 158, 11, 0.25)" />
+              <circle cx="178" cy="150" r="6" fill="#f59e0b" stroke="#0f172a" stroke-width="2" />
+              <text x="194" y="148" text-anchor="start" fill="#fcd34d" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700">17</text>
+              <text x="194" y="162" text-anchor="start" fill="#94a3b8" font-size="10" font-family="Inter, sans-serif">Pinky MCP</text>
+
+              <!-- Annotation for flexible fingers -->
+              <text x="112" y="10" text-anchor="middle" fill="#64748b" font-size="10" font-family="Inter, sans-serif">Flexible fingertips (ignored)</text>
+            </svg>
+          </div>
+
+          <div class="text-xs text-slate-400 border-t border-slate-800 pt-3 flex items-center justify-between">
+            <span>Palm width ≈ <span class="font-mono text-slate-200">0.08 m</span></span>
+            <span class="font-mono text-sky-400">Rigid across yaw</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 2: INTERACTIVE VISUALIZER & 3D PREVIEW ==================== -->
+    <section class="space-y-5" aria-labelledby="visualizer-heading">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 font-mono font-bold text-sm">02</span>
+          <h2 id="visualizer-heading" class="text-2xl font-bold text-white tracking-tight">Interactive Math Visualizer &amp; Live Three.js Preview</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400">Drag slider or drag directly on either canvas</span>
+      </div>
+
+      <!-- Controls Bar -->
+      <div class="bg-surface-900/95 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+          <!-- Hand Yaw Slider -->
+          <div class="sm:col-span-8 space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="yaw-slider" class="text-xs font-semibold uppercase tracking-wider text-slate-300">Hand Yaw Angle</label>
+              <div class="flex items-center gap-2">
+                <span id="yaw-value-label" class="font-mono text-sm font-semibold text-sky-400">+30°</span>
+                <button id="reset-yaw-btn" type="button" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">0°</button>
+              </div>
+            </div>
+            <input id="yaw-slider" type="range" min="-90" max="90" step="1" value="30" class="w-full" />
+            <div class="flex justify-between text-[11px] font-mono text-slate-500">
+              <span>-90°</span>
+              <span>0°</span>
+              <span>+90°</span>
+            </div>
+          </div>
+
+          <!-- Mirror Mode Toggle -->
+          <div class="sm:col-span-4 flex items-center justify-between sm:justify-end gap-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">Mirror Mode</span>
+            <button
+              id="mirror-toggle"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-sky-500/15 border border-sky-500/40 text-sky-300 text-xs font-mono font-semibold transition hover:bg-sky-500/25 focus:outline-none focus:ring-2 focus:ring-sky-400/50"
+            >
+              <span id="mirror-dot" class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]"></span>
+              <span id="mirror-text">ON (Selfie)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prominent 4-Card Live Math Readout Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-surface-900/95 border border-slate-800 rounded-xl p-4">
+          <div class="text-xs font-mono text-sky-400">Δx (x₁₇ − x₅)</div>
+          <div id="readout-dx" class="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-white">+0.866</div>
+        </div>
+
+        <div class="bg-surface-900/95 border border-slate-800 rounded-xl p-4">
+          <div class="text-xs font-mono text-rose-400">Δz (z₁₇ − z₅)</div>
+          <div id="readout-dz" class="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-white">+0.500</div>
+        </div>
+
+        <div class="bg-surface-900/95 border border-slate-800 rounded-xl p-4">
+          <div class="text-xs font-mono text-indigo-400">atan2(Δz, Δx)</div>
+          <div id="readout-raw-rad" class="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-white">+0.524 rad</div>
+        </div>
+
+        <div class="bg-surface-900/95 border border-sky-500/35 rounded-xl p-4 shadow-[0_0_25px_-10px_rgba(56,189,248,0.3)]">
+          <div class="text-xs font-mono text-cyan-300">mesh.rotation.y</div>
+          <div id="readout-three-rad" class="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-sky-300">-0.524 rad</div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Responsive Panels -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Panel: 2D Top-Down X-Z Plane Canvas -->
+        <div class="bg-surface-900/95 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col">
+          <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-surface-900">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Top-Down X–Z Plane (Geometry)</h3>
+              <p class="text-xs text-slate-400">Drag horizontally to twist palm • Right triangle solves θ</p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
+              Vec: 5 → 17
+            </span>
+          </div>
+          <div id="canvas-2d-container" class="relative w-full h-[360px] sm:h-[400px] bg-surface-950 cursor-ew-resize select-none touch-none">
+            <canvas id="xz-canvas" class="block w-full h-full"></canvas>
+          </div>
+          <!-- Legend Footer -->
+          <div class="px-5 py-2.5 border-t border-slate-800 bg-surface-900/60 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono text-slate-400">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>5 (Index MCP)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>17 (Pinky MCP)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-sky-400"></span>Δx</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-rose-400"></span>Δz</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>θ Arc</span>
+          </div>
+        </div>
+
+        <!-- Right Panel: Live 3D Three.js Preview -->
+        <div class="bg-surface-900/95 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col">
+          <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-surface-900">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Live Three.js 3D Preview</h3>
+              <p class="text-xs text-slate-400">Applies <code class="font-mono text-sky-300">mesh.rotation.y</code> directly • Drag to orbit camera</p>
+            </div>
+            <button id="reset-cam-btn" type="button" class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition">
+              Reset View
+            </button>
+          </div>
+          <div id="three-container" class="relative w-full h-[360px] sm:h-[400px] bg-surface-950 cursor-grab active:cursor-grabbing select-none touch-none">
+            <!-- Three.js WebGLRenderer canvas mounts here -->
+            <div class="absolute bottom-3 left-3 pointer-events-none px-2.5 py-1 rounded-lg bg-surface-950/80 border border-slate-800 text-[11px] font-mono text-slate-400">
+              Glowing pointer = Front (+Z)
+            </div>
+          </div>
+          <!-- Axis Legend Footer -->
+          <div class="px-5 py-2.5 border-t border-slate-800 bg-surface-900/60 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400">
+            <div class="flex items-center gap-3">
+              <span class="text-rose-400">+X Right</span>
+              <span class="text-emerald-400">+Y Up (Yaw Axis)</span>
+              <span class="text-sky-400">+Z Front</span>
+            </div>
+            <span id="three-live-status" class="text-indigo-300">mesh.rotation.y: -0.524 rad</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3: THREE.JS CODE ==================== -->
+    <section class="space-y-5" aria-labelledby="code-heading">
+      <div class="flex items-center gap-3">
+        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 font-mono font-bold text-sm">03</span>
+        <h2 id="code-heading" class="text-2xl font-bold text-white tracking-tight">Three.js Code</h2>
+      </div>
+
+      <p class="text-slate-300 text-sm sm:text-base max-w-3xl leading-relaxed">
+        Read <code class="font-mono text-sky-300 bg-surface-800 px-1.5 py-0.5 rounded">results.worldLandmarks[0]</code>, measure the X–Z vector from Index MCP (<code class="font-mono text-emerald-300">5</code>) to Pinky MCP (<code class="font-mono text-amber-300">17</code>), and assign the angle directly to your Three.js mesh.
+      </p>
+
+      <!-- Code Block Card -->
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="px-5 py-3 bg-surface-800/70 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+            <span class="ml-2 text-xs font-mono text-slate-400">handYawThree.js</span>
+          </div>
+          <button
+            id="copy-code-btn"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-mono font-medium transition"
+          >
+            <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span id="copy-btn-text">Copy Code</span>
+          </button>
+        </div>
+
+        <pre class="p-5 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed text-slate-200"><code id="code-snippet"><span class="text-slate-500">// worldLandmarks = results.worldLandmarks[0]</span>
+<span class="text-indigo-400">const</span> indexMCP = worldLandmarks[<span class="text-emerald-400">5</span>];
+<span class="text-indigo-400">const</span> pinkyMCP = worldLandmarks[<span class="text-amber-400">17</span>];
+
+<span class="text-indigo-400">const</span> dx = pinkyMCP.x - indexMCP.x;
+<span class="text-indigo-400">const</span> dz = pinkyMCP.z - indexMCP.z;
+
+<span class="text-slate-500">// Compute yaw in radians (negate for mirrored selfie webcam)</span>
+<span class="text-indigo-400">const</span> yaw = Math.<span class="text-sky-300">atan2</span>(dz, dx);
+mesh.rotation.y = -yaw;</code></pre>
+      </div>
+
+      <!-- Why LERP Is Good to Have Callout -->
+      <div class="flex gap-3.5 p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25">
+        <svg class="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <div class="space-y-1 text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
+          <div class="font-semibold text-indigo-300">Why LERP is good to have</div>
+          <p>
+            In a real webcam feed, hand landmarks have slight frame-to-frame jitter, so blending toward the target angle with linear interpolation (e.g., <code class="font-mono bg-indigo-950/80 px-1.5 py-0.5 rounded text-indigo-200">mesh.rotation.y += (targetYaw - mesh.rotation.y) * 0.2</code>) keeps the 3D rotation smooth instead of shaky.
+          </p>
+        </div>
+      </div>
+
+      <!-- Brief One-Sentence Handedness Note -->
+      <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+        <strong class="text-slate-300 font-semibold">Handedness note:</strong> Because your left and right hands mirror each other, the vector from landmark <code class="font-mono text-emerald-300">5</code> to <code class="font-mono text-amber-300">17</code> points in opposite directions on each hand, so swap the subtraction order (or add <code class="font-mono text-slate-300">Math.PI</code>) based on <code class="font-mono text-slate-300">results.handedness</code> if you want both hands to zero out at the same angle.
+      </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500 font-mono">
+      Interactive Educational Reference • MediaPipe Hand Landmarker + Three.js X–Z Yaw Math
+    </footer>
+  </div>
+
+  <!-- ==================== INTERACTIVE VISUALIZER & THREE.JS LOGIC ==================== -->
+  <script>
+    /**
+     * Application State
+     * Stores current yaw angle, mirror toggle, and unit-length palm geometry (radius 0.5 => span 1.0).
+     */
+    const state = {
+      yawDeg: 30,          // Default 30° so the Δx / Δz right triangle is immediately visible
+      mirrorMode: true,    // Default ON (selfie webcam mode)
+      palmHalfWidth: 0.5,  // Unit palm width (1.0) so Δx = cos(θ) and Δz = sin(θ)
+    };
+
+    // DOM references
+    const yawSlider = document.getElementById('yaw-slider');
+    const yawValueLabel = document.getElementById('yaw-value-label');
+    const resetYawBtn = document.getElementById('reset-yaw-btn');
+    const mirrorToggle = document.getElementById('mirror-toggle');
+    const mirrorDot = document.getElementById('mirror-dot');
+    const mirrorText = document.getElementById('mirror-text');
+    const resetCamBtn = document.getElementById('reset-cam-btn');
+
+    // Readout DOM references
+    const readoutDx = document.getElementById('readout-dx');
+    const readoutDz = document.getElementById('readout-dz');
+    const readoutRawRad = document.getElementById('readout-raw-rad');
+    const readoutThreeRad = document.getElementById('readout-three-rad');
+    const threeLiveStatus = document.getElementById('three-live-status');
+
+    // 2D Canvas references
+    const canvas2DContainer = document.getElementById('canvas-2d-container');
+    const canvas2D = document.getElementById('xz-canvas');
+    const ctx = canvas2D.getContext('2d');
+
+    // Three.js references
+    const threeContainer = document.getElementById('three-container');
+    let scene, camera, renderer, targetGroup;
+    let camTheta = 0;        // Orbit azimuth angle
+    let camPhi = 0.42;       // Orbit elevation angle
+    const camRadius = 5.4;
+
+    /**
+     * Computes unit-span knuckle positions on the top-down X-Z plane,
+     * right-triangle legs Δx = x₁₇ − x₅ and Δz = z₁₇ − z₅,
+     * rawYaw via atan2(Δz, Δx), and direct Three.js mesh.rotation.y.
+     */
+    function computeYawMath() {
+      const yawRad = (state.yawDeg * Math.PI) / 180;
+      const r = state.palmHalfWidth;
+
+      // Index MCP (5) on the left (-X at 0°) and Pinky MCP (17) on the right (+X at 0°)
+      const indexMCP = {
+        x: -r * Math.cos(yawRad),
+        z: -r * Math.sin(yawRad),
+      };
+      const pinkyMCP = {
+        x: r * Math.cos(yawRad),
+        z: r * Math.sin(yawRad),
+      };
+
+      const dx = pinkyMCP.x - indexMCP.x;
+      const dz = pinkyMCP.z - indexMCP.z;
+
+      const rawYaw = Math.atan2(dz, dx);
+      const meshYaw = state.mirrorMode ? -rawYaw : rawYaw;
+
+      // Palm normal vector pointing out of the palm toward the camera (+Z at yaw=0)
+      const normal = {
+        x: -Math.sin(yawRad),
+        z: Math.cos(yawRad),
+      };
+
+      return {
+        indexMCP,
+        pinkyMCP,
+        startPt: indexMCP,
+        endPt: pinkyMCP,
+        dx,
+        dz,
+        rawYaw,
+        meshYaw,
+        normal,
+      };
+    }
+
+    /**
+     * Updates the 4-card live math readout and applies mesh.rotation.y directly (no LERP).
+     */
+    function updateReadouts(math) {
+      const fmtSigned3 = (val) => {
+        const clean = Math.abs(val) < 0.0005 ? 0 : val;
+        return (clean >= 0 ? '+' : '') + clean.toFixed(3);
+      };
+
+      yawValueLabel.textContent = `${state.yawDeg >= 0 ? '+' : ''}${state.yawDeg}°`;
+
+      readoutDx.textContent = fmtSigned3(math.dx);
+      readoutDz.textContent = fmtSigned3(math.dz);
+      readoutRawRad.textContent = `${fmtSigned3(math.rawYaw)} rad`;
+      readoutThreeRad.textContent = `${fmtSigned3(math.meshYaw)} rad`;
+      threeLiveStatus.textContent = `mesh.rotation.y: ${fmtSigned3(math.meshYaw)} rad`;
+
+      // Direct, instantaneous Three.js rotation (no LERP)
+      if (targetGroup) {
+        targetGroup.rotation.y = math.meshYaw;
+      }
+    }
+
+    /**
+     * Resizes the 2D canvas cleanly for high-DPI displays.
+     */
+    function resize2DCanvas() {
+      const rect = canvas2DContainer.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas2D.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas2D.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw2DScene();
+    }
+
+    /**
+     * Renders the interactive top-down X-Z coordinate grid, camera indicator,
+     * stylized palm cross-section, palm normal arrow, right triangle (Δx, Δz), and θ arc.
+     */
+    function draw2DScene() {
+      const rect = canvas2DContainer.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      if (w <= 0 || h <= 0) return;
+
+      const math = computeYawMath();
+      updateReadouts(math);
+
+      // Clear background
+      ctx.fillStyle = '#070b14';
+      ctx.fillRect(0, 0, w, h);
+
+      const cx = w * 0.5;
+      const cy = h * 0.47;
+      const scale = Math.min(w, h) * 0.44; // Pixels per unit (0.5 radius -> ~22% of canvas)
+
+      // Helper: world (x, z) -> canvas (px, py)
+      // +X is right, +Z is down (toward camera at bottom), -Z is up (away from camera)
+      const toScreen = (x, z) => ({
+        x: cx + x * scale,
+        y: cy + z * scale,
+      });
+
+      // 1. Subtle coordinate grid
+      const gridStepPx = Math.max(24, scale * 0.2);
+      ctx.strokeStyle = 'rgba(30, 41, 59, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = cx % gridStepPx; x < w; x += gridStepPx) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+      }
+      for (let y = cy % gridStepPx; y < h; y += gridStepPx) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+      }
+      ctx.stroke();
+
+      // 2. Primary X and Z axes
+      ctx.strokeStyle = 'rgba(71, 85, 105, 0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(16, cy);
+      ctx.lineTo(w - 16, cy);
+      ctx.moveTo(cx, 16);
+      ctx.lineTo(cx, h - 54);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#64748b';
+      ctx.textAlign = 'right';
+      ctx.fillText('+X', w - 14, cy - 8);
+      ctx.textAlign = 'left';
+      ctx.fillText('-X', 14, cy - 8);
+      ctx.textAlign = 'center';
+      ctx.fillText('-Z (Farther)', cx, 22);
+
+      // 3. Camera Indicator at bottom looking toward -Z
+      const camY = h - 22;
+      ctx.save();
+      // Dashed sightline arrow from camera toward -Z
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cx, camY - 16);
+      ctx.lineTo(cx, cy + state.palmHalfWidth * scale + 28);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Camera pill badge
+      const pillW = 136;
+      const pillH = 24;
+      ctx.fillStyle = '#131c31';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect(cx - pillW / 2, camY - pillH / 2, pillW, pillH, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#7dd3fc';
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('▲ CAMERA (+Z)', cx, camY + 0.5);
+      ctx.restore();
+
+      // 4. Reference rotation circle
+      const radiusPx = state.palmHalfWidth * scale;
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 5]);
+      ctx.beginPath();
+      ctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Screen coordinates for landmarks
+      const pStart = toScreen(math.startPt.x, math.startPt.z);
+      const pEnd = toScreen(math.endPt.x, math.endPt.z);
+      const pCorner = { x: pEnd.x, y: pStart.y }; // Right-angle corner of the Δx / Δz triangle
+      const pIndex = toScreen(math.indexMCP.x, math.indexMCP.z);
+      const pPinky = toScreen(math.pinkyMCP.x, math.pinkyMCP.z);
+
+      // 5. Right Triangle Fill & Legs (Δx and Δz)
+      if (Math.abs(state.yawDeg) > 1) {
+        // Subtle shaded triangle interior
+        ctx.fillStyle = 'rgba(99, 102, 241, 0.10)';
+        ctx.beginPath();
+        ctx.moveTo(pStart.x, pStart.y);
+        ctx.lineTo(pCorner.x, pCorner.y);
+        ctx.lineTo(pEnd.x, pEnd.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Right-angle square marker at pCorner
+        const sq = 10;
+        const dirX = pStart.x < pCorner.x ? -1 : 1;
+        const dirY = pEnd.y > pCorner.y ? 1 : -1;
+        if (Math.abs(pEnd.x - pStart.x) > 18 && Math.abs(pEnd.y - pStart.y) > 18) {
+          ctx.strokeStyle = 'rgba(148, 163, 184, 0.55)';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(pCorner.x + dirX * sq, pCorner.y);
+          ctx.lineTo(pCorner.x + dirX * sq, pCorner.y + dirY * sq);
+          ctx.lineTo(pCorner.x, pCorner.y + dirY * sq);
+          ctx.stroke();
+        }
+      }
+
+      // Dashed Δx leg (horizontal)
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(pStart.x, pStart.y);
+      ctx.lineTo(pCorner.x, pCorner.y);
+      ctx.stroke();
+
+      // Dashed Δz leg (vertical / depth)
+      ctx.strokeStyle = '#fb7185';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(pCorner.x, pCorner.y);
+      ctx.lineTo(pEnd.x, pEnd.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Angle arc for θ at pStart
+      if (Math.abs(state.yawDeg) > 2) {
+        const arcR = Math.min(44, Math.hypot(pEnd.x - pStart.x, pEnd.y - pStart.y) * 0.35);
+        const angleToCorner = Math.atan2(pCorner.y - pStart.y, pCorner.x - pStart.x);
+        const angleToEnd = Math.atan2(pEnd.y - pStart.y, pEnd.x - pStart.x);
+        const anticlockwise = angleToEnd < angleToCorner;
+
+        ctx.strokeStyle = '#818cf8';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(pStart.x, pStart.y, arcR, angleToCorner, angleToEnd, anticlockwise);
+        ctx.stroke();
+
+        // θ label
+        const midAngle = (angleToCorner + angleToEnd) / 2;
+        const labelR = arcR + 16;
+        ctx.fillStyle = '#a5b4fc';
+        ctx.font = 'italic 700 14px Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('θ', pStart.x + Math.cos(midAngle) * labelR, pStart.y + Math.sin(midAngle) * labelR);
+      }
+
+      // Labels for Δx and Δz
+      ctx.font = '600 12px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (Math.abs(pCorner.x - pStart.x) > 26) {
+        const offsetY = pEnd.y >= pStart.y ? -14 : 15;
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillText('Δx', (pStart.x + pCorner.x) / 2, pStart.y + offsetY);
+      }
+      if (Math.abs(pEnd.y - pCorner.y) > 22) {
+        const offsetX = pCorner.x >= pStart.x ? 18 : -18;
+        ctx.fillStyle = '#fb7185';
+        ctx.fillText('Δz', pCorner.x + offsetX, (pCorner.y + pEnd.y) / 2);
+      }
+
+      // 6. Stylized Top-Down Palm Cross-Section
+      const yawRad = (state.yawDeg * Math.PI) / 180;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(yawRad);
+
+      // Palm capsule body
+      const palmW = radiusPx * 2.15;
+      const palmH = 22;
+      ctx.fillStyle = 'rgba(30, 41, 59, 0.92)';
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.55)';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.roundRect(-palmW / 2, -palmH / 2, palmW, palmH, 11);
+      ctx.fill();
+      ctx.stroke();
+
+      // Subtle ridge on the palm-front side (+Z side in local palm coords)
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-palmW * 0.32, palmH / 2 - 3);
+      ctx.lineTo(palmW * 0.32, palmH / 2 - 3);
+      ctx.stroke();
+      ctx.restore();
+
+      // 7. Palm Normal Vector Arrow (pointing out of the palm)
+      const normalLen = 58;
+      const nx = cx + math.normal.x * normalLen;
+      const ny = cy + math.normal.z * normalLen;
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+
+      // Arrowhead for palm normal
+      const headAngle = Math.atan2(ny - cy, nx - cx);
+      const headLen = 10;
+      ctx.fillStyle = '#22d3ee';
+      ctx.beginPath();
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(nx - headLen * Math.cos(headAngle - 0.45), ny - headLen * Math.sin(headAngle - 0.45));
+      ctx.lineTo(nx - headLen * Math.cos(headAngle + 0.45), ny - headLen * Math.sin(headAngle + 0.45));
+      ctx.closePath();
+      ctx.fill();
+
+      // 8. Hypotenuse line connecting Index MCP (5) and Pinky MCP (17)
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(pIndex.x, pIndex.y);
+      ctx.lineTo(pPinky.x, pPinky.y);
+      ctx.stroke();
+
+      // 9. Highlighted Knuckle Points: Index MCP (5) & Pinky MCP (17)
+      const drawKnuckle = (pt, color, glow, numLabel, subLabel) => {
+        // Outer halo
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 13, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core dot
+        ctx.fillStyle = color;
+        ctx.strokeStyle = '#070b14';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Number inside/near dot
+        const labelOffsetX = pt.x >= cx ? 18 : -18;
+        const labelOffsetY = pt.y >= cy ? 18 : -18;
+        ctx.font = '700 12px "JetBrains Mono", monospace';
+        ctx.fillStyle = color;
+        ctx.textAlign = pt.x >= cx ? 'left' : 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${numLabel} (${subLabel})`, pt.x + (pt.x >= cx ? 14 : -14), pt.y + (Math.abs(pt.y - cy) < 20 ? -16 : labelOffsetY * 0.6));
+      };
+
+      drawKnuckle(pIndex, '#34d399', 'rgba(52, 211, 153, 0.25)', '5', 'Index');
+      drawKnuckle(pPinky, '#fbbf24', 'rgba(251, 191, 36, 0.25)', '17', 'Pinky');
+    }
+
+    /**
+     * Initializes the live Three.js 3D viewport with a directional faceted prism/pointer,
+     * subtle grid, axes, and smooth lerp Y-axis rotation.
+     */
+    function initThreeJS() {
+      try {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x070b14);
+
+        const rect = threeContainer.getBoundingClientRect();
+        camera = new THREE.PerspectiveCamera(42, rect.width / rect.height, 0.1, 100);
+        updateThreeCameraPosition();
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(rect.width, rect.height);
+        threeContainer.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x94a3b8, 0.75);
+        scene.add(ambientLight);
+
+        const keyLight = new THREE.DirectionalLight(0x38bdf8, 1.3);
+        keyLight.position.set(4, 6, 5);
+        scene.add(keyLight);
+
+        const rimLight = new THREE.DirectionalLight(0x818cf8, 0.9);
+        rimLight.position.set(-5, 3, -4);
+        scene.add(rimLight);
+
+        // Reference floor grid
+        const gridHelper = new THREE.GridHelper(6, 12, 0x334155, 0x1e293b);
+        gridHelper.position.y = -1.1;
+        scene.add(gridHelper);
+
+        // Subtle XYZ Axes
+        const axesHelper = new THREE.AxesHelper(2.2);
+        axesHelper.position.y = -1.09;
+        scene.add(axesHelper);
+
+        // Vertical Y-axis yaw pole indicator
+        const poleGeo = new THREE.CylinderGeometry(0.018, 0.018, 3.0, 12);
+        const poleMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.45 });
+        const poleMesh = new THREE.Mesh(poleGeo, poleMat);
+        poleMesh.position.y = 0.2;
+        scene.add(poleMesh);
+
+        // Rotating 3D Target Object (Stylized directional dev prism + pointer)
+        targetGroup = new THREE.Group();
+
+        // Main faceted core block
+        const bodyGeo = new THREE.BoxGeometry(1.75, 0.75, 1.15);
+        const bodyMat = new THREE.MeshStandardMaterial({
+          color: 0x1e293b,
+          metalness: 0.35,
+          roughness: 0.35,
+        });
+        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+        targetGroup.add(bodyMesh);
+
+        // Crisp wireframe edges on main block
+        const edgesGeo = new THREE.EdgesGeometry(bodyGeo);
+        const edgesMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6 });
+        targetGroup.add(new THREE.LineSegments(edgesGeo, edgesMat));
+
+        // Glowing directional front visor (+Z face)
+        const visorGeo = new THREE.BoxGeometry(1.35, 0.36, 0.08);
+        const visorMat = new THREE.MeshStandardMaterial({
+          color: 0x38bdf8,
+          emissive: 0x0284c7,
+          emissiveIntensity: 0.85,
+          roughness: 0.2,
+        });
+        const visorMesh = new THREE.Mesh(visorGeo, visorMat);
+        visorMesh.position.set(0, 0, 0.59);
+        targetGroup.add(visorMesh);
+
+        // Directional nose cone pointing along +Z
+        const noseGeo = new THREE.ConeGeometry(0.28, 0.65, 4);
+        noseGeo.rotateX(Math.PI / 2);
+        noseGeo.rotateZ(Math.PI / 4);
+        const noseMat = new THREE.MeshStandardMaterial({
+          color: 0x22d3ee,
+          emissive: 0x0891b2,
+          emissiveIntensity: 0.55,
+          roughness: 0.25,
+        });
+        const noseMesh = new THREE.Mesh(noseGeo, noseMat);
+        noseMesh.position.set(0, 0, 0.92);
+        targetGroup.add(noseMesh);
+
+        // Knuckle indicator spheres on the left & right sides of the 3D object
+        const sphereGeo = new THREE.SphereGeometry(0.14, 16, 16);
+        const leftDot = new THREE.Mesh(sphereGeo, new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xb45309, emissiveIntensity: 0.5 }));
+        leftDot.position.set(-0.92, 0, 0);
+        targetGroup.add(leftDot);
+
+        const rightDot = new THREE.Mesh(sphereGeo, new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x047857, emissiveIntensity: 0.5 }));
+        rightDot.position.set(0.92, 0, 0);
+        targetGroup.add(rightDot);
+        // Initialize mesh rotation directly to match initial yaw
+        const initialMath = computeYawMath();
+        targetGroup.rotation.y = initialMath.meshYaw;
+        scene.add(targetGroup);
+      } catch (err) {
+        threeContainer.innerHTML = `<div class="p-6 text-sm text-rose-400 font-mono">WebGL preview unavailable: ${err.message}</div>`;
+      }
+    }
+
+    /**
+     * Positions the Three.js orbit camera using spherical coordinates (camTheta, camPhi, camRadius).
+     */
+    function updateThreeCameraPosition() {
+      if (!camera) return;
+      camera.position.x = camRadius * Math.sin(camTheta) * Math.cos(camPhi);
+      camera.position.y = camRadius * Math.sin(camPhi) + 0.35;
+      camera.position.z = camRadius * Math.cos(camTheta) * Math.cos(camPhi);
+      camera.lookAt(0, 0, 0);
+    }
+
+    /**
+     * Resizes the Three.js camera aspect ratio and renderer dimensions to match its container.
+     */
+    function resizeThreeJS() {
+      if (!camera || !renderer) return;
+      const rect = threeContainer.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      camera.aspect = rect.width / rect.height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(rect.width, rect.height);
+    }
+
+    /**
+     * Main animation loop: renders the Three.js scene.
+     */
+    function animate() {
+      requestAnimationFrame(animate);
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
+
+    /**
+     * Binds all UI controls, 2D canvas drag interaction, 3D orbit controls, and Copy Code button.
+     */
+    function bindEvents() {
+      // Yaw slider
+      yawSlider.addEventListener('input', (e) => {
+        state.yawDeg = parseInt(e.target.value, 10);
+        draw2DScene();
+      });
+
+      // Reset yaw button
+      resetYawBtn.addEventListener('click', () => {
+        state.yawDeg = 0;
+        yawSlider.value = 0;
+        draw2DScene();
+      });
+
+      // Mirror Mode toggle
+      mirrorToggle.addEventListener('click', () => {
+        state.mirrorMode = !state.mirrorMode;
+        mirrorToggle.setAttribute('aria-checked', String(state.mirrorMode));
+        if (state.mirrorMode) {
+          mirrorToggle.className = 'inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-sky-500/15 border border-sky-500/40 text-sky-300 text-xs font-mono font-semibold transition hover:bg-sky-500/25 focus:outline-none focus:ring-2 focus:ring-sky-400/50';
+          mirrorDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]';
+          mirrorText.textContent = 'ON (Selfie)';
+        } else {
+          mirrorToggle.className = 'inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-400 text-xs font-mono font-semibold transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500/50';
+          mirrorDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+          mirrorText.textContent = 'OFF (Direct)';
+        }
+        draw2DScene();
+      });
+
+      // Direct horizontal drag on 2D canvas to rotate yaw
+      let dragging2D = false;
+      let startDragX = 0;
+      let startYaw = 0;
+
+      const start2D = (clientX) => {
+        dragging2D = true;
+        startDragX = clientX;
+        startYaw = state.yawDeg;
+      };
+      const move2D = (clientX) => {
+        if (!dragging2D) return;
+        const deltaX = clientX - startDragX;
+        const nextYaw = Math.max(-90, Math.min(90, Math.round(startYaw + deltaX * 0.55)));
+        state.yawDeg = nextYaw;
+        yawSlider.value = nextYaw;
+        draw2DScene();
+      };
+      const end2D = () => { dragging2D = false; };
+
+      canvas2DContainer.addEventListener('mousedown', (e) => start2D(e.clientX));
+      window.addEventListener('mousemove', (e) => move2D(e.clientX));
+      window.addEventListener('mouseup', end2D);
+
+      canvas2DContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) start2D(e.touches[0].clientX);
+      }, { passive: true });
+      canvas2DContainer.addEventListener('touchmove', (e) => {
+        if (dragging2D && e.touches.length === 1) move2D(e.touches[0].clientX);
+      }, { passive: true });
+      canvas2DContainer.addEventListener('touchend', end2D);
+
+      // Mouse & Touch Orbit Controls on 3D Viewport
+      let dragging3D = false;
+      let prev3DX = 0;
+      let prev3DY = 0;
+
+      const start3D = (x, y) => {
+        dragging3D = true;
+        prev3DX = x;
+        prev3DY = y;
+      };
+      const move3D = (x, y) => {
+        if (!dragging3D) return;
+        const dx = x - prev3DX;
+        const dy = y - prev3DY;
+        prev3DX = x;
+        prev3DY = y;
+        camTheta -= dx * 0.008;
+        camPhi = Math.max(-0.4, Math.min(1.35, camPhi + dy * 0.008));
+        updateThreeCameraPosition();
+      };
+      const end3D = () => { dragging3D = false; };
+
+      threeContainer.addEventListener('mousedown', (e) => start3D(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e) => move3D(e.clientX, e.clientY));
+      window.addEventListener('mouseup', end3D);
+
+      threeContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) start3D(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      threeContainer.addEventListener('touchmove', (e) => {
+        if (dragging3D && e.touches.length === 1) move3D(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      threeContainer.addEventListener('touchend', end3D);
+
+      resetCamBtn.addEventListener('click', () => {
+        camTheta = 0;
+        camPhi = 0.42;
+        updateThreeCameraPosition();
+      });
+
+      // Copy Code button (uses document.execCommand('copy') for iframe compatibility)
+      const copyCodeBtn = document.getElementById('copy-code-btn');
+      const copyBtnText = document.getElementById('copy-btn-text');
+      const codeSnippet = document.getElementById('code-snippet');
+
+      copyCodeBtn.addEventListener('click', () => {
+        const textToCopy = codeSnippet.innerText;
+        const tempArea = document.createElement('textarea');
+        tempArea.value = textToCopy;
+        tempArea.style.position = 'fixed';
+        tempArea.style.opacity = '0';
+        document.body.appendChild(tempArea);
+        tempArea.select();
+        try {
+          document.execCommand('copy');
+          copyBtnText.textContent = 'Copied!';
+          copyCodeBtn.classList.add('bg-emerald-500/20', 'border-emerald-500/40', 'text-emerald-300');
+          setTimeout(() => {
+            copyBtnText.textContent = 'Copy Code';
+            copyCodeBtn.classList.remove('bg-emerald-500/20', 'border-emerald-500/40', 'text-emerald-300');
+          }, 1800);
+        } catch (err) {
+          copyBtnText.textContent = 'Copy Failed';
+        } finally {
+          document.body.removeChild(tempArea);
+        }
+      });
+
+      // Responsive resizing
+      window.addEventListener('resize', () => {
+        resize2DCanvas();
+        resizeThreeJS();
+      });
+    }
+
+    // Boot application on window load
+    window.onload = function () {
+      bindEvents();
+      initThreeJS();
+      resize2DCanvas();
+      resizeThreeJS();
+      animate();
+    };
+  </script>
+</body>
+</html>
