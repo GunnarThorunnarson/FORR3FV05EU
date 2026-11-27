@@ -1,7 +1,13 @@
 ## Lokaverkefni hjá nemendum
 
 ### Haust 2025
-Væntanlegt
+- [Galdrar með handapati](https://github.com/aronfd07/Verkefni6_Vidmodsforritun) _frumgerð af gagnvirku 2D teikniforriti sem notar handapatsstjórnun_
+- [Mobile 2x2x2 Rubik's cube leikur.](https://github.com/Em1l0/LokaverkefniVF) _snertistýrðan Rubik's cube_
+- [handstýrt Pong-spil](https://github.com/Ingimar27/Verkefni6_VidmotsForr/blob/main/README.md) _leikmaðurinn notar höndina sína til að stjórna spaðanum._
+- [Virtual Pet Dashboard](https://github.com/kiaramq/virtual-pet-dashboard) _notendur geta tekið þátt í umönnun sýndarhunds með því að fóðra, leika við, þrífa og láta sofa dýrið._
+- [ALBUM FINDER](https://github.com/MarijonasVV/LokaVerkefni_Vidmotsforritun) _notar AI og Spotify API til að finna album sem notandi tekur mynd af vínyl með myndavél, hægt að nota ar og skoða í 3d plötuna._
+- [Flugveðurs mælaborð](https://github.com/marinofranz/FORR3FV05EU-Lokaverkefni) _Mælaborðið gefur flugmönnum og öðrum flugtengdum aðilum aðgang að veðurupplýsingum fyrir flugvelli um allan heim. _
+- [Finger Paint](https://github.com/tomasnarko/canvas) _einfalt teikniforrit sem fylgist með höndum þínum og fingrum til að teikna._
 
 ### Vor 2025
 
